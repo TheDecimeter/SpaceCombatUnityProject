@@ -1,0 +1,23 @@
+﻿<Properties StartupConfiguration="{3379793E-EEAF-016B-0425-8E86FADCE2B7}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Class Prototype/Scripts/Platformer/CharacterMovement_Physics.cs">
+    <Files>
+      <File FileName="Assets/Class Prototype/Scripts/Platformer/CharacterMovement_Direct.cs" Line="204" Column="1" />
+      <File FileName="Assets/Class Prototype/Scripts/Attacks/Projectile_Physics.cs" Line="14" Column="24" />
+      <File FileName="Assets/Class Prototype/Scripts/Platformer/CharacterMovement_Physics.cs" Line="131" Column="10" />
+      <File FileName="Assets/Class Prototype/Scripts/Health/DealDamage.cs" Line="15" Column="1" />
+      <File FileName="Assets/Class Prototype/Scripts/Health/PlayerHealth.cs" Line="25" Column="1" />
+      <File FileName="Assets/Class Prototype/Scripts/Utility/SceneLoader.cs" Line="37" Column="57" />
+      <File FileName="Assets/Class Prototype/Scripts/Level Interaction/PlayerInteraction.cs" Line="11" Column="1" />
+      <File FileName="Assets/Class Prototype/Scripts/Utility/Invoker.cs" Line="24" Column="6" />
+      <File FileName="Assets/Class Prototype/Scripts/Attacks/Projectile_Direct.cs" Line="8" Column="40" />
+      <File FileName="Assets/Class Prototype/Scripts/Utility/MoveGameObject.cs" Line="15" Column="68" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Prototype_220Gameplay PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>
