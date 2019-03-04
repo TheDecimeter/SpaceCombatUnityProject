@@ -6,9 +6,11 @@ using UnityEngine.Events;
 public class TileInformation : MonoBehaviour
 {
     [Header("Where Items Spawn")]
-    public GameObject[] ItemSpawners;
+    public ItemSpawner[] ItemSpawners;
     [Header("Where Players Spawn")]
-    public GameObject[] PlayerSpawners;
+    public PlayerSpawner[] PlayerSpawners;
+    [Header("Doors")]
+    public DoorBehavior[] Doors;
     [Header("0 = Closed, 1 = Open")]
     public int North=1, South=1, East=1, West=1;
 

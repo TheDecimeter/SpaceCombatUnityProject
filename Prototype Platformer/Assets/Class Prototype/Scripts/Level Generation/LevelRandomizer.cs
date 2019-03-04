@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class LevelRandomizer : MonoBehaviour
 {
-    private const int North= 0, East = 1, South = 2, West = 3;
+    private const int North = 0, East = 1, South = 2, West = 3;
     [Header("Where are level tiles stored:")]
     public GameObject LevelTileArray;
     [Header("Map Size")]
@@ -16,7 +16,7 @@ public class LevelRandomizer : MonoBehaviour
     public bool FillMap = true;
     [Header("If Snake, how many tiles?")]
     public int TileQuantity = 10;
-    public float xTileSize= 12.741084f, yTileSize= 10.75f;
+    public float xTileSize = 12.741084f, yTileSize = 10.75f;
 
     //private List<TileInformation> _tileList = new List<TileInformation>();
     private TileInformation[][] Map;
@@ -25,7 +25,7 @@ public class LevelRandomizer : MonoBehaviour
     private GameObject[] PlayerSpawners;
     private GameObject[] ItemSpawners;
 
-    public int startX=0, startY=0, startZ=0;
+    public int startX = 0, startY = 0, startZ = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,7 @@ public class LevelRandomizer : MonoBehaviour
         //    _tileList.Add(child.gameObject.GetComponent<TileInformation>());
         //}
         Map = new TileInformation[MapDemensions][];
-        for(int i=0; i<MapDemensions; ++i)
+        for (int i = 0; i < MapDemensions; ++i)
         {
             Map[i] = new TileInformation[MapDemensions];
             //for(int j=0; j<MapDemensions; ++j)
@@ -44,16 +44,16 @@ public class LevelRandomizer : MonoBehaviour
         PlacedTileList = new List<Object>();
 
         int count = 0;
-        foreach (Transform child in LevelTileArray.transform) 
+        foreach (Transform child in LevelTileArray.transform)
             count++;
 
-        print("count="+count);
+        print("count=" + count);
         TilePallette = new GameObject[count];
         count = 0;
         foreach (Transform child in LevelTileArray.transform)
         {
             child.gameObject.SetActive(false);
-            TilePallette[count]=child.gameObject;
+            TilePallette[count] = child.gameObject;
             TilePallette[count].GetComponent<TileInformation>().closeEast();
             TilePallette[count].GetComponent<TileInformation>().closeNorth();
             TilePallette[count].GetComponent<TileInformation>().closeSouth();
@@ -70,13 +70,13 @@ public class LevelRandomizer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void randomizeLevel()
     {
         Shuffle(TilePallette);
-        
+
         int x = Random.Range(0, MapDemensions),
             y = Random.Range(0, MapDemensions);
 
@@ -114,40 +114,43 @@ public class LevelRandomizer : MonoBehaviour
             return;
         //find a tile that matches surrounding tiles
         int tileIndex = findValidTileIndex(x, y);
-
+        if (tileIndex == -1)
+        {
+            print("error: no valid tile found");
+            return;
+        }
         //add the tile
-        addTile(x, y, TilePallette[tileIndex]);
+        addTile(x, y, getTilePallette(tileIndex));
 
         //move to neighbors
-        if (Random.Range(0,1) == 1 || FillMap) recursiveTilePlacement(x - 1, y);
-        if (Random.Range(0,1) == 1 || FillMap) recursiveTilePlacement(x + 1, y);
-        if (Random.Range(0,1) == 1 || FillMap) recursiveTilePlacement(x, y - 1);
-        if (Random.Range(0,1) == 1 || FillMap) recursiveTilePlacement(x, y + 1);
+        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x - 1, y);
+        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x + 1, y);
+        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x, y - 1);
+        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x, y + 1);
     }
 
     private int findValidTileIndex(int x, int y)
     {
-        
-        int tileIndex = Random.Range(0,TilePallette.Length), tileStop=tileIndex;
-        while (tileIndex < TilePallette.Length &&
-            !isTileCompatible(x, y, 
-            TilePallette[tileIndex++]
-            .GetComponent<TileInformation>())) ;
 
-        if (tileIndex == TilePallette.Length)
+        int tileIndex = Random.Range(0, TilePallette.Length), tileStop = tileIndex;
+        while (tileIndex < TilePallette.Length)
         {
-            tileIndex = 0;
-            while (tileIndex < tileStop &&
-                !isTileCompatible(x, y, 
-                TilePallette[tileIndex++].
-                GetComponent<TileInformation>())) ;
+            if (isTileCompatible(x, y,
+            getTilePallette(tileIndex)
+            .GetComponent<TileInformation>())) return tileIndex;
+            tileIndex++;
+        }
+        tileIndex = 0;
+        while (tileIndex < tileStop)
+        {
+            if (isTileCompatible(x, y,
+            getTilePallette(tileIndex)
+            .GetComponent<TileInformation>())) return tileIndex;
+            tileIndex++;
         }
 
-        if (tileIndex == tileStop)
-        {
             print("no compatible tile found");
             return -1;
-        }
         return tileIndex;
     }
     private void deactivateLevel()
@@ -157,10 +160,10 @@ public class LevelRandomizer : MonoBehaviour
             Destroy(PlacedTileList[0]);
             PlacedTileList.RemoveAt(0);
         }
-        for(int i=0; i<MapDemensions; ++i)
+        for (int i = 0; i < MapDemensions; ++i)
             for (int j = 0; j < MapDemensions; ++j)
                 Map[i][j] = null;
-        
+
     }
 
     private void addTile(int x, int y, GameObject tile)
@@ -177,28 +180,28 @@ public class LevelRandomizer : MonoBehaviour
     private void effectNeighbors(int x, int y)
     {
         if (x > 0)
-            if (Map[y][x - 1]!= null)
+            if (Map[y][x - 1] != null)
             {
                 Map[y][x - 1].openEast();
                 Map[y][x].openWest();
             }
-        if (x < MapDemensions-1)
-            if (Map[y][x + 1]!= null)
+        if (x < MapDemensions - 1)
+            if (Map[y][x + 1] != null)
             {
                 Map[y][x + 1].openWest();
                 Map[y][x].openEast();
             }
         if (y > 0)
-            if (Map[y-1][x]!= null)
+            if (Map[y - 1][x] != null)
             {
-                Map[y-1][x].openSouth();
-                Map[y][x].openNorth();
+                Map[y - 1][x].openNorth();
+                Map[y][x].openSouth();
             }
         if (y < MapDemensions - 1)
-            if (Map[y+1][x]!= null)
+            if (Map[y + 1][x] != null)
             {
-                Map[y + 1][x].openNorth();
-                Map[y][x].openSouth();
+                Map[y + 1][x].openSouth();
+                Map[y][x].openNorth();
             }
     }
 
@@ -230,15 +233,15 @@ public class LevelRandomizer : MonoBehaviour
     private bool isPositionValid(int x, int y)
     {
         //make sure coordinates are within boundaries
-        if (y == -1)            return false;
+        if (y == -1) return false;
         if (y == MapDemensions) return false;
-        if (x == -1)            return false;
+        if (x == -1) return false;
         if (x == MapDemensions) return false;
 
         //make sure the map position isn't already occupied
         if (Map[y][x] != null)
             return false;
-       
+
         return true;
     }
 
@@ -247,7 +250,7 @@ public class LevelRandomizer : MonoBehaviour
         if (x > 0)
             if (Map[y][x - 1] != null)
             {
-                if(Map[y][x - 1].East !=tile.West)
+                if (Map[y][x - 1].East != tile.West)
                     return false;
             }
         if (x < MapDemensions - 1)
@@ -259,7 +262,7 @@ public class LevelRandomizer : MonoBehaviour
         if (y > 0)
             if (Map[y - 1][x] != null)
             {
-                if(Map[y - 1][x].South!=tile.North)
+                if (Map[y - 1][x].South != tile.North)
                     return false;
             }
         if (y < MapDemensions - 1)
@@ -282,5 +285,11 @@ public class LevelRandomizer : MonoBehaviour
         GameObject temp = list[i];
         list[i] = list[j];
         list[j] = temp;
+    }
+
+    private GameObject getTilePallette(int index)
+    {
+        print(index);
+        return TilePallette[index % TilePallette.Length];
     }
 }
