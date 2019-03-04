@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
 {
+    [Header("Which way should the player face")]
+    public bool facingLeft = false;
     // Start is called before the first frame update
     void Start()
     {
