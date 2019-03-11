@@ -250,6 +250,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             _canJump = false;
 
             _isGrounded = false;
+            // jump sound
+            //FindObjectsOfType<audioManager>().Play("ok");
         }
     }
 
