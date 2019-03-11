@@ -12,22 +12,21 @@ public class CharacterMovement_Physics : MonoBehaviour
         moving,
     }
 
+    [Header("Level Properties")]
+    public LevelRandomizer Environment;
+
     [Header("Player Properties")]
     public int PlayerNumber=0;
     public Animator anim;
     public GameObject mountingBone;
-
-    [Header("Input Axes")]
-    public string horizontalAxis = "Horizontal";
-    public string verticalAxis = "Vertical";
-    public string jumpAxis = "Jump";
-    public string primaryAttackAxis = "Fire1";
-    public string secondaryAttackAxis = "Fire2";
-
+    
     [Header("Movment Properties")]
     public float maxSpeed = 10f;
     public float acceleration = 60f;
     public float stopDrag = .9f;
+    public float pullDrag = .9f;
+    public float doorNearnessThreshold=5;
+    public int doorPullSpeed = 1000;
 
     [Header("Jump Properties")]
     public float jumpForce = 15f;
@@ -35,8 +34,6 @@ public class CharacterMovement_Physics : MonoBehaviour
     public float airControl = 0.85f;
 
     [Header("Attack Properties")]
-    public Weapon primaryAttack;
-    public Weapon secondaryAttack;
     public Transform attackPoint;
 
     //public bool isActionPressed { get { return _controllerStatus.action; } protected set { } }
@@ -48,6 +45,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     private bool _canAttack = true;
     private bool _canJump = true;
     private bool _inJump = false;
+    private bool _canOpen = true;
 
     private bool _isGrounded = false;
 
@@ -66,6 +64,8 @@ public class CharacterMovement_Physics : MonoBehaviour
     private bool actionable = true;
 
     private int clearText = 0;
+
+    private Vector3 pullDirection;
 
     
 
@@ -129,6 +129,14 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (force == Vector3.zero)
             _rigidbody.velocity = new Vector3(_rigidbody.velocity.x * stopDrag, _rigidbody.velocity.y, _rigidbody.velocity.z * stopDrag);
 
+        if (pullDirection != Vector3.zero)
+        {
+            print("pull " + pullDirection);
+            _rigidbody.AddForce(pullDirection, ForceMode.Acceleration);
+            pullDirection = new Vector3(pullDirection.x * pullDrag, pullDirection.y * pullDrag, 0);
+            if (Mathf.Abs(pullDirection.x) < 100 && Mathf.Abs(pullDirection.y)<100) pullDirection = Vector3.zero;
+        }
+
         if (Mathf.Abs(_rigidbody.velocity.x) > .1 && _isGrounded)
             anim.SetBool("isRunning", true);
         else
@@ -150,6 +158,21 @@ public class CharacterMovement_Physics : MonoBehaviour
             actionPressed = false;
         }
         else if (actionable) actionPressed = true;
+
+        if (_controllerStatus.door)
+        {
+            if (_canOpen)
+            {
+                _canOpen = false;
+                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection))
+                {
+                    pullDirection.Normalize();
+                    pullDirection *= doorPullSpeed;
+                }
+            }
+
+        }
+        else _canOpen = true;
     }
 
     public void encounteredItem(Item item)

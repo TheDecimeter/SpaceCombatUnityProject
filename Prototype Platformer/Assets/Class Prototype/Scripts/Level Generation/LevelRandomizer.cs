@@ -8,8 +8,15 @@ public class LevelRandomizer : MonoBehaviour
     private const int North = 0, East = 1, South = 2, West = 3;
     [Header("Where are level tiles stored:")]
     public GameObject LevelTileArray;
+    [Header("Where are players stored:")]
+    public GameObject PlayerArray;
+    [Header("Where are item templates stored:")]
+    public GameObject ItemArray;
+    public string itemType = "All";
+    public int itemQuantity = 4;
     [Header("Map Size")]
-    public int MapDemensions = 3;
+    public int MapDemensionsX = 3;
+    public int MapDemensionsY = 4;
     [Header("Random Seed, -1 is random")]
     public int Seed = -1;
     [Header("Snake or Fill")]
@@ -19,11 +26,20 @@ public class LevelRandomizer : MonoBehaviour
     public float xTileSize = 12.741084f, yTileSize = 10.75f;
 
     //private List<TileInformation> _tileList = new List<TileInformation>();
+
+    //place to store the types of items and tiles which a level uses (constant every round)
+    private GameObject[] TilePallette;
+    private GameObject[] ItemPallette;
+
+    //place to store the spawners in a level (changes every round)
+    private PlayerSpawner[] PlayerSpawners;
+    private ItemSpawner[] ItemSpawners;
+
+    //the various things created in a specific level (changes every round)
+    private GameObject[] PlacedItems;
     private TileInformation[][] Map;
     private List<Object> PlacedTileList;
-    private GameObject[] TilePallette;
-    private GameObject[] PlayerSpawners;
-    private GameObject[] ItemSpawners;
+    private List<DoorBehavior> LevelDoors;
 
     public int startX = 0, startY = 0, startZ = 0;
 
@@ -34,37 +50,72 @@ public class LevelRandomizer : MonoBehaviour
         //{
         //    _tileList.Add(child.gameObject.GetComponent<TileInformation>());
         //}
-        Map = new TileInformation[MapDemensions][];
-        for (int i = 0; i < MapDemensions; ++i)
+
+        foreach (Transform child in PlayerArray.transform)
+            if (child.gameObject.GetComponent<CharacterMovement_Physics>().Environment == null)
+                child.gameObject.GetComponent<CharacterMovement_Physics>().Environment = this;
+
+
+        Map = new TileInformation[MapDemensionsY][];
+        for (int i = 0; i < MapDemensionsY; ++i)
         {
-            Map[i] = new TileInformation[MapDemensions];
+            Map[i] = new TileInformation[MapDemensionsX];
             //for(int j=0; j<MapDemensions; ++j)
             //    Map[i][j] = new TileInformation();
         }
         PlacedTileList = new List<Object>();
 
-        int count = 0;
-        foreach (Transform child in LevelTileArray.transform)
-            count++;
-
-        print("count=" + count);
-        TilePallette = new GameObject[count];
-        count = 0;
+        int tileCount = 0;//, playerSpawnerCount = 0 ;
         foreach (Transform child in LevelTileArray.transform)
         {
-            child.gameObject.SetActive(false);
-            TilePallette[count] = child.gameObject;
-            TilePallette[count].GetComponent<TileInformation>().closeEast();
-            TilePallette[count].GetComponent<TileInformation>().closeNorth();
-            TilePallette[count].GetComponent<TileInformation>().closeSouth();
-            TilePallette[count].GetComponent<TileInformation>().closeWest();
-            count++;
+            tileCount++;
+            //playerSpawnerCount+=child.GetComponent<TileInformation>().PlayerSpawners.Length;
         }
 
+        //print("count=" + playerSpawnerCount);
+        TilePallette = new GameObject[tileCount];
+        //PlayerSpawners = new PlayerSpawner[playerSpawnerCount];
+        tileCount = 0;
+        //playerSpawnerCount = 0;
+        foreach (Transform child in LevelTileArray.transform)
+        {
+            //foreach(PlayerSpawner g in child.GetComponent<TileInformation>().PlayerSpawners)
+            //    PlayerSpawners[playerSpawnerCount++] = g;
+
+
+
+            child.gameObject.SetActive(false);
+            TilePallette[tileCount] = child.gameObject;
+            TileInformation tmp= TilePallette[tileCount].GetComponent<TileInformation>();
+
+
+            tmp.closeEast();
+            tmp.closeNorth();
+            tmp.closeSouth();
+            tmp.closeWest();
+            tileCount++;
+        }
+
+
+        setUpItemPallette();
+
+
         if (Seed != -1)
-            Random.seed = Seed;
+            Random.InitState(Seed);
+        //Random.seed = Seed;
 
         randomizeLevel();
+    }
+
+    private void setUpItemPallette()
+    {
+        int count = 0;
+        foreach (Transform child in ItemArray.transform)
+            count++;
+        ItemPallette = new GameObject[count];
+        count = 0;
+        foreach (Transform child in ItemArray.transform)
+            ItemPallette[count++] = child.gameObject;
     }
 
     // Update is called once per frame
@@ -77,34 +128,74 @@ public class LevelRandomizer : MonoBehaviour
     {
         Shuffle(TilePallette);
 
-        int x = Random.Range(0, MapDemensions),
-            y = Random.Range(0, MapDemensions);
+        int x = Random.Range(0, MapDemensionsX),
+            y = Random.Range(0, MapDemensionsY);
 
         recursiveTilePlacement(x, y);
 
+        //add level doors to the data structure so it's easier to check and see if players are
+        //near them in game
+        LevelDoors = new List<DoorBehavior>();
+        foreach (GameObject g in PlacedTileList)
+        {
+            TileInformation tmp = g.GetComponent<TileInformation>();
 
-        //for(int i=0; i<TileQuantity||FillMap;)
-        //{
-        //    int tileIndex= Random.Range(0,TilePallette.Length), tileStop=tileIndex;
+            foreach (DoorBehavior d in tmp.NorthDoors)
+                addDoor(d);
+            foreach (DoorBehavior d in tmp.SouthDoors)
+                addDoor(d);
+            foreach (DoorBehavior d in tmp.EastDoors)
+                addDoor(d);
+            foreach (DoorBehavior d in tmp.WestDoors)
+                addDoor(d);
+            foreach (DoorBehavior d in tmp.OtherOpenableDoors)
+                addDoor(d);
+        }
 
-        //    while (tileIndex<TilePallette.Length&&
-        //        !isTileCompatible(x, y, TilePallette[tileIndex++].GetComponent<TileInformation>())) ;
-        //    if (tileIndex == TilePallette.Length)
-        //    {
-        //        tileIndex = 0;
-        //        while (tileIndex < tileStop &&
-        //            !isTileCompatible(x, y, TilePallette[tileIndex++].GetComponent<TileInformation>())) ;
-        //    }
 
-        //    if (tileIndex == tileStop)
-        //    {
-        //        print("no compatible tile found");
-        //        break;
-        //    }
+        //go through the placed tiles and see where all of the
+        //player spawners are.
+        int Spawners = 0;
+        foreach (GameObject g in PlacedTileList)
+            Spawners += g.GetComponent<TileInformation>().PlayerSpawners.Length;
+        PlayerSpawners = new PlayerSpawner[Spawners];
+        //create a list of available player spawners
+        Spawners = 0;
+        foreach (GameObject g in PlacedTileList)
+            foreach (PlayerSpawner p in g.GetComponent<TileInformation>().PlayerSpawners)
+                PlayerSpawners[Spawners++] = p;
+        //Shuffle them and place players in the first 4
+        //loop back around if there are less than 4
+        Shuffle(PlayerSpawners);
+        Spawners = 0;
+        foreach (Transform child in PlayerArray.transform)
+            child.position = PlayerSpawners[(Spawners++ % PlayerSpawners.Length)].gameObject.transform.position;
 
-        //    addTile(x, y, TilePallette[tileIndex]);
 
-        //}
+
+        //go through the placed tiles and see where all of the
+        //item spawners are.
+        Spawners = 0;
+        foreach (GameObject g in PlacedTileList)
+            Spawners += g.GetComponent<TileInformation>().ItemSpawners.Length;
+        ItemSpawners = new ItemSpawner[Spawners];
+        //create a list of available item spawners
+        Spawners = 0;
+        foreach (GameObject g in PlacedTileList)
+            foreach (ItemSpawner i in g.GetComponent<TileInformation>().ItemSpawners)
+                ItemSpawners[Spawners++] = i;
+        //Shuffle them and place players in the first N
+        Shuffle(ItemSpawners);
+        Spawners = 0;
+        PlacedItems = new GameObject[itemQuantity];
+        for (int i = 0; i < itemQuantity; ++i)
+        {
+            GameObject tmp = Instantiate(ItemPallette[Random.Range(0, ItemPallette.Length)]);
+            tmp.transform.position = ItemSpawners[(Spawners % ItemSpawners.Length)].gameObject.transform.position;
+            PlacedItems[Spawners] = tmp;
+            Spawners++;
+            //print("placed item at " + tmp.transform.position);
+        }
     }
 
     private void recursiveTilePlacement(int x, int y)
@@ -149,8 +240,8 @@ public class LevelRandomizer : MonoBehaviour
             tileIndex++;
         }
 
-            print("no compatible tile found");
-            return -1;
+        print("no compatible tile found");
+        return -1;
         return tileIndex;
     }
     private void deactivateLevel()
@@ -160,8 +251,8 @@ public class LevelRandomizer : MonoBehaviour
             Destroy(PlacedTileList[0]);
             PlacedTileList.RemoveAt(0);
         }
-        for (int i = 0; i < MapDemensions; ++i)
-            for (int j = 0; j < MapDemensions; ++j)
+        for (int i = 0; i < MapDemensionsY; ++i)
+            for (int j = 0; j < MapDemensionsX; ++j)
                 Map[i][j] = null;
 
     }
@@ -170,7 +261,7 @@ public class LevelRandomizer : MonoBehaviour
     {
         GameObject tmp = Instantiate(tile);
         tmp.transform.position = new Vector3(startX + x * xTileSize, startY + y * yTileSize, startZ);
-        print(tmp.transform.position);
+        //print(tmp.transform.position);
         PlacedTileList.Add(tmp);
         Map[y][x] = tmp.GetComponent<TileInformation>();
         tmp.SetActive(true);
@@ -185,7 +276,7 @@ public class LevelRandomizer : MonoBehaviour
                 Map[y][x - 1].openEast();
                 Map[y][x].openWest();
             }
-        if (x < MapDemensions - 1)
+        if (x < MapDemensionsX - 1)
             if (Map[y][x + 1] != null)
             {
                 Map[y][x + 1].openWest();
@@ -197,7 +288,7 @@ public class LevelRandomizer : MonoBehaviour
                 Map[y - 1][x].openNorth();
                 Map[y][x].openSouth();
             }
-        if (y < MapDemensions - 1)
+        if (y < MapDemensionsY - 1)
             if (Map[y + 1][x] != null)
             {
                 Map[y + 1][x].openSouth();
@@ -215,7 +306,7 @@ public class LevelRandomizer : MonoBehaviour
                 addTile(x, y, Tile);
                 break;
             case South:
-                if (y == MapDemensions - 1) return false;
+                if (y == MapDemensionsY - 1) return false;
                 addTile(x, y, Tile);
                 break;
             case West:
@@ -223,7 +314,7 @@ public class LevelRandomizer : MonoBehaviour
                 addTile(x, y, Tile);
                 break;
             case East:
-                if (x == MapDemensions - 1) return false;
+                if (x == MapDemensionsX - 1) return false;
                 addTile(x, y, Tile);
                 break;
         }
@@ -234,9 +325,9 @@ public class LevelRandomizer : MonoBehaviour
     {
         //make sure coordinates are within boundaries
         if (y == -1) return false;
-        if (y == MapDemensions) return false;
+        if (y == MapDemensionsY) return false;
         if (x == -1) return false;
-        if (x == MapDemensions) return false;
+        if (x == MapDemensionsX) return false;
 
         //make sure the map position isn't already occupied
         if (Map[y][x] != null)
@@ -253,7 +344,7 @@ public class LevelRandomizer : MonoBehaviour
                 if (Map[y][x - 1].East != tile.West)
                     return false;
             }
-        if (x < MapDemensions - 1)
+        if (x < MapDemensionsX - 1)
             if (Map[y][x + 1] != null)
             {
                 if (Map[y][x + 1].West != tile.East)
@@ -265,7 +356,7 @@ public class LevelRandomizer : MonoBehaviour
                 if (Map[y - 1][x].South != tile.North)
                     return false;
             }
-        if (y < MapDemensions - 1)
+        if (y < MapDemensionsY - 1)
             if (Map[y + 1][x] != null)
             {
                 if (Map[y + 1][x].North != tile.South)
@@ -274,22 +365,59 @@ public class LevelRandomizer : MonoBehaviour
         return true;
     }
 
-    public static void Shuffle(GameObject[] list)
+
+    public static void Shuffle<T>(T[] list)
     {
         for (int i = 0; i < list.Length - 1; i++)
             Swap(list, i, Random.Range(i, list.Length));
     }
 
-    public static void Swap(GameObject[] list, int i, int j)
+    public static void Swap<T>(T[] list, int i, int j)
     {
-        GameObject temp = list[i];
+        T temp = list[i];
         list[i] = list[j];
         list[j] = temp;
     }
 
     private GameObject getTilePallette(int index)
     {
-        print(index);
+        //print(index);
         return TilePallette[index % TilePallette.Length];
+    }
+
+    private void addDoor(DoorBehavior door)
+    {
+        if (door.isOpenable&&door.gameObject.activeInHierarchy) LevelDoors.Add(door);
+    }
+
+    public bool openNearestDoors(Vector3 to, float within, ref Vector3 pullToward)
+    {
+        bool doorsWereOpened = false;
+        Vector3 closestPoint = LevelDoors[0].gameObject.transform.position;
+        float shortestDistance = distance(closestPoint, to);
+
+        foreach (DoorBehavior d in LevelDoors)
+        {
+            //if (!d.isOpenable)
+            //    continue;
+            if (distance(d.transform.position, to) <= within)
+            {
+                d.open();
+                doorsWereOpened = true;
+                if (distance(d.transform.position, to) < shortestDistance)
+                {
+                    closestPoint = d.gameObject.transform.position;
+                    pullToward = d.getPullDirection(to);
+                    shortestDistance = distance(closestPoint, to);
+                }
+            }
+        }
+        if (!doorsWereOpened) print("not close enough "+shortestDistance);
+        return doorsWereOpened;
+    }
+
+    public static float distance(Vector3 from, Vector3 to)
+    {
+        return Mathf.Sqrt(Mathf.Pow(from.x - to.x, 2) + Mathf.Pow(from.y - to.y, 2));
     }
 }

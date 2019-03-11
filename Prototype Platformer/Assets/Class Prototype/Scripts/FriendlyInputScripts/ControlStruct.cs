@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ControlStruct
 {
-    public bool jump=false, attack=false, action=false;
+    public bool jump=false, attack=false, action=false, door=false;
     public float moveLeft=0;
 }

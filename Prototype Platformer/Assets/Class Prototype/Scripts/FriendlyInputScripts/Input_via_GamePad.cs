@@ -21,7 +21,7 @@ public class Input_via_GamePad : MonoBehaviour
 
     private List<ControlStruct> previousControls;
 
-    private const int jump = 0, attack = 1, action = 2, left = 0, right = 0;
+    private const int jump = 0, attack = 1, action = 2, door1=3, door2=12,left = 0, right = 0;
     private const int AXIS = 1, BUTTON = 0;
     private float axisThreshold = 0.2f;
 
@@ -77,9 +77,10 @@ public class Input_via_GamePad : MonoBehaviour
 
                 for (int i = 0; i < buttonValues.Length; i++)
                 {
-                    
-                     //print("Not left shift " + (GamepadButton)buttonValues[i] + ": " + gamepad.GetButton((GamepadButton)buttonValues[i]) + "\n");
-                     updateControl(i, playerControls, gamepad.GetButton((GamepadButton)buttonValues[i]));
+
+                    //print("Not left shift " + (GamepadButton)buttonValues[i] + ": " + gamepad.GetButton((GamepadButton)buttonValues[i]) + "\n");
+                    //print("Not left shift " + i + ": " + gamepad.GetButton((GamepadButton)buttonValues[i]) + "\n");
+                    updateControl(i, playerControls, gamepad.GetButton((GamepadButton)buttonValues[i]));
                         
                     
                         
@@ -142,18 +143,23 @@ public class Input_via_GamePad : MonoBehaviour
     }
     private void updateControl(int currentControl, ControlStruct current, bool state)
     {
-        switch (currentControl)
-        {
-            case jump:
-                current.jump = state;
-                break;
-            case attack:
-                current.attack = state;
-                break;
-            case action:
-                current.action = state;
-                break;
-        }
+        if(state)
+            switch (currentControl)
+            {
+                case jump:
+                    current.jump = true;
+                    break;
+                case attack:
+                    current.attack = true;
+                    break;
+                case action:
+                    current.action = true;
+                    break;
+                case door1:
+                case door2:
+                    current.door = true;
+                    break;
+            }
     }
     private bool isControlUpdated(int currentControl, ControlStruct previous, float state)
     {

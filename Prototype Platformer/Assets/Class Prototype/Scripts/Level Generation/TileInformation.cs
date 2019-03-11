@@ -14,6 +14,7 @@ public class TileInformation : MonoBehaviour
     public DoorBehavior[] SouthDoors;
     public DoorBehavior[] EastDoors;
     public DoorBehavior[] WestDoors;
+    public DoorBehavior[] OtherOpenableDoors;
     [Header("0 = Closed, 1 = Open")]
     public int North=1, South=1, East=1, West=1;
 
