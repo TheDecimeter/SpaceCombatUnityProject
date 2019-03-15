@@ -5,25 +5,48 @@ using UnityEngine.Events;
 
 public class LevelRandomizer : MonoBehaviour
 {
-    private const int North = 0, East = 1, South = 2, West = 3;
+    private const int North = 0, East = 1, South = 2, West = 3, Any=4;
     [Header("Where are level tiles stored:")]
     public GameObject LevelTileArray;
+
     [Header("Where are players stored:")]
     public GameObject PlayerArray;
+
     [Header("Where are item templates stored:")]
     public GameObject ItemArray;
     public string itemType = "All";
     public int itemQuantity = 4;
+
     [Header("Map Size")]
     public int MapDemensionsX = 3;
     public int MapDemensionsY = 4;
+
     [Header("Random Seed, -1 is random")]
     public int Seed = -1;
+
     [Header("Snake or Fill")]
     public bool FillMap = true;
+
     [Header("If Snake, how many tiles?")]
-    public int TileQuantity = 10;
-    public float xTileSize = 12.741084f, yTileSize = 10.75f;
+    public int TileQuantity = 16;
+
+    [Header("What are the demensions of individual tiles")]
+    public float xTileSize = 12.741084f;
+    public float yTileSize = 8f;
+
+    [Header("Center of tile from parent")]
+    public float xOffset = 6;
+    public float yOffset = 0;
+
+    [Header("Room Closing Stats")]
+    public int CloseRoomXManyFrames = 180;
+    public int WarnForXManyFrames = 180;
+    public int LeaveRoomsOpen = 5;
+
+    [Header("Lower Left corner of map")]
+    public int startX = 0;
+    public int startY = 0;
+    public int startZ = 0;
 
     //private List<TileInformation> _tileList = new List<TileInformation>();
 
@@ -41,7 +64,11 @@ public class LevelRandomizer : MonoBehaviour
     private List<Object> PlacedTileList;
     private List<DoorBehavior> LevelDoors;
 
-    public int startX = 0, startY = 0, startZ = 0;
+    private CloseLevel closer;
+    private AsteroidGenerator daRocks;
+
+    private int TileCounter;
+
 
     // Start is called before the first frame update
     void Start()
@@ -105,6 +132,70 @@ public class LevelRandomizer : MonoBehaviour
         //Random.seed = Seed;
 
         randomizeLevel();
+        daRocks = GetComponent<AsteroidGenerator>();
+        
+        //daRocks.Init(startX, startY, startZ, xTileSize, yTileSize, WarnForXManyFrames);
+
+    }
+
+    private void FixedUpdate()
+    {
+        int x, y;
+        if (daRocks.warn(closer.warnCheck(out x, out y), x, y))
+        {
+            float lx = startX + x * xTileSize + xOffset - xTileSize / 2;
+            float hx = startX + x * xTileSize + xOffset + xTileSize / 2;
+            float ly = startX + y * yTileSize + yOffset - yTileSize / 2;
+            float hy = startX + y * yTileSize + yOffset + yTileSize / 2;
+            //print("CLOSE ROOM " + x + " " + y + " " + hx + " " + lx + " " + hy + " " + ly);
+
+            //if the player is within the bounds of the room, DIE
+            foreach (Transform child in PlayerArray.transform)
+            {
+                if (child.position.x > lx && child.position.x < hx &&
+                    child.position.y > ly && child.position.y < hy)
+                    child.GetComponent<PlayerHealth>().PlayerDeath();
+            }
+
+            //close all doors in the room
+            closeDownRoom(x,y);
+        }
+    }
+
+    private void closeDownRoom(int x, int y)
+    {
+        TileInformation tile = Map[y][x];
+        //lock all doors in the tile
+        foreach (DoorBehavior d in tile.NorthDoors)
+            lockDoor(d);
+        foreach (DoorBehavior d in tile.SouthDoors)
+            lockDoor(d);
+        foreach (DoorBehavior d in tile.EastDoors)
+            lockDoor(d);
+        foreach (DoorBehavior d in tile.WestDoors)
+            lockDoor(d);
+        foreach (DoorBehavior d in tile.OtherOpenableDoors)
+            lockDoor(d);
+
+        //lock doors neighboring the tile
+        if (x - 1 >= 0&& Map[y][x - 1] != null)
+            foreach (DoorBehavior d in Map[y][x - 1].EastDoors)
+                lockDoor(d);
+        if (x + 1 < MapDemensionsX && Map[y][x + 1] != null)
+            foreach (DoorBehavior d in Map[y][x + 1].WestDoors)
+                lockDoor(d);
+        if (y - 1 >= 0 && Map[y - 1][x] != null)
+            foreach (DoorBehavior d in Map[y - 1][x].NorthDoors)
+                lockDoor(d);
+        if (y + 1 < MapDemensionsY && Map[y + 1][x] != null)
+            foreach (DoorBehavior d in Map[y + 1][x].SouthDoors)
+                lockDoor(d);
+    }
+
+    private void lockDoor(DoorBehavior door)
+    {
+        door.setOpenable(false);
+        LevelDoors.Remove(door);
     }
 
     private void setUpItemPallette()
@@ -126,16 +217,35 @@ public class LevelRandomizer : MonoBehaviour
 
     public void randomizeLevel()
     {
+
+        TileCounter = 0;
+        if (TileQuantity > MapDemensionsX * MapDemensionsY)
+            TileQuantity = MapDemensionsX * MapDemensionsY;
         Shuffle(TilePallette);
 
         int x = Random.Range(0, MapDemensionsX),
             y = Random.Range(0, MapDemensionsY);
 
+        
         recursiveTilePlacement(x, y);
 
-        //add level doors to the data structure so it's easier to check and see if players are
-        //near them in game
-        LevelDoors = new List<DoorBehavior>();
+        while(!FillMap && TileCounter < TileQuantity)
+        {
+            x = Random.Range(0, MapDemensionsX);
+            y = Random.Range(0, MapDemensionsY);
+            if (Map[y][x] != null)
+            {
+                recursiveTilePlacement(x-1, y);
+                recursiveTilePlacement(x+1, y);
+                recursiveTilePlacement(x, y-1);
+                recursiveTilePlacement(x, y+1);
+            }
+        }
+            
+
+            //add level doors to the data structure so it's easier to check and see if players are
+            //near them in game
+            LevelDoors = new List<DoorBehavior>();
         foreach (GameObject g in PlacedTileList)
         {
             TileInformation tmp = g.GetComponent<TileInformation>();
@@ -184,7 +294,7 @@ public class LevelRandomizer : MonoBehaviour
         foreach (GameObject g in PlacedTileList)
             foreach (ItemSpawner i in g.GetComponent<TileInformation>().ItemSpawners)
                 ItemSpawners[Spawners++] = i;
-        //Shuffle them and place players in the first N
+        //Shuffle them and place items in the first N
         Shuffle(ItemSpawners);
         Spawners = 0;
         PlacedItems = new GameObject[itemQuantity];
@@ -196,10 +306,16 @@ public class LevelRandomizer : MonoBehaviour
             Spawners++;
             //print("placed item at " + tmp.transform.position);
         }
+
+        //setup the level shrinking object
+        
+        closer=new CloseLevel(Map, Any, CloseRoomXManyFrames, WarnForXManyFrames,LeaveRoomsOpen);
     }
 
     private void recursiveTilePlacement(int x, int y)
     {
+        if (!FillMap && TileCounter == TileQuantity)
+            return;
         //make sure you're within the grid bounds
         if (!isPositionValid(x, y))
             return;
@@ -212,12 +328,12 @@ public class LevelRandomizer : MonoBehaviour
         }
         //add the tile
         addTile(x, y, getTilePallette(tileIndex));
-
+        TileCounter++;
         //move to neighbors
-        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x - 1, y);
-        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x + 1, y);
-        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x, y - 1);
-        if (Random.Range(0, 1) == 1 || FillMap) recursiveTilePlacement(x, y + 1);
+        if (Random.Range(0, 2) == 1 || FillMap) recursiveTilePlacement(x - 1, y);
+        if (Random.Range(0, 2) == 1 || FillMap) recursiveTilePlacement(x + 1, y);
+        if (Random.Range(0, 2) == 1 || FillMap) recursiveTilePlacement(x, y - 1);
+        if (Random.Range(0, 2) == 1 || FillMap) recursiveTilePlacement(x, y + 1);
     }
 
     private int findValidTileIndex(int x, int y)

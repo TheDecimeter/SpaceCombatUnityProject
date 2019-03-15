@@ -32,6 +32,9 @@ public class TileInformation : MonoBehaviour
     public UnityEvent CloseEast;
     public UnityEvent CloseWest;
 
+    [Header("probably don't mess with this")]
+    public bool isClosed=false;
+
 
     public void openNorth()
     {
