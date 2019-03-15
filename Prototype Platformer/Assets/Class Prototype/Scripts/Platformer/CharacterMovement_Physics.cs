@@ -245,6 +245,9 @@ public class CharacterMovement_Physics : MonoBehaviour
             {
             //add vertical impulse force
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            // jump sound
+            FindObjectOfType<AudioManager>().Play("Jump");
+
 
             _inJump = true;
             _canJump = false;
