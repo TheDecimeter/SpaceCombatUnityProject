@@ -19,8 +19,12 @@ public class DoorBehavior : MonoBehaviour
 
     private int _state=Closed;
     private int _frameCounter=0;
+
+    private static AudioManager audio;
     void Start()
     {
+        if (audio == null)
+            audio = FindObjectOfType<AudioManager>();
         //if(isOpenable)
         //    this.transform.localScale = new Vector3(0, 0, 0);
     }
@@ -56,8 +60,15 @@ public class DoorBehavior : MonoBehaviour
 
     public void open()
     {
+        if (_state == Opened)
+            return;
+
         if (isOpenable)
         {
+            //door opening sounds can go here
+            print("DoorOpen");
+            //audio.Play("DoorOpen");
+
             this.transform.localScale = new Vector3(0, 0, 0);
             _state = Opened;
             _frameCounter = FramesToStayOpen;
@@ -66,6 +77,13 @@ public class DoorBehavior : MonoBehaviour
 
     public void close()
     {
+        if (_state == Closed)
+            return;
+
+        //door closing sounds can go here
+        print("DoorClose");
+        //audio.Play("DoorClose");
+
         this.transform.localScale = new Vector3(1, 1, 1);
         _state = Closed;
     }

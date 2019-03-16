@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Item : MonoBehaviour
 {
+    protected static AudioManager audio;
     public const int Ranged = 0, Stab = 1, Punch=-1;
     public GameObject itemExterior;
     public abstract int getType();

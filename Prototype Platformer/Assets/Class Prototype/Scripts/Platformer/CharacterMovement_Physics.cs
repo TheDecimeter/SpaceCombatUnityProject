@@ -5,6 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement_Physics : MonoBehaviour
 {
+    private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
     public enum CharacterState
     {
         frozen,
@@ -16,16 +17,16 @@ public class CharacterMovement_Physics : MonoBehaviour
     public LevelRandomizer Environment;
 
     [Header("Player Properties")]
-    public int PlayerNumber=0;
+    public int PlayerNumber = 0;
     public Animator anim;
     public GameObject mountingBone;
-    
+
     [Header("Movment Properties")]
     public float maxSpeed = 10f;
     public float acceleration = 60f;
     public float stopDrag = .9f;
     public float pullDrag = .9f;
-    public float doorNearnessThreshold=5;
+    public float doorNearnessThreshold = 5;
     public int doorPullSpeed = 1000;
 
     [Header("Jump Properties")]
@@ -60,14 +61,16 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private CharacterState _currentState = CharacterState.idle;
 
-    private bool actionPressed=false;
+    private bool actionPressed = false;
     private bool actionable = true;
 
     private int clearText = 0;
 
     private Vector3 pullDirection;
 
-    
+    private AudioManager audio;
+
+
 
     void Start()
     {
@@ -76,6 +79,9 @@ public class CharacterMovement_Physics : MonoBehaviour
         _rigidbody = this.GetComponent<Rigidbody>();
 
         if (attackPoint == null) attackPoint = this.transform;
+
+
+        audio = FindObjectOfType<AudioManager>();
     }
 
     private void Update()
@@ -94,8 +100,8 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
 
         if (_canAttack) Attack();
-        
-       
+
+
     }
 
     private void LateUpdate()
@@ -112,7 +118,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         //Vector3 force = Vector3.right * Input.GetAxis(horizontalAxis) * acceleration;
 
-        Vector3 force = Vector3.right * _controllerStatus.moveLeft * acceleration; 
+        Vector3 force = Vector3.right * _controllerStatus.moveLeft * acceleration;
 
 
 
@@ -134,22 +140,13 @@ public class CharacterMovement_Physics : MonoBehaviour
             print("pull " + pullDirection);
             _rigidbody.AddForce(pullDirection, ForceMode.Acceleration);
             pullDirection = new Vector3(pullDirection.x * pullDrag, pullDirection.y * pullDrag, 0);
-            if (Mathf.Abs(pullDirection.x) < 100 && Mathf.Abs(pullDirection.y)<100) pullDirection = Vector3.zero;
+            if (Mathf.Abs(pullDirection.x) < 100 && Mathf.Abs(pullDirection.y) < 100) pullDirection = Vector3.zero;
         }
 
-        if (Mathf.Abs(_rigidbody.velocity.x) > .1 && _isGrounded)
-            anim.SetBool("isRunning", true);
-        else
-            anim.SetBool("isRunning", false);
+        setRunning(Mathf.Abs(_rigidbody.velocity.x) > .1 && _isGrounded);
 
-        if (_controllerStatus.attack)
-        {
-            anim.SetBool("isAttacking", true);
-            if (_currentItem == null) print("current item is null");
-            _currentItem.use(this.gameObject.transform.parent, this.transform);
-        }
-        else
-            anim.SetBool("isAttacking", false);
+        setAttacking(_controllerStatus.attack);
+
 
 
         if (!_controllerStatus.action)
@@ -159,20 +156,8 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
         else if (actionable) actionPressed = true;
 
-        if (_controllerStatus.door)
-        {
-            if (_canOpen)
-            {
-                _canOpen = false;
-                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection))
-                {
-                    pullDirection.Normalize();
-                    pullDirection *= doorPullSpeed;
-                }
-            }
+        setDoorOpen(_controllerStatus.door);
 
-        }
-        else _canOpen = true;
     }
 
     public void encounteredItem(Item item)
@@ -180,7 +165,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (!_canMove)
             return;
 
-        info.say ( item.getName(),2);
+        info.say(item.getName(), 2);
         if (actionPressed)
         {
             actionPressed = false;
@@ -193,60 +178,18 @@ public class CharacterMovement_Physics : MonoBehaviour
     }
 
 
-    private void grabItem(Item item)
-    {
-        item.itemExterior.transform.parent = mountingBone.transform;
-        item.itemExterior.transform.position = mountingBone.transform.position;
-        item.itemExterior.transform.forward = mountingBone.transform.forward;
-
-
-        Rigidbody rigidBody = item.itemExterior.GetComponent<Rigidbody>();
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.useGravity = false;
-        rigidBody.angularDrag = 0;
-        rigidBody.isKinematic = true;
-        
-
-
-
-        //BoxCollider colider = item.transform.GetChild(0).GetComponent<BoxCollider>();
-        //colider.isTrigger = false;
-
-
-        _currentItem = item;
-        item.itemExterior.SendMessageUpwards("feedback", true, SendMessageOptions.DontRequireReceiver);
-    }
-    private void releaseItem()
-    {
-        _currentItem.itemExterior.transform.parent = null;
-
-        Rigidbody rigidBody = _currentItem.itemExterior.GetComponent<Rigidbody>();
-        rigidBody.useGravity = true;
-        rigidBody.isKinematic = false;
-        //Vector3 pos = _currentItem.itemExterior.transform.position;
-        //_currentItem.itemExterior.transform.position = new Vector3(pos.x, pos.y, 0);
-
-        //BoxCollider colider = _currentItem.transform.GetChild(0).GetComponent<BoxCollider>();
-        //colider.isTrigger = false;
-        //BoxCollider colider = _currentItem.GetComponent<BoxCollider>();
-        //colider.isTrigger = true;
-
-        _currentItem.itemExterior.SendMessageUpwards("feedback", false, SendMessageOptions.DontRequireReceiver);
-
-        if (_currentItem.getType() == Item.Punch)
-            Object.Destroy(_currentItem);
-        _currentItem = null;
-    }
 
     private void Jump()
     {
         if (_controllerStatus.jump)
-            //if (Input.GetAxis(jumpAxis) > 0.5f)
-            {
+        //if (Input.GetAxis(jumpAxis) > 0.5f)
+        {
             //add vertical impulse force
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            setJump(true);
+
             // jump sound
-            FindObjectOfType<AudioManager>().Play("Jump");
 
 
             _inJump = true;
@@ -268,12 +211,12 @@ public class CharacterMovement_Physics : MonoBehaviour
         //print(orientation);
     }
 
-   
+
     private void OnCollisionEnter(Collision col)
     {
         bool isGrounded = false;
 
-        foreach(ContactPoint contact in col.contacts)
+        foreach (ContactPoint contact in col.contacts)
         {
             if (contact.point.y < this.transform.position.y - .75f) isGrounded = true;
         }
@@ -309,7 +252,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     public void Freeze(bool value)
     {
-        if (_currentItem != null) 
+        if (_currentItem != null)
             releaseItem();
         _canMove = !value;
 
@@ -338,6 +281,137 @@ public class CharacterMovement_Physics : MonoBehaviour
         //    print("player " + PlayerNumber + " received the attack instruction");
         //if (controls.moveLeft != 0)
         //    print("player " + PlayerNumber + " received the move instruction " + controls.moveLeft);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void setJump(bool YayOrNay)
+    {
+        //this is an example of how you would get
+        //the individual character type if you want them to make
+        //specialized sounds
+        // audio.Play("Jump_"+name[PlayerNumber]); //this will output Jump_Bibbs for player 0, Jump Leslie for player 1, etc
+        //also note, if you want to have multiple jump sounds and randomly select them, you can add
+        //Random.Range[0,5] and you'll get a 0,1,2,3, or 4 (not 5).
+
+        //here's an example of what that might look like, this will print when a player jumps
+        print("Jump_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
+
+        //technically you said you might want to just go male of female for now and individual characters
+        //later, for that I would recommend just copying each file (two males and two females) and still
+        //using the character names, that way it's up to the voice actors later to replace their individual
+        //files if you specifically name them jump_male, then you have to go through and change the code
+        //yourself... so more work that way.
+
+        //That said, if you really want male or female tags, here's how you could get that string:
+        print("Jump_" + (name[PlayerNumber] == "Hobbs" || name[PlayerNumber] == "Leslie" ? "Female" : "Male") );
+
+        audio.Play("Jump");
+    }
+
+    private void setRunning(bool YayOrNay)
+    {
+        anim.SetBool("isRunning", YayOrNay);
+        //not sure if there is a foot step sound, but if so, it can be placed here.
+    }
+
+    private void setAttacking(bool YayOrNay)
+    {
+        if (YayOrNay)
+        {
+            anim.SetBool("isAttacking", true);
+            if (_currentItem == null) print("current item is null");
+            _currentItem.use(this.gameObject.transform.parent, this.transform);
+            //I know I put this method here for your convenience, but technically,
+            //attacking sounds should go in the individual "use" methods in the weapon
+            //scripts found at scripts/ItemPickup/PunchPrototype.cs (or ShivPrototype or GunPrototype)
+            //that way each weapon type can have it's own sound.
+        }
+        else
+        {
+            anim.SetBool("isAttacking", false);
+        }
+    }
+    private void setDoorOpen(bool YayOrNay)
+    {
+        if (YayOrNay)
+        {
+            if (_canOpen)
+            {
+                _canOpen = false;
+                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection))
+                {
+
+                    //if there's an door open sound, it can go anywhere here
+                    //HOWEVER, if there's a sound for door closing too, it might be best to put them
+                    //in the Level Generation/DoorBehavior.cs
+                    //there is an open and close method at the bottom of the file
+                    //note that in the open statement has that "if" condition, so put it inside of there
+                    //like below the "_state=Opened"
+
+
+                    pullDirection.Normalize();
+                    pullDirection *= doorPullSpeed;
+                }
+            }
+
+        }
+        else _canOpen = true;
+    }
+
+
+    private void grabItem(Item item)
+    {
+
+        //if there's an item pickup sound, it can go anywhere here
+
+        item.itemExterior.transform.parent = mountingBone.transform;
+        item.itemExterior.transform.position = mountingBone.transform.position;
+        item.itemExterior.transform.forward = mountingBone.transform.forward;
+
+
+        Rigidbody rigidBody = item.itemExterior.GetComponent<Rigidbody>();
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.useGravity = false;
+        rigidBody.angularDrag = 0;
+        rigidBody.isKinematic = true;
+
+
+
+
+        _currentItem = item;
+        item.itemExterior.SendMessageUpwards("feedback", true, SendMessageOptions.DontRequireReceiver);
+    }
+
+    private void releaseItem()
+    {
+
+        //if there's a drop item sound, it can go anywhere here
+
+        _currentItem.itemExterior.transform.parent = null;
+
+        Rigidbody rigidBody = _currentItem.itemExterior.GetComponent<Rigidbody>();
+        rigidBody.useGravity = true;
+        rigidBody.isKinematic = false;
+
+        _currentItem.itemExterior.SendMessageUpwards("feedback", false, SendMessageOptions.DontRequireReceiver);
+
+        if (_currentItem.getType() == Item.Punch)
+            Object.Destroy(_currentItem);
+        _currentItem = null;
     }
 }
 

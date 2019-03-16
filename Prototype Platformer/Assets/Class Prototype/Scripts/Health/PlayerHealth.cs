@@ -6,6 +6,10 @@ using UnityEngine.Events;
 
 public class PlayerHealth : MonoBehaviour {
 
+    private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
+    private AudioManager audio;
+    private int PlayerNumber;
+
     public int startingHealth = 100;
 
     public UnityEvent damageEvent;
@@ -20,10 +24,14 @@ public class PlayerHealth : MonoBehaviour {
     public void Start ()
     {
         _currentHealth = startingHealth;
+        audio = FindObjectOfType<AudioManager>();
+        PlayerNumber = GetComponent<CharacterMovement_Physics>().PlayerNumber;
     }
 
     public void DealDamage (DamageMessage message)
     {
+        //sounds of getting hurt can go here
+
         if (message.friend == colliders)
             return;
         if (!_canTakeDamage) return;
@@ -44,6 +52,10 @@ public class PlayerHealth : MonoBehaviour {
 
     public void PlayerDeath ()
     {
+
+        //death sounds can go here
+        print("Dead_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
+
         info.say("ya DEAD!", -1);
         print("PLAYER DEAD");
         deathEvent.Invoke();

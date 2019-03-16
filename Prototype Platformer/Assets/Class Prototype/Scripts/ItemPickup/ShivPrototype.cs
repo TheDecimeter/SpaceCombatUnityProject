@@ -20,13 +20,19 @@ public class ShivPrototype : Item
 
     public override void use(Transform targetList, Transform user)
     {
+
+
+        //sound calls can go here
+        //audio.Play("soundname");
+
         Attack.Fire(user, user.GetChild(0).gameObject);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (audio == null)
+            audio = FindObjectOfType<AudioManager>();
     }
 
     // Update is called once per frame
