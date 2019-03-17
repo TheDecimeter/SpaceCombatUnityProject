@@ -70,6 +70,9 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private AudioManager audio;
 
+    public AnimationStates AnimState;
+    
+
 
 
     void Start()
@@ -80,7 +83,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (attackPoint == null) attackPoint = this.transform;
 
-
+        AnimState = new AnimationStates(anim);
         audio = FindObjectOfType<AudioManager>();
     }
 
@@ -100,8 +103,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
 
         if (_canAttack) Attack();
-
-
+        
     }
 
     private void LateUpdate()
@@ -157,6 +159,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         else if (actionable) actionPressed = true;
 
         setDoorOpen(_controllerStatus.door);
+
 
     }
 
@@ -224,6 +227,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (isGrounded)
         {
+            setLanding(true);
             _isGrounded = true;
             _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
         }
@@ -283,7 +287,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         //    print("player " + PlayerNumber + " received the move instruction " + controls.moveLeft);
     }
 
-
+    
 
 
 
@@ -324,15 +328,21 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void setRunning(bool YayOrNay)
     {
-        anim.SetBool("isRunning", YayOrNay);
+        //anim.SetBool("isRunning", YayOrNay);
+        if (YayOrNay == true)
+            AnimState.updateAnimationState(AnimationStates.Tag.run, true);
+        else
+            if (_isGrounded)
+            AnimState.updateAnimationState(AnimationStates.Tag.run, false);
         //not sure if there is a foot step sound, but if so, it can be placed here.
     }
 
     private void setAttacking(bool YayOrNay)
     {
-        if (YayOrNay)
+        if (YayOrNay == true)
         {
-            anim.SetBool("isAttacking", true);
+            AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
+            ///anim.SetBool(_currentItem.getAnimationFlag(), true);
             if (_currentItem == null) print("current item is null");
             _currentItem.use(this.gameObject.transform.parent, this.transform);
             //I know I put this method here for your convenience, but technically,
@@ -342,12 +352,13 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
         else
         {
-            anim.SetBool("isAttacking", false);
+            AnimState.updateAnimationState(_currentItem.getAnimationFlag(), false);
+            //anim.SetBool(_currentItem.getAnimationFlag(), false);
         }
     }
     private void setDoorOpen(bool YayOrNay)
     {
-        if (YayOrNay)
+        if (YayOrNay == true)
         {
             if (_canOpen)
             {
@@ -375,6 +386,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void grabItem(Item item)
     {
+        AnimState.updateAnimationState(AnimationStates.Tag.lift, true);
 
         //if there's an item pickup sound, it can go anywhere here
 
@@ -398,6 +410,9 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void releaseItem()
     {
+        //make sure you're not animating an attack with the item to be dropped
+        //anim.SetBool(_currentItem.getAnimationFlag(), false);
+        AnimState.updateAnimationState(_currentItem.getAnimationFlag(), false);
 
         //if there's a drop item sound, it can go anywhere here
 
@@ -410,9 +425,17 @@ public class CharacterMovement_Physics : MonoBehaviour
         _currentItem.itemExterior.SendMessageUpwards("feedback", false, SendMessageOptions.DontRequireReceiver);
 
         if (_currentItem.getType() == Item.Punch)
-            Object.Destroy(_currentItem);
+            Destroy(_currentItem);
         _currentItem = null;
     }
+
+    private void setLanding(bool YayOrNay)
+    {
+        if (YayOrNay==true)
+            AnimState.updateAnimationState(AnimationStates.Tag.land, true);
+    }
+
+    
 }
 
 

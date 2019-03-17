@@ -13,6 +13,10 @@ public class GunPrototype : Item
     {
         return "Gun";
     }
+    public override string getAnimationFlag()
+    {
+        return "isShooting";
+    }
 
     public override int getType()
     {

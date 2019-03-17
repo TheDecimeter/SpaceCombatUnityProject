@@ -17,7 +17,7 @@ public class Asteroid : MonoBehaviour
     public void OnCollisionEnter(Collision col)
     {
         //astroid impact sounds can go here
-        print("AsteroidHit");
+        //print("AsteroidHit");
         //audio.Play(AsteroidHit);
     }
 }

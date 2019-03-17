@@ -9,5 +9,6 @@ public abstract class Item : MonoBehaviour
     public GameObject itemExterior;
     public abstract int getType();
     public abstract string getName();
+    public abstract string getAnimationFlag();
     public abstract void use(Transform targetList, Transform user);
 }

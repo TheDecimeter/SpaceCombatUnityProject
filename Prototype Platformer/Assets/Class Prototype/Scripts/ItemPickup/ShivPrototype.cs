@@ -12,6 +12,10 @@ public class ShivPrototype : Item
     {
         return "Shiv";
     }
+    public override string getAnimationFlag()
+    {
+        return "isAttacking";
+    }
 
     public override int getType()
     {

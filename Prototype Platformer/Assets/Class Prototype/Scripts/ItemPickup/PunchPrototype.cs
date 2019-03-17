@@ -12,6 +12,10 @@ public class PunchPrototype : Item
     {
         return "fisticuffs";
     }
+    public override string getAnimationFlag()
+    {
+        return "isAttacking";
+    }
 
     public override int getType()
     {

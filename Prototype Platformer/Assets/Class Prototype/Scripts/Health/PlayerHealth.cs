@@ -20,21 +20,28 @@ public class PlayerHealth : MonoBehaviour {
     public GameObject colliders;
 
     public TextManager info;
+    private AnimationStates AnimState;
 
     public void Start ()
     {
         _currentHealth = startingHealth;
         audio = FindObjectOfType<AudioManager>();
         PlayerNumber = GetComponent<CharacterMovement_Physics>().PlayerNumber;
+        AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
     }
 
     public void DealDamage (DamageMessage message)
     {
         //sounds of getting hurt can go here
-
         if (message.friend == colliders)
             return;
         if (!_canTakeDamage) return;
+
+
+        if (AnimState == null)
+            AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
+        AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
+
 
         _currentHealth -= message.damage;
 
