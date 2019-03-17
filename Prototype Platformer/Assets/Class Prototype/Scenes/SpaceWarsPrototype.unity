@@ -4740,6 +4740,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1850919846350010, guid: 8238d90569499854f89f531a34989caf,
     type: 3}
   fireRate: 0.05
+  range: 5
+  damage: 3
+  PlayerArray: {fileID: 0}
 --- !u!1 &199063916 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100014, guid: e8941e01e3343b14f8c375290a076a83,
@@ -7409,6 +7412,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1850919846350010, guid: 8238d90569499854f89f531a34989caf,
     type: 3}
   fireRate: 0.05
+  range: 5
+  damage: 3
+  PlayerArray: {fileID: 0}
 --- !u!1 &308279888
 GameObject:
   m_ObjectHideFlags: 0
@@ -16498,6 +16504,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1850919846350010, guid: 9cbedf0d6caac6e44aa21433ec2d7b55,
     type: 3}
   fireRate: 0.05
+  range: 5
+  damage: 3
+  PlayerArray: {fileID: 0}
 --- !u!1001 &650548260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27210,6 +27219,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1850919846350010, guid: 8238d90569499854f89f531a34989caf,
     type: 3}
   fireRate: 0.05
+  range: 5
+  damage: 3
+  PlayerArray: {fileID: 0}
 --- !u!1001 &1044841091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49817,6 +49829,9 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1850919846350010, guid: 8238d90569499854f89f531a34989caf,
     type: 3}
   fireRate: 0.05
+  range: 5
+  damage: 3
+  PlayerArray: {fileID: 216896826}
 --- !u!1001 &1906959954
 PrefabInstance:
   m_ObjectHideFlags: 0
