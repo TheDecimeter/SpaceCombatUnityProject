@@ -2,5 +2,5 @@
 
 abstract public class Weapon : MonoBehaviour 
 {
-    public abstract void Fire(Transform attackSpawnPoint, GameObject friendly);
+    public abstract bool Fire(Transform attackSpawnPoint, GameObject friendly);
 }

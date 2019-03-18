@@ -10,9 +10,9 @@ public class Weapon_Projectile : Weapon {
 
     private bool _canFire = true;
 
-    public override void Fire (Transform attackSpawnPoint, GameObject friendly)
+    public override bool Fire (Transform attackSpawnPoint, GameObject friendly)
     {
-        if (!_canFire) return;
+        if (!_canFire) return false;
 
         //print(" firing ");
 
@@ -27,6 +27,8 @@ public class Weapon_Projectile : Weapon {
         _canFire = false;
 
         StartCoroutine(AttackCooldown());
+
+        return true;
     }
 
     IEnumerator AttackCooldown ()

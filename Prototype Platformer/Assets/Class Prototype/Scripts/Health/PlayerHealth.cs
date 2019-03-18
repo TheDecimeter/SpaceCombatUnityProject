@@ -22,8 +22,11 @@ public class PlayerHealth : MonoBehaviour {
     public TextManager info;
     private AnimationStates AnimState;
 
+    public bool isDead{get; protected set;}
+
     public void Start ()
     {
+        isDead = false;
         _currentHealth = startingHealth;
         audio = FindObjectOfType<AudioManager>();
         PlayerNumber = GetComponent<CharacterMovement_Physics>().PlayerNumber;
@@ -33,7 +36,7 @@ public class PlayerHealth : MonoBehaviour {
     public void DealDamage (DamageMessage message)
     {
         //sounds of getting hurt can go here
-        if (message.friend == colliders)
+        if (message.friend==gameObject||message.friend == colliders)
             return;
         if (!_canTakeDamage) return;
 
@@ -59,7 +62,7 @@ public class PlayerHealth : MonoBehaviour {
 
     public void PlayerDeath ()
     {
-
+        isDead = true;
         //death sounds can go here
         print("Dead_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
 

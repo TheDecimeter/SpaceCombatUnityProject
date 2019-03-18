@@ -6,22 +6,28 @@ public class GunPrototype : Item
 {
 
 
+    public string AnimationTag = "isShooting";
+    public string ItemName = "Gun";
+    public int itemType = Item.Ranged;
+
     [Header("Attack Properties")]
     public Weapon Attack;
 
+
     public override string getName()
     {
-        return "Gun";
+        return ItemName;
     }
     public override string getAnimationFlag()
     {
-        return "isShooting";
+        return AnimationTag;
     }
 
     public override int getType()
     {
-        return Item.Ranged;
+        return itemType;
     }
+    
 
     public override void use(Transform targetList, Transform user)
     {
@@ -29,7 +35,7 @@ public class GunPrototype : Item
         //sound calls can go here
         //audio.Play("soundname");
 
-        Attack.Fire(user, user.GetChild(0).gameObject);
+        Attack.Fire(user, user.gameObject);
     }
 
     // Start is called before the first frame update

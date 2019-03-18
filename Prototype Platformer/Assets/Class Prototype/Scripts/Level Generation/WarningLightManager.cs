@@ -20,6 +20,8 @@ public class WarningLightManager : MonoBehaviour
     [Header("at what rate")]
     public int dFluctuation = 20;
     public int dFluctuationMargin = 10;
+    
+    public Vector3 podVect { get; set; }
 
 
     private List<DisabledLightNode> ActiveDisabledLights;

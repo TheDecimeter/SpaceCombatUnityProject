@@ -15,10 +15,11 @@ public class MeleeAttack : Weapon
 
     private bool _canFire = true;
 
-    public override void Fire(Transform attackSpawnPoint, GameObject friendly)
+    public override bool Fire(Transform attackSpawnPoint, GameObject friendly)
     {
-        if (!_canFire) return;
+        if (!_canFire) return false;
 
+        bool ret = false;
         //print(" firing ");
 
         //from list of players, see if any are within range
@@ -27,6 +28,7 @@ public class MeleeAttack : Weapon
                 if (child.gameObject != friendly)
                 {
                     child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(damage, friendly));
+                    ret = true;
                 }
 
         /*
@@ -42,6 +44,7 @@ public class MeleeAttack : Weapon
         _canFire = false;
 
         StartCoroutine(AttackCooldown());
+        return ret;
     }
 
     IEnumerator AttackCooldown()

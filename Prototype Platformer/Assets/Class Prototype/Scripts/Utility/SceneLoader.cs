@@ -22,6 +22,7 @@ public class SceneLoader : MonoBehaviour {
 
     public void RestartScene ()
     {
+        FindObjectOfType<UndestroyableData>().EndRound();
         StartCoroutine(LoadSceneDelay(SceneManager.GetActiveScene().name));
     }
 

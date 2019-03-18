@@ -4,29 +4,31 @@ using UnityEngine;
 
 public class PunchPrototype : Item
 {
+    public string AnimationTag = "isAttacking";
+    public string ItemName = "fisticufs";
+    public int itemType = Item.Punch;
 
     [Header("Attack Properties")]
     public Weapon Attack;
 
     public override string getName()
     {
-        return "fisticuffs";
+        return ItemName;
     }
     public override string getAnimationFlag()
     {
-        return "isAttacking";
+        return AnimationTag;
     }
 
     public override int getType()
     {
-        return Item.Punch;
+        return itemType;
     }
 
     public override void use(Transform targetList, Transform user)
     {
-        //play sound
-        audio.Play("punch");
-        Attack.Fire(user, user.GetChild(0).gameObject);
+        if(Attack.Fire(user, user.gameObject))
+            audio.Play("punch");
     }
 
     // Start is called before the first frame update

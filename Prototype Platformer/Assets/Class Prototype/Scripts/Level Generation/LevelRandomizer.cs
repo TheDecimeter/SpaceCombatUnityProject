@@ -145,8 +145,8 @@ public class LevelRandomizer : MonoBehaviour
         {
             float lx = startX + x * xTileSize + xOffset - xTileSize / 2;
             float hx = startX + x * xTileSize + xOffset + xTileSize / 2;
-            float ly = startX + y * yTileSize + yOffset - yTileSize / 2;
-            float hy = startX + y * yTileSize + yOffset + yTileSize / 2;
+            float ly = startY + y * yTileSize + yOffset - yTileSize / 2;
+            float hy = startY + y * yTileSize + yOffset + yTileSize / 2;
             //print("CLOSE ROOM " + x + " " + y + " " + hx + " " + lx + " " + hy + " " + ly);
 
             //if the player is within the bounds of the room, DIE
@@ -160,6 +160,40 @@ public class LevelRandomizer : MonoBehaviour
             //close all doors in the room
             closeDownRoom(x,y);
         }
+    }
+
+    public void LaunchPod()
+    {
+        //stop closing off rooms
+        closer.stop = true;
+
+        int x=0, y=0, count=0;
+        for(int i=0; i<MapDemensionsY; ++i)
+            for(int j=0; j<MapDemensionsX; ++j)
+            {
+                if (!Map[i][j].isClosed)
+                    count++;
+            }
+        int stop = Random.Range(0, count);
+        print("stop " + stop+ " count "+count);
+        count = 0;
+        for (int i = 0; i < MapDemensionsY; ++i)
+            for (int j = 0; j < MapDemensionsX; ++j)
+            {
+                if (!Map[i][j].isClosed)
+                    if (count++ == stop)
+                    {
+                        x = j;
+                        y = i;
+                        goto LeaveLoop;
+                    }
+            }
+        LeaveLoop:
+
+        print("x" + x +" y "+y);
+
+        GetComponent<EscapePodLauncher>().Launch(startX + x * xTileSize + xOffset, startY + y * yTileSize + yOffset, startZ);
+
     }
 
     private void closeDownRoom(int x, int y)

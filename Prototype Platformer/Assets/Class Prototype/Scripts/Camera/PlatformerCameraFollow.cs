@@ -41,6 +41,8 @@ public class PlatformerCameraFollow : MonoBehaviour {
         {
             _canFollow = true;
         }
+
+        followTransform.gameObject.GetComponent<CameraLocator>().CameraLocation = this.transform;
   	}
 	
     void Update()

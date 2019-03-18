@@ -26,6 +26,8 @@ public class Projectile_Direct : Projectile
 
     public void OnCollisionEnter(Collision collision)
     {
+        if (friend == collision.gameObject)
+            return;
         foreach (Transform child in friend.transform)
         {
             if (child.gameObject == collision.collider.gameObject)

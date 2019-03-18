@@ -5,21 +5,26 @@ using UnityEngine;
 public class ShivPrototype : Item
 {
 
+    public string AnimationTag = "isAttacking";
+    public string ItemName = "Shiv";
+    public int itemType = Item.Stab;
+
     [Header("Attack Properties")]
     public Weapon Attack;
 
+
     public override string getName()
     {
-        return "Shiv";
+        return ItemName;
     }
     public override string getAnimationFlag()
     {
-        return "isAttacking";
+        return AnimationTag;
     }
 
     public override int getType()
     {
-        return Item.Stab;
+        return itemType;
     }
 
     public override void use(Transform targetList, Transform user)
