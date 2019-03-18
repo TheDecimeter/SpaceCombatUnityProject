@@ -62,7 +62,9 @@ public class LevelRandomizer : MonoBehaviour
     private GameObject[] PlacedItems;
     private TileInformation[][] Map;
     private List<Object> PlacedTileList;
-    private List<DoorBehavior> LevelDoors;
+    //private List<DoorBehavior> LevelDoors;
+
+    private DoorManager doorManager;
 
     private CloseLevel closer;
     private AsteroidGenerator daRocks;
@@ -77,6 +79,12 @@ public class LevelRandomizer : MonoBehaviour
         //{
         //    _tileList.Add(child.gameObject.GetComponent<TileInformation>());
         //}
+
+
+        daRocks = GetComponent<AsteroidGenerator>();
+        FindObjectOfType<UndestroyableData>().SetUpLevel(ref MapDemensionsX, ref MapDemensionsY, ref FillMap,
+            ref TileQuantity, ref WarnForXManyFrames, ref CloseRoomXManyFrames,
+            ref daRocks.AsteroidSpeed, ref daRocks.chuckEvery, ref daRocks.plusOrMinus);
 
         foreach (Transform child in PlayerArray.transform)
             if (child.gameObject.GetComponent<CharacterMovement_Physics>().Environment == null)
@@ -131,8 +139,8 @@ public class LevelRandomizer : MonoBehaviour
             Random.InitState(Seed);
         //Random.seed = Seed;
 
+        doorManager = new DoorManager(Map);
         randomizeLevel();
-        daRocks = GetComponent<AsteroidGenerator>();
         
         //daRocks.Init(startX, startY, startZ, xTileSize, yTileSize, WarnForXManyFrames);
 
@@ -158,7 +166,7 @@ public class LevelRandomizer : MonoBehaviour
             }
 
             //close all doors in the room
-            closeDownRoom(x,y);
+            doorManager.CloseDownRoom(x,y);
         }
     }
 
@@ -171,7 +179,7 @@ public class LevelRandomizer : MonoBehaviour
         for(int i=0; i<MapDemensionsY; ++i)
             for(int j=0; j<MapDemensionsX; ++j)
             {
-                if (!Map[i][j].isClosed)
+                if (Map[i][j]!=null&&!Map[i][j].isClosed)
                     count++;
             }
         int stop = Random.Range(0, count);
@@ -180,7 +188,7 @@ public class LevelRandomizer : MonoBehaviour
         for (int i = 0; i < MapDemensionsY; ++i)
             for (int j = 0; j < MapDemensionsX; ++j)
             {
-                if (!Map[i][j].isClosed)
+                if (Map[i][j] != null && !Map[i][j].isClosed)
                     if (count++ == stop)
                     {
                         x = j;
@@ -196,41 +204,13 @@ public class LevelRandomizer : MonoBehaviour
 
     }
 
-    private void closeDownRoom(int x, int y)
-    {
-        TileInformation tile = Map[y][x];
-        //lock all doors in the tile
-        foreach (DoorBehavior d in tile.NorthDoors)
-            lockDoor(d);
-        foreach (DoorBehavior d in tile.SouthDoors)
-            lockDoor(d);
-        foreach (DoorBehavior d in tile.EastDoors)
-            lockDoor(d);
-        foreach (DoorBehavior d in tile.WestDoors)
-            lockDoor(d);
-        foreach (DoorBehavior d in tile.OtherOpenableDoors)
-            lockDoor(d);
+    
 
-        //lock doors neighboring the tile
-        if (x - 1 >= 0&& Map[y][x - 1] != null)
-            foreach (DoorBehavior d in Map[y][x - 1].EastDoors)
-                lockDoor(d);
-        if (x + 1 < MapDemensionsX && Map[y][x + 1] != null)
-            foreach (DoorBehavior d in Map[y][x + 1].WestDoors)
-                lockDoor(d);
-        if (y - 1 >= 0 && Map[y - 1][x] != null)
-            foreach (DoorBehavior d in Map[y - 1][x].NorthDoors)
-                lockDoor(d);
-        if (y + 1 < MapDemensionsY && Map[y + 1][x] != null)
-            foreach (DoorBehavior d in Map[y + 1][x].SouthDoors)
-                lockDoor(d);
-    }
-
-    private void lockDoor(DoorBehavior door)
-    {
-        door.setOpenable(false);
-        LevelDoors.Remove(door);
-    }
+    //private void lockDoor(DoorBehavior door)
+    //{
+    //    door.setOpenable(false);
+    //    LevelDoors.Remove(door);
+    //}
 
     private void setUpItemPallette()
     {
@@ -275,26 +255,12 @@ public class LevelRandomizer : MonoBehaviour
                 recursiveTilePlacement(x, y+1);
             }
         }
+
+
+        //add level doors to the data structure so it's easier to check and see if players are
+        //near them in game
+        doorManager.SetDoors(PlacedTileList);
             
-
-            //add level doors to the data structure so it's easier to check and see if players are
-            //near them in game
-            LevelDoors = new List<DoorBehavior>();
-        foreach (GameObject g in PlacedTileList)
-        {
-            TileInformation tmp = g.GetComponent<TileInformation>();
-
-            foreach (DoorBehavior d in tmp.NorthDoors)
-                addDoor(d);
-            foreach (DoorBehavior d in tmp.SouthDoors)
-                addDoor(d);
-            foreach (DoorBehavior d in tmp.EastDoors)
-                addDoor(d);
-            foreach (DoorBehavior d in tmp.WestDoors)
-                addDoor(d);
-            foreach (DoorBehavior d in tmp.OtherOpenableDoors)
-                addDoor(d);
-        }
 
 
         //go through the placed tiles and see where all of the
@@ -535,39 +501,14 @@ public class LevelRandomizer : MonoBehaviour
         return TilePallette[index % TilePallette.Length];
     }
 
-    private void addDoor(DoorBehavior door)
+
+    public bool openNearestDoors(Vector3 to, float within, ref Vector3 pullToward, int preference)
     {
-        if (door.isOpenable&&door.gameObject.activeInHierarchy) LevelDoors.Add(door);
+        return doorManager.openNearestDoors(to, within, ref pullToward, preference);
     }
 
-    public bool openNearestDoors(Vector3 to, float within, ref Vector3 pullToward)
-    {
-        bool doorsWereOpened = false;
-        Vector3 closestPoint = LevelDoors[0].gameObject.transform.position;
-        float shortestDistance = distance(closestPoint, to);
 
-        foreach (DoorBehavior d in LevelDoors)
-        {
-            //if (!d.isOpenable)
-            //    continue;
-            if (distance(d.transform.position, to) <= within)
-            {
-                d.open();
-                doorsWereOpened = true;
-                if (distance(d.transform.position, to) < shortestDistance)
-                {
-                    closestPoint = d.gameObject.transform.position;
-                    pullToward = d.getPullDirection(to);
-                    shortestDistance = distance(closestPoint, to);
-                }
-            }
-        }
-        if (!doorsWereOpened) print("not close enough "+shortestDistance);
-        return doorsWereOpened;
-    }
 
-    public static float distance(Vector3 from, Vector3 to)
-    {
-        return Mathf.Sqrt(Mathf.Pow(from.x - to.x, 2) + Mathf.Pow(from.y - to.y, 2));
-    }
+
+
 }

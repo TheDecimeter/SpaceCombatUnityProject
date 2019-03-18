@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerHealth : MonoBehaviour {
 
@@ -11,16 +11,18 @@ public class PlayerHealth : MonoBehaviour {
     private int PlayerNumber;
 
     public int startingHealth = 100;
+    public int blurFrames = 500;
 
     public UnityEvent damageEvent;
     public UnityEvent deathEvent;
 
-    private int _currentHealth;
+    private int _currentHealth, frameCounter;
     private bool _canTakeDamage = true;
     public GameObject colliders;
 
     public TextManager info;
     private AnimationStates AnimState;
+    public PostProcessLayer blurComponent;
 
     public bool isDead{get; protected set;}
 
@@ -31,6 +33,16 @@ public class PlayerHealth : MonoBehaviour {
         audio = FindObjectOfType<AudioManager>();
         PlayerNumber = GetComponent<CharacterMovement_Physics>().PlayerNumber;
         AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
+    }
+
+    void FixedUpdate()
+    {
+        if (frameCounter < blurFrames)
+        {
+            frameCounter++;
+            if (frameCounter == blurFrames)
+                blurComponent.enabled = false;
+        }
     }
 
     public void DealDamage (DamageMessage message)
@@ -45,6 +57,8 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
 
+        if (message.effect == "blur")
+            startBlur();
 
         _currentHealth -= message.damage;
 
@@ -58,6 +72,12 @@ public class PlayerHealth : MonoBehaviour {
             PlayerDeath();
             _currentHealth = 0;
         }
+    }
+
+    private void startBlur()
+    {
+        blurComponent.enabled = true;
+        frameCounter = 0;
     }
 
     public void PlayerDeath ()

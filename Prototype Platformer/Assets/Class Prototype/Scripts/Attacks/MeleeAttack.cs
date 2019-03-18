@@ -10,6 +10,8 @@ public class MeleeAttack : Weapon
     public float range = 5;
     public int damage = 3;
 
+    public string effect = "blur";
+
     [Header("Where are players stored:")]
     public GameObject PlayerArray;
 
@@ -27,7 +29,7 @@ public class MeleeAttack : Weapon
             if (distance(attackSpawnPoint.position, child.position) < range)
                 if (child.gameObject != friendly)
                 {
-                    child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(damage, friendly));
+                    child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(damage, effect, friendly));
                     ret = true;
                 }
 

@@ -6,6 +6,8 @@ using System.Collections;
 public class CharacterMovement_Physics : MonoBehaviour
 {
     private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
+    private const int North = 0, East = 1, South = 2, West = 3, Any = 4;
+
     public enum CharacterState
     {
         frozen,
@@ -363,7 +365,11 @@ public class CharacterMovement_Physics : MonoBehaviour
             if (_canOpen)
             {
                 _canOpen = false;
-                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection))
+                int preference=South;
+                if (!_isGrounded) preference = North;
+                else if (_controllerStatus.moveLeft < -.1) preference = East;
+                else if (_controllerStatus.moveLeft > .1) preference = West;
+                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection, preference))
                 {
 
                     //if there's an door open sound, it can go anywhere here
@@ -391,8 +397,8 @@ public class CharacterMovement_Physics : MonoBehaviour
         //if there's an item pickup sound, it can go anywhere here
 
         item.itemExterior.transform.parent = mountingBone.transform;
-        item.itemExterior.transform.position = mountingBone.transform.position;
-        item.itemExterior.transform.forward = mountingBone.transform.forward;
+        item.itemExterior.transform.localPosition = Vector3.zero;
+        item.itemExterior.transform.localRotation = Quaternion.identity;
 
 
         Rigidbody rigidBody = item.itemExterior.GetComponent<Rigidbody>();

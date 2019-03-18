@@ -96,6 +96,8 @@ public class UndestroyableData : MonoBehaviour
     {
         if (save.StartMenu.LevelNotSaved)
         {
+            save.StartMenu.StartMenuOpened=FindObjectOfType<StartMenu>().OpenMenuOnStart;
+
             save.StartMenu.LevelNotSaved = false;
 
             //save play settings
@@ -131,6 +133,7 @@ public class UndestroyableData : MonoBehaviour
         //then load the appropriate level settings
         if (save.StartMenu.StartMenuOpened)
         {
+            print("start menu opened in LevelSetup");
             xDim = save.StartMenu.MapDemensionX;
             yDim = save.StartMenu.MapDemensionY;
 
@@ -146,6 +149,7 @@ public class UndestroyableData : MonoBehaviour
         }
         else
         {
+            print("start menu closed in LevelSetup");
             xDim = save.Play.MapDemensionX;
             yDim = save.Play.MapDemensionY;
 
