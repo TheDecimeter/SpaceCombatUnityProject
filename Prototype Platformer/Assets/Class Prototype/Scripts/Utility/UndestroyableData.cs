@@ -15,6 +15,7 @@ public class UndestroyableData : MonoBehaviour
     public int MenuChuckAsteroidSpeed = 70;
     public int MenuChuckAsteroidEvery = 20;
     public int MenuChuckAsteroidPlusOrMinus = 5;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -88,6 +89,14 @@ public class UndestroyableData : MonoBehaviour
         save.RoundCounter++;
         if (save.Rounds == save.RoundCounter)
             save.StartMenu.StartMenuOpened = true;
+    }
+
+    public bool isMenuOpened()
+    {
+        if (save.StartMenu.LevelNotSaved)
+            save.StartMenu.StartMenuOpened = FindObjectOfType<StartMenu>().OpenMenuOnStart;
+
+        return save.StartMenu.StartMenuOpened;
     }
 
     public void SetUpLevel(ref int xDim, ref int yDim, ref bool FillLevel, ref int maxTiles,

@@ -30,6 +30,9 @@ public class StartMenu : MonoBehaviour
 
     private void SetupMenu()
     {
+        PlayerArray.transform.position = new Vector3(-111, -111, -111);
+        foreach (Transform child in PlayerArray.transform)
+            child.gameObject.SetActive(false);
         UpdateScoreBoard();
         UpdateText();
     }

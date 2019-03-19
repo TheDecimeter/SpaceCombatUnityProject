@@ -5,7 +5,7 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     private static AudioManager audio;
-
+    private bool playOnce = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +18,10 @@ public class Asteroid : MonoBehaviour
     {
         //astroid impact sounds can go here
         //print("AsteroidHit");
-        audio.Play("AsteroidHit");
+        if (playOnce)
+        {
+            playOnce = false;
+            audio.Play("AsteroidHit");
+        }
     }
 }
