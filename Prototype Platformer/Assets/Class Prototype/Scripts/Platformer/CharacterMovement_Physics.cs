@@ -194,15 +194,14 @@ public class CharacterMovement_Physics : MonoBehaviour
 
             setJump(true);
 
-            // jump sound
+           
 
 
             _inJump = true;
             _canJump = false;
 
             _isGrounded = false;
-            // jump sound
-            //FindObjectsOfType<audioManager>().Play("ok");
+            
         }
     }
 
@@ -325,7 +324,9 @@ public class CharacterMovement_Physics : MonoBehaviour
         //That said, if you really want male or female tags, here's how you could get that string:
         print("Jump_" + (name[PlayerNumber] == "Hobbs" || name[PlayerNumber] == "Leslie" ? "Female" : "Male") );
 
-        audio.Play("Jump");
+        audio.Play("Jump" + name[PlayerNumber]);
+
+
     }
 
     private void setRunning(bool YayOrNay)

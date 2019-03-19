@@ -18,6 +18,6 @@ public class Asteroid : MonoBehaviour
     {
         //astroid impact sounds can go here
         //print("AsteroidHit");
-        //audio.Play(AsteroidHit);
+        audio.Play("AsteroidHit");
     }
 }

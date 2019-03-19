@@ -33,7 +33,7 @@ public class GunPrototype : Item
     {
 
         //sound calls can go here
-        //audio.Play("soundname");
+        audio.Play("rifle");
 
         Attack.Fire(user, user.gameObject);
     }

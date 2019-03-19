@@ -31,6 +31,8 @@ public class MeleeAttack : Weapon
                 {
                     child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(damage, effect, friendly));
                     ret = true;
+
+
                 }
 
         /*

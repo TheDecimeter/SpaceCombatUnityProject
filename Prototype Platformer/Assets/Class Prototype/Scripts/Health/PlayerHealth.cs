@@ -84,11 +84,14 @@ public class PlayerHealth : MonoBehaviour {
     {
         isDead = true;
         //death sounds can go here
-        print("Dead_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
+        audio.Play("Death" + name[PlayerNumber]);
 
         info.say("ya DEAD!", -1);
         print("PLAYER DEAD");
         deathEvent.Invoke();
         _canTakeDamage = false;
+
+     
+
     }
 }

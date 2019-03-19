@@ -28,7 +28,7 @@ public class PunchPrototype : Item
     public override void use(Transform targetList, Transform user)
     {
         if(Attack.Fire(user, user.gameObject))
-            audio.Play("punch");
+            audio.Play("Punch");
     }
 
     // Start is called before the first frame update
@@ -41,6 +41,6 @@ public class PunchPrototype : Item
     // Update is called once per frame
     void Update()
     {
-
+       
     }
 }
