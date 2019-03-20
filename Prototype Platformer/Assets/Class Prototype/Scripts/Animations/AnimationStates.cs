@@ -132,6 +132,7 @@ public class AnimationStates
         if (value == true)
         {
             startDamage(false);
+            startLift(false);
         }
     }
 

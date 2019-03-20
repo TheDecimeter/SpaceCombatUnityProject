@@ -18997,7 +18997,7 @@ MonoBehaviour:
   fireRate: 0.25
   range: 3
   damage: 5
-  effect: blur
+  effect: none
   PlayerArray: {fileID: 216896826}
 --- !u!1001 &650548260
 PrefabInstance:
@@ -19811,7 +19811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3078268673481814c988f8cb18c93467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OrbitRadius: 2
+  OrbitRadius: 1.5
 --- !u!1001 &696049344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26320,7 +26320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6abd167710a733e40999ce4d1ed6eceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FramesToKeepDoorsOpen: 10
+  FramesToKeepDoorsOpen: 20
   PlayerDoorDashSpeed: 500
   LevelTileArray: {fileID: 1523994748}
   PlayerArray: {fileID: 216896826}
@@ -53535,7 +53535,7 @@ MonoBehaviour:
   ScoreBoard: {fileID: 43167776}
   savedData: {fileID: 159350336}
   sceneLoader: {fileID: 913018710}
-  OpenMenuOnStart: 0
+  OpenMenuOnStart: 1
   SuggestedRounds: 2
   MaxRounds: 50
 --- !u!4 &1815210789

@@ -97,6 +97,11 @@ public class PlayerHealth : MonoBehaviour {
         if (AnimState == null)
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.startDie();
+        GetComponent<Rigidbody>().useGravity = false;
+
+        transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
+        transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>().enabled = false;
+
 
         isDead = true;
         //death sounds can go here
