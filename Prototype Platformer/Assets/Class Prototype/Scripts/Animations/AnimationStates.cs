@@ -61,6 +61,7 @@ public class AnimationStates
 
     private void startJump(bool value)
     {
+        MonoBehaviour.print("             animate JUMP " + value);
         if (jump == value)
             return;
         jump = value;
@@ -72,6 +73,10 @@ public class AnimationStates
             startLift(false);
             startLand(false);
             startDamage(false);
+        }
+        else
+        {
+            startLand(true);
         }
     }
 
@@ -93,6 +98,7 @@ public class AnimationStates
 
     private void startLand(bool value)
     {
+        MonoBehaviour.print("             animate Land "+value);
         if (land == value)
             return;
         land = value;
@@ -127,49 +133,7 @@ public class AnimationStates
         }
     }
 
-
-    private void TurnOnMovementFlag(int flag)
-    {
-        switch (flag)
-        {
-            case Run:
-                //print("run animation");
-                anim.SetBool("isRunning", true);
-                anim.SetBool("isJumping", false);
-                anim.SetBool("isFalling", false);
-                anim.SetBool("isLifting", false);
-                return;
-            case Jump:
-                //print("jump animation");
-                anim.SetBool("isRunning", false);
-                anim.SetBool("isJumping", true);
-                anim.SetBool("isFalling", false);
-                anim.SetBool("isLifting", false);
-                return;
-            case Land:
-                //print("land animation");
-                anim.SetBool("isRunning", false);
-                anim.SetBool("isJumping", false);
-                anim.SetBool("isFalling", true);
-                anim.SetBool("isLifting", false);
-                return;
-            case Idle:
-                //print("idle animation");
-                anim.SetBool("isRunning", false);
-                anim.SetBool("isJumping", false);
-                anim.SetBool("isFalling", false);
-                anim.SetBool("isLifting", false);
-                return;
-            case Lift:
-                anim.SetBool("isRunning", false);
-                anim.SetBool("isJumping", false);
-                anim.SetBool("isFalling", false);
-                anim.SetBool("isLifting", true);
-                return;
-
-
-        }
-    }
+    
 
     public static class Tag
     {

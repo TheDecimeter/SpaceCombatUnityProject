@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5bb25f4e50e299f49bef4ffcd7bbc360
+guid: 325cac02da263db43804b0fc46f2226b
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -96,7 +96,7 @@ ModelImporter:
     3300000: default
     4300000: default
     4300002: Yellow_Model_and_Texture:Leslie_Model_With_Texture:pSphere3pSphere9
-    7400000: Stomach Hit
+    7400000: HomemadeLand
     9500000: //RootNode
     13700000: Yellow_Model_and_Texture:Leslie_Model_With_Texture:pSphere3pSphere9
     2186277476908879412: ImportLogs
@@ -129,10 +129,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Stomach Hit
+      name: HomemadeLand
       takeName: mixamo.com
-      firstFrame: 0
-      lastFrame: 21
+      firstFrame: 27
+      lastFrame: 57
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

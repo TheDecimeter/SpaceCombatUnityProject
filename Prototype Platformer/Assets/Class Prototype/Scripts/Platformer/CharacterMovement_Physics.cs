@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEditor;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement_Physics : MonoBehaviour
@@ -56,6 +56,8 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private Vector3 _storedVelocity = Vector3.zero;
     private CharacterState _storedState;
+    private SphereCollider _collider;
+    private PhysicMaterial _noFriction;
 
     //private GameObject _currentItem;
     public Item _currentItem;
@@ -74,11 +76,15 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     public AnimationStates AnimState;
     
+    
 
 
 
     void Start()
     {
+        _noFriction = (PhysicMaterial) AssetDatabase.LoadAssetAtPath("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial", typeof(PhysicMaterial));
+        _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
+
         _controllerStatus = new ControlStruct();
 
         _rigidbody = this.GetComponent<Rigidbody>();
@@ -135,13 +141,42 @@ public class CharacterMovement_Physics : MonoBehaviour
         if ((force.x >= 0f && _rigidbody.velocity.x < maxSpeed) || (force.x <= 0f && _rigidbody.velocity.x > -maxSpeed))
         {
             _rigidbody.AddForce(force, ForceMode.Acceleration);
+            
         }
-        if (force == Vector3.zero)
-            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x * stopDrag, _rigidbody.velocity.y, _rigidbody.velocity.z * stopDrag);
+        //_rigidbody.velocity += force;
 
+        //if (Mathf.Abs(_rigidbody.velocity.magnitude) > maxSpeed)
+        //    _rigidbody.velocity = Vector3.Normalize(_rigidbody.velocity)*maxSpeed;
+
+        if (Mathf.Abs(_controllerStatus.moveLeft)<.1)
+        {
+            //if(PlayerNumber==0)
+              //  print(" force=0");
+            _collider.material = null;
+            if(!_isGrounded||_rigidbody.velocity.y<0)
+                _rigidbody.velocity = new Vector3(_rigidbody.velocity.x * stopDrag, _rigidbody.velocity.y, _rigidbody.velocity.z * stopDrag);
+            else
+                _rigidbody.velocity = new Vector3(_rigidbody.velocity.x * stopDrag, _rigidbody.velocity.y * stopDrag, _rigidbody.velocity.z * stopDrag);
+        }
+        else
+        {
+            if (_isGrounded)
+            {
+                if (Mathf.Abs(_rigidbody.velocity.magnitude) < maxSpeed / 2)
+                {
+                   // if (PlayerNumber == 0)
+                        //print(" force!=0");
+                    _collider.material = _noFriction;
+                    _rigidbody.AddForce(force, ForceMode.Acceleration);
+                }
+                //if (Mathf.Abs(_rigidbody.velocity.magnitude) > maxSpeed)
+                //    _rigidbody.velocity = Vector3.Normalize(_rigidbody.velocity) * maxSpeed;
+            }
+
+        }
         if (pullDirection != Vector3.zero)
         {
-            print("pull " + pullDirection);
+            //print("pull " + pullDirection);
             _rigidbody.AddForce(pullDirection, ForceMode.Acceleration);
             pullDirection = new Vector3(pullDirection.x * pullDrag, pullDirection.y * pullDrag, 0);
             if (Mathf.Abs(pullDirection.x) < 100 && Mathf.Abs(pullDirection.y) < 100) pullDirection = Vector3.zero;
@@ -228,11 +263,27 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (isGrounded)
         {
-            setLanding(true);
+            print("grounded");
+            if(!_isGrounded)
+                setLanding(true);
             _isGrounded = true;
             _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
         }
 
+    }
+    void OnCollisionExit(Collision col)
+    {
+        //foreach (ContactPoint contact in col.contacts)
+        //{
+        //    if (contact.point.y < this.transform.position.y - .75f)
+        //    {
+        //        print("   col exit");
+        //        AnimState.updateAnimationState(AnimationStates.Tag.jump, true);
+        //        _isGrounded = false;
+        //    }
+        //}
+        //print("col exit");
+        //_isGrounded = false;
     }
 
     private void Attack()
@@ -249,11 +300,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         //    secondaryAttack.Fire(attackPoint);
         //}
     }
-
-    private void OnCollisionExit(Collision col)
-    {
-
-    }
+    
 
     public void Freeze(bool value)
     {
@@ -324,9 +371,10 @@ public class CharacterMovement_Physics : MonoBehaviour
         //That said, if you really want male or female tags, here's how you could get that string:
         print("Jump_" + (name[PlayerNumber] == "Hobbs" || name[PlayerNumber] == "Leslie" ? "Female" : "Male") );
 
-        audio.Play("Jump" + name[PlayerNumber]);
+        if(YayOrNay)audio.Play("Jump" + name[PlayerNumber]);
 
 
+        AnimState.updateAnimationState(AnimationStates.Tag.jump, YayOrNay);
     }
 
     private void setRunning(bool YayOrNay)
