@@ -41,11 +41,11 @@ public class PlayerHealth : MonoBehaviour {
         {
             frameCounter++;
             if (frameCounter == blurFrames)
-                blurComponent.enabled = false;
+                endBlur();
         }
     }
 
-    public void DealDamage (DamageMessage message)
+    public void DealDamage(DamageMessage message)
     {
         //sounds of getting hurt can go here
         if (message.friend==gameObject||message.friend == colliders)
@@ -57,8 +57,12 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
 
+        print("deal damage " + message.damage);
+
         if (message.effect == "blur")
+        {
             startBlur();
+        }
 
         _currentHealth -= message.damage;
 
@@ -76,12 +80,24 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
+        print("start blur");
+        blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.enabled = true;
         frameCounter = 0;
+    }
+    private void endBlur()
+    {
+        print("end blur");
+        blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
+        blurComponent.enabled = false;
     }
 
     public void PlayerDeath ()
     {
+        if (AnimState == null)
+            AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
+        AnimState.startDie();
+
         isDead = true;
         //death sounds can go here
         audio.Play("Death" + name[PlayerNumber]);

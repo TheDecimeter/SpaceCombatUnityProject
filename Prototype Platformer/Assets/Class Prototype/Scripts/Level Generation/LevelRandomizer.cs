@@ -6,6 +6,11 @@ using UnityEngine.Events;
 public class LevelRandomizer : MonoBehaviour
 {
     private const int North = 0, East = 1, South = 2, West = 3, Any=4;
+
+    [Header("QuickSettings:")]
+    public int FramesToKeepDoorsOpen=10;
+    public int PlayerDoorDashSpeed=500;
+
     [Header("Where are level tiles stored:")]
     public GameObject LevelTileArray;
 
@@ -87,8 +92,12 @@ public class LevelRandomizer : MonoBehaviour
             ref daRocks.AsteroidSpeed, ref daRocks.chuckEvery, ref daRocks.plusOrMinus);
 
         foreach (Transform child in PlayerArray.transform)
+        {
             if (child.gameObject.GetComponent<CharacterMovement_Physics>().Environment == null)
                 child.gameObject.GetComponent<CharacterMovement_Physics>().Environment = this;
+            if (PlayerDoorDashSpeed != -1)
+                child.gameObject.GetComponent<CharacterMovement_Physics>().doorPullSpeed = PlayerDoorDashSpeed;
+        }
 
 
         Map = new TileInformation[MapDemensionsY][];
@@ -139,7 +148,7 @@ public class LevelRandomizer : MonoBehaviour
             Random.InitState(Seed);
         //Random.seed = Seed;
 
-        doorManager = new DoorManager(Map);
+        doorManager = new DoorManager(Map, FramesToKeepDoorsOpen);
         randomizeLevel();
         
         //daRocks.Init(startX, startY, startZ, xTileSize, yTileSize, WarnForXManyFrames);

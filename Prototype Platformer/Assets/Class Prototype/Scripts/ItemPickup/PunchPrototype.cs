@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PunchPrototype : Item
 {
+    private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
+
     public string AnimationTag = "isAttacking";
     public string ItemName = "fisticufs";
     public int itemType = Item.Punch;
@@ -27,8 +29,13 @@ public class PunchPrototype : Item
 
     public override void use(Transform targetList, Transform user)
     {
-        if(Attack.Fire(user, user.gameObject))
+        print("Punch Grunt" + name[user.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber]);
+
+        if (Attack.Fire(user, user.gameObject))
+        {
+            
             audio.Play("Punch");
+        }
     }
 
     // Start is called before the first frame update

@@ -8,18 +8,22 @@ public class EscapePodBehavior : MonoBehaviour
     public string targetTag = "Player";
     public int LaunchSpeed = 10;
     public int AnimationFrames = 10;
-    public int ImpactDamage=10;
+    public int ImpactDamage = 10;
     public UnityEvent EscapeEvent;
     private bool dontMove = false;
     private GameObject player = null;
     private int frameCounter;
     private GameObject PlayerArray;
-    public float DistanceToEnter=3;
+    public float DistanceToEnter = 3;
 
     void Start()
     {
 
         PlayerArray = GameObject.Find("/Players/PlayerArray");
+        if (gameObject.name.Contains("(Clone)"))
+            foreach (Transform child in PlayerArray.transform)
+                if (!child.gameObject.GetComponent<PlayerHealth>().isDead)
+                    child.gameObject.GetComponent<CharacterMovement_Physics>().PointTo(transform);
     }
 
     void FixedUpdate()
@@ -31,6 +35,7 @@ public class EscapePodBehavior : MonoBehaviour
             {
                 leave();
                 player.SetActive(false);
+                player.GetComponent<CharacterMovement_Physics>().ClearNavPoints();
                 FindObjectOfType<UndestroyableData>().
                     IncreaseScore(player.GetComponent<CharacterMovement_Physics>().
                     PlayerNumber, 1);
@@ -85,6 +90,8 @@ public class EscapePodBehavior : MonoBehaviour
         foreach (Transform child in PlayerArray.transform)
             if (distance(transform.position, child.position) < DistanceToEnter)
             {
+                if (child.gameObject.GetComponent<PlayerHealth>().isDead)
+                    continue;
                 player = child.gameObject;
                 player.GetComponent<CharacterMovement_Physics>().Freeze(true);
                 frameCounter = 0;

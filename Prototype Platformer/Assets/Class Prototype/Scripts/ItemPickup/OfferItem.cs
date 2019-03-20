@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Item))]
 public class OfferItem : MonoBehaviour
 {
     private string offerItemMethod="encounteredItem";
     public string targetTag = "Player";
+    public float setz = -0.2f;
     public Item ItemType;
+    public GameObject highlight;
 
     private bool itemHasBeenGotten;
 
@@ -16,6 +17,8 @@ public class OfferItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        highlight= transform.Find("Pointer").gameObject;
+
         itemHasBeenGotten = false;
         _childCollider=this.transform.GetChild(0).GetComponent<Collider>();
     }
@@ -23,7 +26,6 @@ public class OfferItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 
@@ -45,6 +47,7 @@ public class OfferItem : MonoBehaviour
     public void feedback(bool response)
     {
         itemHasBeenGotten = response;
+        highlight.SetActive(!response);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -52,6 +55,13 @@ public class OfferItem : MonoBehaviour
         if (collision.gameObject.tag == targetTag)
         {
             Physics.IgnoreCollision(collision.collider, _childCollider);
+        }
+        else
+        {
+            //transform.position = new Vector3(
+            //    transform.position.x,
+            //    transform.position.y,
+            //    setz);
         }
     }
 }

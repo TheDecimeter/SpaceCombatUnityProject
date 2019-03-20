@@ -14,11 +14,21 @@ public class DoorManager
     int MapDemensionsY, MapDemensionsX;
     TileInformation[][] Map;
 
+    int openFrames;
+
     public DoorManager(TileInformation[][] map)
     {
         Map = map;
         MapDemensionsX = map[0].Length;
         MapDemensionsY = map.Length;
+        openFrames = -1;
+    }
+    public DoorManager(TileInformation[][] map, int openFrames)
+    {
+        Map = map;
+        MapDemensionsX = map[0].Length;
+        MapDemensionsY = map.Length;
+        this.openFrames = openFrames;
     }
 
     public void SetDoors(List<Object> placedTiles)
@@ -49,6 +59,8 @@ public class DoorManager
     private void addDoor(DoorBehavior door, List<DoorBehavior> list)
     {
         if (door.isOpenable && door.gameObject.activeInHierarchy) list.Add(door);
+        if (openFrames != -1)
+            door.FramesToStayOpen = openFrames;
     }
 
     public void CloseDownRoom(int x, int y)

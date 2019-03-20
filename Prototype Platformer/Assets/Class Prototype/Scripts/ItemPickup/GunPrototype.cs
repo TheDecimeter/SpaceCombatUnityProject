@@ -33,9 +33,9 @@ public class GunPrototype : Item
     {
 
         //sound calls can go here
-        audio.Play("rifle");
 
-        Attack.Fire(user, user.gameObject);
+        if(Attack.Fire(user, user.gameObject)) 
+            audio.Play("rifle");
     }
 
     // Start is called before the first frame update

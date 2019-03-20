@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement_Physics : MonoBehaviour
@@ -75,15 +76,21 @@ public class CharacterMovement_Physics : MonoBehaviour
     private AudioManager audio;
 
     public AnimationStates AnimState;
-    
-    
+    public HUDPointer NavPoint;
+
+    private List<HUDPointer> navPoints;
+
+
 
 
 
     void Start()
     {
+        navPoints = new List<HUDPointer>();
+
         _noFriction = (PhysicMaterial) AssetDatabase.LoadAssetAtPath("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial", typeof(PhysicMaterial));
         _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
+        
 
         _controllerStatus = new ControlStruct();
 
@@ -320,6 +327,19 @@ public class CharacterMovement_Physics : MonoBehaviour
             _rigidbody.velocity = _storedVelocity;
             _currentState = _storedState;
         }
+    }
+
+    public void PointTo(Transform target)
+    {
+        HUDPointer navPoint = Instantiate(NavPoint);
+        navPoint.Init(target, transform, Vector3.zero, null);
+        navPoints.Add(navPoint);
+    }
+    public void ClearNavPoints()
+    {
+        foreach (HUDPointer n in navPoints)
+            Destroy(n.gameObject);
+        navPoints = new List<HUDPointer>();
     }
 
     public void ControllerListener(ControlStruct controls)

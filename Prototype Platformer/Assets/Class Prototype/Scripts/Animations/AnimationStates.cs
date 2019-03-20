@@ -8,6 +8,8 @@ public class AnimationStates
 
     private bool run, jump, land, lift, attack, damage;
 
+    private string lastAttack;
+
 
     private Animator anim;
 
@@ -61,7 +63,6 @@ public class AnimationStates
 
     private void startJump(bool value)
     {
-        MonoBehaviour.print("             animate JUMP " + value);
         if (jump == value)
             return;
         jump = value;
@@ -98,7 +99,6 @@ public class AnimationStates
 
     private void startLand(bool value)
     {
-        MonoBehaviour.print("             animate Land "+value);
         if (land == value)
             return;
         land = value;
@@ -124,6 +124,8 @@ public class AnimationStates
     {
         if (attack == value)
             return;
+        lastAttack = AttackType;
+
         attack = value;
         anim.SetBool(AttackType, value);
 
@@ -133,11 +135,27 @@ public class AnimationStates
         }
     }
 
+
+    public void startDie()
+    {
+        anim.SetBool(Tag.die, true);
+
+        if(lastAttack!=null)
+            startAttack(lastAttack, false);
+
+        startDamage(false);
+        startJump(false);
+        startRun(false);
+        startLand(false);
+        startDamage(false);
+        startLift(false);
+    }
+
     
 
     public static class Tag
     {
         public const string run = "isRunning", lift = "isLifting", jump = "isJumping", land = "isFalling",
-            attack = "isAttacking", damage = "isHit", shoot = "isShooting", idle="isIdle";
+            attack = "isAttacking", damage = "isHit", shoot = "isShooting", idle="isIdle", die="isDying";
     }
 }

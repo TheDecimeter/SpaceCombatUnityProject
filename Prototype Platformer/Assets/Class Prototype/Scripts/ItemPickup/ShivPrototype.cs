@@ -32,9 +32,9 @@ public class ShivPrototype : Item
 
 
         //sound calls can go here
-        audio.Play("shiv");
 
-        Attack.Fire(user, user.GetChild(0).gameObject);
+        if(Attack.Fire(user, user.GetChild(0).gameObject))
+            audio.Play("shiv");
     }
 
     // Start is called before the first frame update
