@@ -53,13 +53,13 @@ public class UndestroyableData : MonoBehaviour
         {
             save.StartMenu.MenuNotSaved = false;
             save.Rounds = RecommendedRounds;
-            save.StartMenu.StartMenuOpened = OpenStartMenu;
+            isMenuOpened();
         }
         else
         {
             //print("menuSaved, should it be opened?" + save.StartMenu.MenuNotSaved);
             RecommendedRounds = save.Rounds;
-            OpenStartMenu = save.StartMenu.StartMenuOpened;
+            OpenStartMenu = isMenuOpened();
         }
     }
 
@@ -93,9 +93,9 @@ public class UndestroyableData : MonoBehaviour
 
     public bool isMenuOpened()
     {
-        if (save.StartMenu.LevelNotSaved)
+        if (save.StartMenu.MenuOpenedNotSaved)
             save.StartMenu.StartMenuOpened = FindObjectOfType<StartMenu>().OpenMenuOnStart;
-
+        save.StartMenu.MenuOpenedNotSaved = false;
         return save.StartMenu.StartMenuOpened;
     }
 
@@ -105,8 +105,8 @@ public class UndestroyableData : MonoBehaviour
     {
         if (save.StartMenu.LevelNotSaved)
         {
-            save.StartMenu.StartMenuOpened=FindObjectOfType<StartMenu>().OpenMenuOnStart;
-
+            //save.StartMenu.StartMenuOpened=FindObjectOfType<StartMenu>().OpenMenuOnStart;
+            isMenuOpened();
             save.StartMenu.LevelNotSaved = false;
 
             //save play settings
@@ -183,7 +183,8 @@ public class UndestroyableData : MonoBehaviour
                 ChuckEvery, CloseRoomFrames, WarnRoomFrames,
                 AsteroidSpeed,ChuckAsteroidEvery,ChuckAsteroidPlusOrMinus;
             public static bool FillLevel;
-            public static bool StartMenuOpened, LevelNotSaved = true, MenuNotSaved = true;
+            public static bool StartMenuOpened, LevelNotSaved = true, 
+                MenuNotSaved = true, MenuOpenedNotSaved=true;
         }
 
         public static class ScoreKeeper

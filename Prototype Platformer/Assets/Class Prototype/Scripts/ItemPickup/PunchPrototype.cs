@@ -31,7 +31,7 @@ public class PunchPrototype : Item
     {
         print("Punch Grunt" + name[user.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber]);
 
-        if (Attack.Fire(user, user.gameObject))
+        if (Attack.Fire(targetList, user.gameObject))
         {
 
            // audio.Play("Punch" + name[PlayerNumber]);

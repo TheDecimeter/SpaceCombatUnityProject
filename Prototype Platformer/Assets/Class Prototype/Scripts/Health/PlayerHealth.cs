@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour {
 
@@ -23,6 +24,7 @@ public class PlayerHealth : MonoBehaviour {
     public TextManager info;
     private AnimationStates AnimState;
     public PostProcessLayer blurComponent;
+    public Text health;
 
     public bool isDead{get; protected set;}
 
@@ -47,12 +49,12 @@ public class PlayerHealth : MonoBehaviour {
 
     public void DealDamage(DamageMessage message)
     {
-        audio.Play("Hurt" + name[PlayerNumber]);
         if (message.friend==gameObject||message.friend == colliders)
             return;
         if (!_canTakeDamage) return;
 
 
+        audio.Play("Hurt" + name[PlayerNumber]);
         if (AnimState == null)
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
@@ -68,6 +70,7 @@ public class PlayerHealth : MonoBehaviour {
 
         print("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
+        health.text =" "+ _currentHealth;
 
         damageEvent.Invoke();
 
@@ -76,6 +79,11 @@ public class PlayerHealth : MonoBehaviour {
             PlayerDeath();
             _currentHealth = 0;
         }
+    }
+
+    public int getHealth()
+    {
+        return _currentHealth;
     }
 
     private void startBlur()
@@ -98,6 +106,7 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.startDie();
         GetComponent<Rigidbody>().useGravity = false;
+        
 
         transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
         transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>().enabled = false;
@@ -106,9 +115,31 @@ public class PlayerHealth : MonoBehaviour {
         isDead = true;
         //death sounds can go here
         audio.Play("Death" + name[PlayerNumber]);
+        print("Death" + name[PlayerNumber]);
 
-        info.say("ya DEAD!", -1);
-        print("PLAYER DEAD");
+        switch (Random.Range(1, 10))
+        {
+            case 0:
+                health.text = " : (";
+                info.say("I should have chosen love", -1);
+                break;
+            case 1:
+                health.text = " :'{";
+                info.say("KAAHHHHNN", -1);
+                break;
+            case 3:
+                health.text = " : P";
+                info.say("REKT??", -1);
+                break;
+            case 4:
+                health.text = " :'{";
+                info.say("Mother was right about you", -1);
+                break;
+            default:
+                health.text = "0";
+                info.say("", -1);
+                break;
+        }
         deathEvent.Invoke();
         _canTakeDamage = false;
 

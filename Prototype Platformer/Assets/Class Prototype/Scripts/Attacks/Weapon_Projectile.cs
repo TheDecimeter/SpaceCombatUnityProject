@@ -21,6 +21,12 @@ public class Weapon_Projectile : Weapon {
         GameObject projectile = (GameObject)Instantiate(projectilePrefab, attackPoint, attackSpawnPoint.rotation, null);
         //Physics.IgnoreCollision(attackSpawnPoint.GetComponent<Collider>(), projectile.GetComponent<Collider>());
 
+        
+        Physics.IgnoreCollision(friendly.transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
+            projectile.GetComponent<Collider>());
+        Physics.IgnoreCollision(friendly.transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>(),
+            projectile.GetComponent<Collider>());
+
         projectile.GetComponent<Projectile_Direct>().friend = friendly;
         projectile.GetComponent<DealDamage>().friend = friendly;
 

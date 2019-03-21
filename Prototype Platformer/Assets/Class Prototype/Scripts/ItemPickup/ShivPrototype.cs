@@ -33,7 +33,7 @@ public class ShivPrototype : Item
 
         //sound calls can go here
 
-        if(Attack.Fire(user, user.GetChild(0).gameObject))
+        if(Attack.Fire(targetList, user.gameObject))
             audio.Play("shiv");
     }
 

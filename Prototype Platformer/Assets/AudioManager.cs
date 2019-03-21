@@ -33,8 +33,8 @@ public class AudioManager : MonoBehaviour
     public void Play (string name)
     {
        Sound s = Array.Find(sounds, sound => sound.name == name);
-        //s.source.Play();
+        if(name.Contains("Death")) s.source.Play();
         //s.source.PlayOneShot(s.clip);
-        player.PlayOneShot(s.clip);
+        else player.PlayOneShot(s.clip);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement_Physics : MonoBehaviour
@@ -58,11 +59,12 @@ public class CharacterMovement_Physics : MonoBehaviour
     private Vector3 _storedVelocity = Vector3.zero;
     private CharacterState _storedState;
     private SphereCollider _collider;
-    private PhysicMaterial _noFriction;
+    public PhysicMaterial NoFriction;
 
     //private GameObject _currentItem;
     public Item _currentItem;
     public TextManager info;
+    public Text currentItemHUD;
 
     private CharacterState _currentState = CharacterState.idle;
 
@@ -79,8 +81,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     public HUDPointer NavPoint;
 
     private List<HUDPointer> navPoints;
-
-
+    
 
 
 
@@ -88,7 +89,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         navPoints = new List<HUDPointer>();
 
-        _noFriction = (PhysicMaterial) AssetDatabase.LoadAssetAtPath("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial", typeof(PhysicMaterial));
+        //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
         _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
         
 
@@ -118,7 +119,9 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
 
         if (_canAttack) Attack();
-        
+        if (clearText == 0)
+            currentItemHUD.text = _currentItem.getName();
+        else clearText--;
     }
 
     private void LateUpdate()
@@ -130,6 +133,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         if (!_canMove)
         {
+            _rigidbody.velocity = Vector3.zero;
             return;
         }
 
@@ -173,7 +177,7 @@ public class CharacterMovement_Physics : MonoBehaviour
                 {
                    // if (PlayerNumber == 0)
                         //print(" force!=0");
-                    _collider.material = _noFriction;
+                    _collider.material = NoFriction;
                     _rigidbody.AddForce(force, ForceMode.Acceleration);
                 }
                 //if (Mathf.Abs(_rigidbody.velocity.magnitude) > maxSpeed)
@@ -213,6 +217,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             return;
 
         info.say(item.getName(), 2);
+        currentItemHUD.text="GRAB:  "+item.getName();
+        clearText = 2;
         if (actionPressed)
         {
             actionPressed = false;
@@ -223,6 +229,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             grabItem(item);
         }
     }
+
+    
 
 
 
@@ -415,7 +423,7 @@ public class CharacterMovement_Physics : MonoBehaviour
             AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
             ///anim.SetBool(_currentItem.getAnimationFlag(), true);
             if (_currentItem == null) print("current item is null");
-            _currentItem.use(this.gameObject.transform.parent, this.transform);
+            _currentItem.use(attackPoint, this.transform);
             //I know I put this method here for your convenience, but technically,
             //attacking sounds should go in the individual "use" methods in the weapon
             //scripts found at scripts/ItemPickup/PunchPrototype.cs (or ShivPrototype or GunPrototype)
@@ -476,7 +484,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         rigidBody.angularDrag = 0;
         rigidBody.isKinematic = true;
 
-
+        item.GetComponent<CapsuleCollider>().enabled = false;
 
 
         _currentItem = item;
@@ -491,6 +499,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         //if there's a drop item sound, it can go anywhere here
 
+        _currentItem.GetComponent<CapsuleCollider>().enabled = true;
         _currentItem.itemExterior.transform.parent = null;
 
         Rigidbody rigidBody = _currentItem.itemExterior.GetComponent<Rigidbody>();

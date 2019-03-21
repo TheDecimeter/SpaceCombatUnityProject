@@ -29,12 +29,12 @@ public class GunPrototype : Item
     }
     
 
-    public override void use(Transform targetList, Transform user)
+    public override void use(Transform attackSpawnPoint, Transform user)
     {
 
         //sound calls can go here
 
-        if(Attack.Fire(user, user.gameObject)) 
+        if(Attack.Fire(attackSpawnPoint, user.gameObject)) 
             audio.Play("rifle");
     }
 
