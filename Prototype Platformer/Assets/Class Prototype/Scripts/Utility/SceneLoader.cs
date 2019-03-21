@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour {
 
+
+public class SceneLoader : MonoBehaviour {
+    public GameObject CanvasHud;
     public float sceneLoadDelay = 3f;
     public CanvasGroup sceneFadeOverlay;
     public float sceneFadeDuration = 0f;
@@ -18,6 +20,8 @@ public class SceneLoader : MonoBehaviour {
     public void LoadScene (string scene)
     {
         StartCoroutine(LoadSceneDelay(scene));
+        // loading in hud 
+        //CanvasHud.SetActive(true);
     }
 
     public void RestartScene ()

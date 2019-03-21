@@ -47,7 +47,7 @@ public class PlayerHealth : MonoBehaviour {
 
     public void DealDamage(DamageMessage message)
     {
-        //sounds of getting hurt can go here
+        audio.Play("Hurt" + name[PlayerNumber]);
         if (message.friend==gameObject||message.friend == colliders)
             return;
         if (!_canTakeDamage) return;
