@@ -81,9 +81,34 @@ public class CharacterMovement_Physics : MonoBehaviour
     public HUDPointer NavPoint;
 
     private List<HUDPointer> navPoints;
-    
 
+    private HashSet<DoorController> currentDoors = new HashSet<DoorController>();
 
+    public int AddDoor(DoorController cont, out DoorController.DoorType newOrientation)
+    {
+        newOrientation = cont.DoorLocation;
+        if (newOrientation == DoorController.DoorType.East ||
+            newOrientation == DoorController.DoorType.West)
+            if (cont.gameObject.transform.position.x - transform.position.x > 0)
+                newOrientation = DoorController.DoorType.East;
+            else
+                newOrientation = DoorController.DoorType.West;
+
+        else if (newOrientation == DoorController.DoorType.North ||
+            newOrientation == DoorController.DoorType.South)
+            if (cont.gameObject.transform.position.x - transform.position.x > 0)
+                newOrientation = DoorController.DoorType.South;
+            else
+                newOrientation = DoorController.DoorType.North;
+
+        currentDoors.Add(cont);
+        return currentDoors.Count;
+    }
+    public void RemoveDoor(DoorController cont)
+    {
+        if (currentDoors.Contains(cont))
+            currentDoors.Remove(cont);
+    }
 
     void Start()
     {
@@ -423,7 +448,14 @@ public class CharacterMovement_Physics : MonoBehaviour
             AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
             ///anim.SetBool(_currentItem.getAnimationFlag(), true);
             if (_currentItem == null) print("current item is null");
-            _currentItem.use(attackPoint, this.transform);
+
+            Transform atkPt = new GameObject().transform;
+            atkPt.position = new Vector3(
+                mountingBone.transform.position.x,
+                mountingBone.transform.position.y,
+                transform.position.z);
+            atkPt.rotation = transform.rotation;
+            _currentItem.use(atkPt, this.transform);
             //I know I put this method here for your convenience, but technically,
             //attacking sounds should go in the individual "use" methods in the weapon
             //scripts found at scripts/ItemPickup/PunchPrototype.cs (or ShivPrototype or GunPrototype)
@@ -435,6 +467,38 @@ public class CharacterMovement_Physics : MonoBehaviour
             //anim.SetBool(_currentItem.getAnimationFlag(), false);
         }
     }
+
+    private bool doorOpenandPull(DoorController d)
+    {
+        if (d.open())
+        {
+            pullDirection = d.transform.position - transform.position;
+            pullDirection.Normalize();
+            pullDirection *= doorPullSpeed;
+            return true;
+        }
+        return false;
+    }
+
+    private bool openDoorInDirection(DoorController.DoorType dir)
+    {
+        foreach (DoorController d in currentDoors)
+            if (d.DoorLocation == dir)
+                if (doorOpenandPull(d))
+                    return true;
+        return false;
+    }
+
+    private bool openADoor()
+    {
+        foreach (DoorController d in currentDoors)
+        {
+            if (doorOpenandPull(d))
+                return true;
+        }
+        return false;
+    }
+
     private void setDoorOpen(bool YayOrNay)
     {
         if (YayOrNay == true)
@@ -442,21 +506,57 @@ public class CharacterMovement_Physics : MonoBehaviour
             if (_canOpen)
             {
                 _canOpen = false;
-                int preference=South;
-                if (!_isGrounded) preference = North;
-                else if (_controllerStatus.moveLeft < -.1) preference = East;
+                print("current doors " + currentDoors.Count);
+                if (currentDoors.Count == 0)
+                    return;
+
+                if (currentDoors.Count == 1)
+                {
+                    openADoor();
+                    return;
+                }
+
+                        int preference=South;
+
+                if (!_isGrounded) {
+                    //north or south, but above you
+                    foreach (DoorController d in currentDoors)
+                        if (d.DoorLocation == DoorController.DoorType.North ||
+                            d.DoorLocation == DoorController.DoorType.South)
+                            if (d.transform.position.x - transform.position.x < 0)
+                                if(doorOpenandPull(d))
+                                    return;
+                    //just north
+                    if (openDoorInDirection(DoorController.DoorType.North))
+                        return;
+                    
+
+                }// preference = North;
+
+                //east or west
+                foreach (DoorController d in currentDoors)
+                    if (d.DoorLocation == DoorController.DoorType.East ||
+                        d.DoorLocation == DoorController.DoorType.West)
+                        if (doorOpenandPull(d))
+                            return;
+                //lastly, any door will do
+                openADoor();
+                return;
+
+                if (_controllerStatus.moveLeft < -.1)
+                    foreach (DoorController d in currentDoors)
+                    {
+                        if(d.DoorLocation==DoorController.DoorType.East||
+                            d.DoorLocation==DoorController.DoorType.West)
+                            if (d.transform.position.x - transform.position.x < 0)
+                            {
+
+                            }
+
+                    }//preference = East;
                 else if (_controllerStatus.moveLeft > .1) preference = West;
                 if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection, preference))
-                {
-
-                    //if there's an door open sound, it can go anywhere here
-                    //HOWEVER, if there's a sound for door closing too, it might be best to put them
-                    //in the Level Generation/DoorBehavior.cs
-                    //there is an open and close method at the bottom of the file
-                    //note that in the open statement has that "if" condition, so put it inside of there
-                    //like below the "_state=Opened"
-
-
+                { 
                     pullDirection.Normalize();
                     pullDirection *= doorPullSpeed;
                 }

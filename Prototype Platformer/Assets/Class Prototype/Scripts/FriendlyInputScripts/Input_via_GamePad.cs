@@ -20,8 +20,12 @@ public class Input_via_GamePad : MonoBehaviour
     public int maxPlayers = 4;
 
     private List<ControlStruct> previousControls;
+    //Axis 4=lefttrig, 5=righttrig, 0=leftAnalogH
 
-    private const int jump = 0, attack = 1, action = 2, door1=3, door2=12,left = 0, right = 0;
+    //Button A=0, B=1, X=2, Y=3, Rbumper=12
+
+
+    private const int jump = 0, attackButton = 2, attackAxis1=4, attackAxis2 = 5, action = 3, door1=1, door2=12,left = 0, right = 0;
     private const int AXIS = 1, BUTTON = 0;
     private float axisThreshold = 0.2f;
 
@@ -128,7 +132,7 @@ public class Input_via_GamePad : MonoBehaviour
                 if (previous.jump == state)
                     return false;
                 break;
-            case attack:
+            case attackButton:
                 if (previous.attack == state)
                     return false;
                 break;
@@ -149,7 +153,7 @@ public class Input_via_GamePad : MonoBehaviour
                 case jump:
                     current.jump = true;
                     break;
-                case attack:
+                case attackButton:
                     current.attack = true;
                     break;
                 case action:
@@ -174,10 +178,17 @@ public class Input_via_GamePad : MonoBehaviour
     }
     private void updateControl(int currentControl, ControlStruct current, float state)
     {
+        //print("current control " + currentControl + " state " + state);
+
         switch (currentControl)
         {
             case left:
                 current.moveLeft = state;
+                break;
+            case attackAxis1:
+            case attackAxis2:
+                if (state > axisThreshold)
+                    current.attack = true;
                 break;
         }
         return;

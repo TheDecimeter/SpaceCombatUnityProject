@@ -20,6 +20,7 @@ public class DoorBehavior : MonoBehaviour
     private int _state=Closed;
     private int _frameCounter=0;
 
+
     private static AudioManager audio;
     void Start()
     {
@@ -35,9 +36,14 @@ public class DoorBehavior : MonoBehaviour
         if (_state == Closed)
             return;
 
-        _frameCounter--;
-        if (_frameCounter == 0)
-            close();
+        //_frameCounter--;
+        //if (_frameCounter == 0)
+            //close();
+    }
+
+    public bool isOpened()
+    {
+        return _state == Opened;
     }
 
     public Vector3 getPullDirection(Vector3 from)

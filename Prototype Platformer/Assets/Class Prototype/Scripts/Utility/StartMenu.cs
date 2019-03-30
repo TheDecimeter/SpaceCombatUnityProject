@@ -88,7 +88,7 @@ public class StartMenu : MonoBehaviour
             sceneLoader.sceneLoadDelay = 0;
             sceneLoader.RestartScene();
         }
-        if (controls.attack)
+        if (controls.door)
         {
             //exit
             Application.Quit();

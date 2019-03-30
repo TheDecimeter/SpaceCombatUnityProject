@@ -16,9 +16,9 @@ public class Weapon_Projectile : Weapon {
 
         //print(" firing ");
 
-        Vector3 attackPoint = friendly.transform.position + 1 * friendly.transform.forward;
+        //Vector3 attackPoint = friendly.transform.position + 1 * friendly.transform.forward;
 
-        GameObject projectile = (GameObject)Instantiate(projectilePrefab, attackPoint, attackSpawnPoint.rotation, null);
+        GameObject projectile = (GameObject)Instantiate(projectilePrefab, attackSpawnPoint.position, attackSpawnPoint.rotation, null);
         //Physics.IgnoreCollision(attackSpawnPoint.GetComponent<Collider>(), projectile.GetComponent<Collider>());
 
         
