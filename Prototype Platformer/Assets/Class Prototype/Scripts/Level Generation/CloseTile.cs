@@ -158,7 +158,6 @@ public class CloseTile
     }
     public void close()
     {
-        MonoBehaviour.print("in close" + activeCloser.j + " " + activeCloser.i);
         if (openTiles == stopAt)
             return;
         map[activeCloser.i][activeCloser.j].isClosed = true;

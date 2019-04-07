@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShivPrototype : Item
 {
@@ -8,11 +9,25 @@ public class ShivPrototype : Item
     public string AnimationTag = "isAttacking";
     public string ItemName = "Shiv";
     public int itemType = Item.Stab;
+    public GameObject pickupHud;
+    public GameObject inUseHud;
+
+    public UnityEvent onUse;
 
     [Header("Attack Properties")]
     public Weapon Attack;
 
 
+
+    public override GameObject getInUseHUD()
+    {
+        return inUseHud;
+    }
+
+    public override GameObject getPickUpHUD()
+    {
+        return pickupHud;
+    }
     public override string getName()
     {
         return ItemName;
@@ -33,8 +48,11 @@ public class ShivPrototype : Item
 
         //sound calls can go here
 
-        if(Attack.Fire(targetList, user.gameObject))
+        if (Attack.Fire(targetList, user.gameObject))
+        {
+            onUse.Invoke();
             audio.Play("shiv");
+        }
     }
 
     // Start is called before the first frame update

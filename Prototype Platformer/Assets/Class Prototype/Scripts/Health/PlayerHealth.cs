@@ -17,7 +17,7 @@ public class PlayerHealth : MonoBehaviour {
     public UnityEvent damageEvent;
     public UnityEvent deathEvent;
 
-    private int _currentHealth, frameCounter;
+    private int _currentHealth, frameCounter, maxHealth=100;
     private bool _canTakeDamage = true;
     public GameObject colliders;
 
@@ -53,13 +53,25 @@ public class PlayerHealth : MonoBehaviour {
             return;
         if (!_canTakeDamage) return;
 
+        if (message.damage < 0)
+        {
+            if (_currentHealth > maxHealth)
+                return;
+            _currentHealth -= message.damage;
+            if (_currentHealth > maxHealth)
+                _currentHealth = maxHealth;
+            info.say("HP: " + _currentHealth, 15);
+            return;
+        }
+
+        GetComponent<ShowDamage>().animateDamage();
 
         audio.Play("Hurt" + name[PlayerNumber]);
         if (AnimState == null)
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
 
-        print("deal damage " + message.damage);
+        //print("deal damage " + message.damage);
 
         if (message.effect == "blur")
         {
@@ -68,7 +80,7 @@ public class PlayerHealth : MonoBehaviour {
 
         _currentHealth -= message.damage;
 
-        print("PLAYER HEALTH: " + _currentHealth);
+        //print("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
         health.text =" "+ _currentHealth;
 
@@ -88,14 +100,14 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
-        print("start blur");
+        //print("start blur");
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.enabled = true;
         frameCounter = 0;
     }
     private void endBlur()
     {
-        print("end blur");
+        //print("end blur");
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
         blurComponent.enabled = false;
     }
@@ -115,13 +127,13 @@ public class PlayerHealth : MonoBehaviour {
         isDead = true;
         //death sounds can go here
         audio.Play("Death" + name[PlayerNumber]);
-        print("Death" + name[PlayerNumber]);
+        //print("Death" + name[PlayerNumber]);
 
-        switch (Random.Range(1, 10))
+        switch (Random.Range(1, 11))
         {
             case 0:
                 health.text = " : (";
-                info.say("I should have chosen love", -1);
+                info.say("Why didn't I choose love", -1);
                 break;
             case 1:
                 health.text = " :'{";
@@ -133,7 +145,11 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 4:
                 health.text = " :'{";
-                info.say("Mother was right about you", -1);
+                info.say("Momma was right about you", -1);
+                break;
+            case 5:
+                health.text = " :'{";
+                info.say("Et tu, Brute?", -1);
                 break;
             default:
                 health.text = "0";

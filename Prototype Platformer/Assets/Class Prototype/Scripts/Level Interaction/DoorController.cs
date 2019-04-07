@@ -16,7 +16,7 @@ public class DoorController : MonoBehaviour
         West
     }
     [Header("Where is door in tile")]
-    public DoorType DoorLocation=DoorType.Other;
+    public DoorType DoorLocation = DoorType.Other;
     [Header("Where are the que templates")]
     public GameObject GeneralOpenQue;
     public GameObject NorthOpenQue;
@@ -26,14 +26,14 @@ public class DoorController : MonoBehaviour
     [Header("what doors will this control")]
     public DoorBehavior[] Doors;
     [Header("who can open this door")]
-    public string playerTag="Player";
+    public string playerTag = "Player";
 
     [Header("Can these offsets be overridden externally")]
     public bool allowOffsetsToBeOverridden = true;
     [Header("Fine tune the que positions")]
-    public float xOffset=-1;
-    public float yOffset=.05f;
-    public float zOffset=-2;
+    public float xOffset = -1;
+    public float yOffset = .05f;
+    public float zOffset = -2;
 
     private GameObject general;
     private GameObject north;
@@ -46,13 +46,13 @@ public class DoorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     //remove que node if player is no longer colliding
@@ -63,7 +63,7 @@ public class DoorController : MonoBehaviour
         bool ret = false;
         foreach (DoorBehavior d in Doors)
         {
-            if (!d.isOpened()&&d.isOpenable) ret = true;
+            if (!d.isOpened() && d.isOpenable) ret = true;
             d.open();
         }
         return ret;
@@ -73,20 +73,42 @@ public class DoorController : MonoBehaviour
     {
         bool validdoors = false;
         foreach (DoorBehavior d in Doors)
+            if (!d.isOpened())
+            {
+                validdoors = true;
+                break;
+            }
+        if (!validdoors)
+        {
+            if (other.CompareTag(playerTag))
+                RemoveQue(other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber);
+            //OnTriggerExit(other);
+            return;
+        }
+
+        validdoors = false;
+        foreach (DoorBehavior d in Doors)
             if (d.isOpenable)
             {
                 validdoors = true;
                 break;
             }
-        if (!validdoors) return;
+        if (!validdoors)
+        {
+            if (other.CompareTag(playerTag))
+            {
+                OnTriggerExit(other);
+                Physics.IgnoreCollision(other.GetComponent<Collider>(), GetComponent<Collider>());
+            }
+            return;
+        }
 
         if (other.CompareTag(playerTag))
         {
-            print("here");
             DoorType orientation = DoorLocation;
             CharacterMovement_Physics player = other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>();
             int count = player.AddDoor(this, out orientation);
-            
+
             if (count == 1) add(DoorType.Other, player.PlayerNumber);
             else add(orientation, player.PlayerNumber);
             //if count is 1, orientation doesn't matter
@@ -112,7 +134,7 @@ public class DoorController : MonoBehaviour
         switch (orientation)
         {
             default:
-                que=Instantiate(GeneralOpenQue);
+                que = Instantiate(GeneralOpenQue);
                 break;
             case DoorType.North:
                 que = Instantiate(NorthOpenQue);
@@ -135,13 +157,12 @@ public class DoorController : MonoBehaviour
         if (other.CompareTag(playerTag))
         {
             int playernum = other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber;
-            if (displayedQues.ContainsKey(playernum))
-            {
+            
                 //GameObject tmp = displayedQues[playernum].que;
 
-                other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>().RemoveDoor(this);
-                RemoveQue(playernum);
-            }
+            other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>().RemoveDoor(this);
+            closeOutQue(playernum);
+            
         }
     }
 
@@ -156,56 +177,53 @@ public class DoorController : MonoBehaviour
         }
         else displayedQues.Add(playerNum, new QueNode(que, orientation));
         que.transform.position = new Vector3(
-            transform.position.x+xOffset,
-            transform.position.y+yOffset,
-            transform.position.z+zOffset);
+            transform.position.x + xOffset,
+            transform.position.y + yOffset,
+            transform.position.z + zOffset);
 
     }
 
-    private void RemoveQue(int playernum)
+    public void closeOutQue(int playernum)
+    {
+        RemoveQue(playernum);
+        if (displayedQues.Count == 0)
+            foreach (DoorBehavior d in Doors)
+                d.close();
+         
+    }
+
+    public bool RemoveQue(int playernum)
     {
         //if multiple players are in the hit box
         //just remove the player leaving and leave the
         //que alive.
 
-        for(int i=0; i<4; ++i)
+        if (!displayedQues.ContainsKey(playernum))
+            return true;
+
+        for (int i=0; i<4; ++i)
         {
             if(displayedQues.ContainsKey(i))
                 if (i!=playernum&&displayedQues[i].orientation == displayedQues[playernum].orientation)
                 {
                     displayedQues.Remove(playernum);
                     print("other player present in door");
-                    return;
+                    return false;
                 }
         }
-        
+
         //otherwise, destroy the que remove the playernum
         //and close the door.
-        Destroy(displayedQues[playernum].que);
-        displayedQues.Remove(playernum);
-
-        if (displayedQues.Count == 0)
-            foreach (DoorBehavior d in Doors)
-                d.close();
-    }
-
-    public void queGeneral(int playerNumber, DoorType orientation)
-    {
-        //if (general!=null)
-        //    return;
-        if (displayedQues.ContainsKey(playerNumber))
+        if (displayedQues.ContainsKey(playernum))
         {
-            Destroy(displayedQues[playerNumber].que);
-            displayedQues.Remove(playerNumber);
+            Destroy(displayedQues[playernum].que);
+            displayedQues.Remove(playernum);
         }
 
-        GameObject que = Instantiate(GeneralOpenQue);
-        AddQue(que, orientation, playerNumber);
+        return true;
+
     }
-    public void queNorth() { }
-    public void queEast() { }
-    public void queSouth() { }
-    public void queWest() { }
+    
 
     private class QueNode
     {

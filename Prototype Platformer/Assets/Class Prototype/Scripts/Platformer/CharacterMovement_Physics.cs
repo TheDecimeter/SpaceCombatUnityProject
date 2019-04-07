@@ -64,7 +64,8 @@ public class CharacterMovement_Physics : MonoBehaviour
     //private GameObject _currentItem;
     public Item _currentItem;
     public TextManager info;
-    public Text currentItemHUD;
+    //public Text currentItemHUD;
+    private GameObject HUDmount;
 
     private CharacterState _currentState = CharacterState.idle;
 
@@ -112,7 +113,11 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     void Start()
     {
+        HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/ItemInfoMountPoint").gameObject;
         navPoints = new List<HUDPointer>();
+
+        GameObject g = Instantiate(FindObjectOfType<CommonPunch>().gameObject);
+        _currentItem = g.GetComponent<Item>();
 
         //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
         _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
@@ -145,8 +150,22 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (_canAttack) Attack();
         if (clearText == 0)
-            currentItemHUD.text = _currentItem.getName();
+        {
+            //currentItemHUD.text = _currentItem.getName();
+            updateItemHUD(_currentItem.getInUseHUD());
+            clearText = -1;
+        }
         else clearText--;
+    }
+
+
+    private void updateItemHUD(GameObject newHUD)
+    {
+        foreach (Transform child in HUDmount.transform)
+            Destroy(child.gameObject);
+        GameObject g = Instantiate(newHUD) as GameObject;
+        g.transform.SetParent(HUDmount.transform, false);
+        g.transform.localPosition = Vector3.zero;
     }
 
     private void LateUpdate()
@@ -242,7 +261,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             return;
 
         info.say(item.getName(), 2);
-        currentItemHUD.text="GRAB:  "+item.getName();
+        //currentItemHUD.text="GRAB:  "+item.getName();
+        updateItemHUD(item.getPickUpHUD());
         clearText = 2;
         if (actionPressed)
         {
@@ -303,7 +323,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (isGrounded)
         {
-            print("grounded");
+            //print("grounded");
             if(!_isGrounded)
                 setLanding(true);
             _isGrounded = true;
@@ -350,6 +370,9 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (value)
         {
+            foreach (DoorController d in currentDoors)
+                d.closeOutQue(PlayerNumber);
+
             _storedVelocity = _rigidbody.velocity;
             _storedState = _currentState;
             _rigidbody.velocity = Vector3.zero;
@@ -470,8 +493,17 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private bool doorOpenandPull(DoorController d)
     {
-        if (d.open())
+        
+            if (d.open())
         {
+            if (d.DoorLocation == DoorController.DoorType.East ||
+               d.DoorLocation == DoorController.DoorType.West)
+            {
+                pullDirection = new Vector3(d.transform.position.x - transform.position.x, 0, 0);
+                pullDirection.Normalize();
+                pullDirection *= doorPullSpeed;
+                return true;
+            }
             pullDirection = d.transform.position - transform.position;
             pullDirection.Normalize();
             pullDirection *= doorPullSpeed;
@@ -506,7 +538,7 @@ public class CharacterMovement_Physics : MonoBehaviour
             if (_canOpen)
             {
                 _canOpen = false;
-                print("current doors " + currentDoors.Count);
+                //print("current doors " + currentDoors.Count);
                 if (currentDoors.Count == 0)
                     return;
 
@@ -519,6 +551,7 @@ public class CharacterMovement_Physics : MonoBehaviour
                         int preference=South;
 
                 if (!_isGrounded) {
+                    //print("       NOT GROUNDED door");
                     //north or south, but above you
                     foreach (DoorController d in currentDoors)
                         if (d.DoorLocation == DoorController.DoorType.North ||
@@ -533,12 +566,19 @@ public class CharacterMovement_Physics : MonoBehaviour
 
                 }// preference = North;
 
-                //east or west
-                foreach (DoorController d in currentDoors)
-                    if (d.DoorLocation == DoorController.DoorType.East ||
-                        d.DoorLocation == DoorController.DoorType.West)
-                        if (doorOpenandPull(d))
-                            return;
+                //open a door east or west if moving horizontally
+                if (_controllerStatus.moveLeft < -.1 || _controllerStatus.moveLeft > .1)
+                {
+                    //print("       Left or right door");
+                    foreach (DoorController d in currentDoors)
+                        if (d.DoorLocation == DoorController.DoorType.East ||
+                            d.DoorLocation == DoorController.DoorType.West)
+                            if (doorOpenandPull(d))
+                                return;
+                }
+                //open a door south, of no inputs are used and player is grounded
+                if (openDoorInDirection(DoorController.DoorType.South))
+                    return;
                 //lastly, any door will do
                 openADoor();
                 return;

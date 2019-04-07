@@ -12,7 +12,7 @@ public class CameraBob : MonoBehaviour
     public bool Bob { get { return _bob; } set {
             if (value == true)
             {
-                print("bob = true)");
+                //print("bob = true)");
                 if (!_bob)
                 {
                     Xcur = 0; Ycur = 0;
@@ -22,7 +22,7 @@ public class CameraBob : MonoBehaviour
             }
             else
             {
-                print("bob = false)");
+                //print("bob = false)");
                 if(_bob)    
                     transform.localPosition = new Vector3(oldX, oldY, transform.localPosition.z);
             }
@@ -33,7 +33,7 @@ public class CameraBob : MonoBehaviour
     {
         oldX = transform.localPosition.x;
         oldY = transform.localPosition.y;
-        print("x " + oldX + " y " + oldY);
+        //print("x " + oldX + " y " + oldY);
         Bob = false;
     }
 

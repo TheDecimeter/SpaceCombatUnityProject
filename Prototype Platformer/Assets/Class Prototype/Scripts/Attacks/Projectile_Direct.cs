@@ -29,7 +29,6 @@ public class Projectile_Direct : Projectile
         if (friend == collision.gameObject)
         {
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
-            print("colided with frriend " + collision.gameObject.name);
             return;
         }
         int ID = friend.GetComponent<CharacterMovement_Physics>().PlayerNumber;
@@ -41,7 +40,6 @@ public class Projectile_Direct : Projectile
             if (friend == parent)
             {
                 Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
-                print("colided with frriend's parent " + collision.gameObject.name);
                 return;
             }
         }
@@ -49,11 +47,9 @@ public class Projectile_Direct : Projectile
         {
             if (child.gameObject == collision.collider.gameObject)
             {
-                print("colided with frriend " + collision.gameObject.name);
                 return;
             }
         }
-        print("   colided with NON FRIEND"+collision.gameObject.name);
 
         //print("destroyed due to colission "+ collision.collider.ToString());
         Destroy(this.gameObject);

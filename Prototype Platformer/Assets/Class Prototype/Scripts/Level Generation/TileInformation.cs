@@ -18,6 +18,10 @@ public class TileInformation : MonoBehaviour
     [Header("0 = Closed, 1 = Open")]
     public int North=1, South=1, East=1, West=1;
 
+    [Header("Any objects to set active")]
+    [Header("for asteroid warnings")]
+    public GameObject[] Alarms;
+
     public class OpenTileEvent : UnityEvent<bool> { }
 
     [Header("What should happen when a side is opened")]

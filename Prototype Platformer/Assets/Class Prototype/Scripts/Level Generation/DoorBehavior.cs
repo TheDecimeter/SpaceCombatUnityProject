@@ -87,7 +87,6 @@ public class DoorBehavior : MonoBehaviour
             return;
 
         //door closing sounds can go here
-        print("DoorClose");
         //audio.Play("DoorClose");
 
         this.transform.localScale = new Vector3(1, 1, 1);
