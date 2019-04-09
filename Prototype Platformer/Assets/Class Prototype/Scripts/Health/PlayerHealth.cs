@@ -49,12 +49,15 @@ public class PlayerHealth : MonoBehaviour {
 
     public void DealDamage(DamageMessage message)
     {
-        if (message.friend==gameObject||message.friend == colliders)
-            return;
+        //if (message.friend==gameObject||message.friend == colliders)
+            //return;
+
         if (!_canTakeDamage) return;
 
         if (message.damage < 0)
         {
+            print("JERE");
+
             if (_currentHealth > maxHealth)
                 return;
             _currentHealth -= message.damage;
