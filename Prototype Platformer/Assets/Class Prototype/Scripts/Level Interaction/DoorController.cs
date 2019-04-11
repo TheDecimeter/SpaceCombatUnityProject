@@ -35,6 +35,9 @@ public class DoorController : MonoBehaviour
     public float yOffset = .05f;
     public float zOffset = -2;
 
+    public ParticleSystem ps1;
+    public ParticleSystem ps2;  
+
     private GameObject general;
     private GameObject north;
     private GameObject east;
@@ -60,6 +63,9 @@ public class DoorController : MonoBehaviour
 
     public bool open()
     {
+        if (ps1 != null) ps1.Play();
+        if (ps2 != null) ps2.Play();
+
         bool ret = false;
         foreach (DoorBehavior d in Doors)
         {
