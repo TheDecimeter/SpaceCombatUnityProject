@@ -24,12 +24,23 @@ public class PlayerHealth : MonoBehaviour {
     public TextManager info;
     private AnimationStates AnimState;
     public PostProcessLayer blurComponent;
+    public PostProcessVolume camEffects;
+    private PostProcessVolume defaultCamEffects;
     public Text health;
 
     public bool isDead{get; protected set;}
 
     public void Start ()
     {
+
+
+        MotionBlur mb;
+        if (camEffects.profile.TryGetSettings(out mb))
+            mb.enabled.value = false;
+        DepthOfField df;
+        if (camEffects.profile.TryGetSettings(out df))
+            df.enabled.value = false;
+
         isDead = false;
         _currentHealth = startingHealth;
         audio = FindObjectOfType<AudioManager>();
@@ -56,7 +67,6 @@ public class PlayerHealth : MonoBehaviour {
 
         if (message.damage < 0)
         {
-            print("JERE");
 
             if (_currentHealth > maxHealth)
                 return;
@@ -103,16 +113,44 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
+        FloatParameter sf = new FloatParameter { value = 360f };
+        FloatParameter af = new FloatParameter { value = 24f };
+        IntParameter si = new IntParameter { value = 32 };
         //print("start blur");
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
-        blurComponent.enabled = true;
+        //blurComponent.enabled = true;
+        //camEffects.profile.AddSettings<MotionBlur>().shutterAngle = sf;
+        //camEffects.profile.AddSettings<MotionBlur>().sampleCount = si;
+        //camEffects.profile.AddSettings<DepthOfField>().aperture= af;
+
+        MotionBlur mb;
+        camEffects.profile.TryGetSettings(out mb);
+        mb.enabled.value = true;
+        DepthOfField df;
+        camEffects.profile.TryGetSettings(out df);
+        df.enabled.value = true;
+
         frameCounter = 0;
     }
     private void endBlur()
     {
+        FloatParameter sf = new FloatParameter { value = 4f };
+        FloatParameter af = new FloatParameter { value = 32f };
+        IntParameter si = new IntParameter { value = 0 };
         //print("end blur");
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
-        blurComponent.enabled = false;
+        //blurComponent.enabled = false;
+        //camEffects.profile.AddSettings<MotionBlur>().shutterAngle = sf;
+        //camEffects.profile.AddSettings<MotionBlur>().sampleCount = si;
+        //camEffects.profile.AddSettings<DepthOfField>().aperture = af;
+
+
+        MotionBlur mb;
+        if(camEffects.profile.TryGetSettings(out mb))
+            mb.enabled.value = false;
+        DepthOfField df;
+        if(camEffects.profile.TryGetSettings(out df))
+            df.enabled.value = false;
     }
 
     public void PlayerDeath ()
