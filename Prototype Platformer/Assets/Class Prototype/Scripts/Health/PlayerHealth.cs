@@ -28,6 +28,11 @@ public class PlayerHealth : MonoBehaviour {
     private PostProcessVolume defaultCamEffects;
     public Text health;
 
+    private int framesDamage = 0, damageRate = 0;
+    private int secondsCounter = 0;
+
+    private CharacterMovement_Physics character;
+
     public bool isDead{get; protected set;}
 
     public void Start ()
@@ -46,6 +51,8 @@ public class PlayerHealth : MonoBehaviour {
         audio = FindObjectOfType<AudioManager>();
         PlayerNumber = GetComponent<CharacterMovement_Physics>().PlayerNumber;
         AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
+
+        character = GetComponent<CharacterMovement_Physics>();
     }
 
     void FixedUpdate()
@@ -55,6 +62,16 @@ public class PlayerHealth : MonoBehaviour {
             frameCounter++;
             if (frameCounter == blurFrames)
                 endBlur();
+        }
+        if (framesDamage > 0)
+        {
+            secondsCounter++;
+            if (secondsCounter == 50)
+            {
+                secondsCounter = 0;
+                framesDamage--;
+                DealDamage(new DamageMessage(damageRate, null));
+            }
         }
     }
 
@@ -67,6 +84,8 @@ public class PlayerHealth : MonoBehaviour {
 
         if (message.damage < 0)
         {
+            //heal poison
+            framesDamage = 0;
 
             if (_currentHealth > maxHealth)
                 return;
@@ -90,8 +109,14 @@ public class PlayerHealth : MonoBehaviour {
         {
             startBlur();
         }
+        if (message.effect.Contains("poison"))
+        {
+            string[] tokens = message.effect.Split(',');
+            int.TryParse(tokens[1], out damageRate);
+            int.TryParse(tokens[2], out framesDamage);
+        }
 
-        _currentHealth -= message.damage;
+        _currentHealth -= (int)(message.damage*character.damageFactor);
 
         //print("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
@@ -159,7 +184,8 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.startDie();
         GetComponent<Rigidbody>().useGravity = false;
-        
+
+        framesDamage = 0;
 
         transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
         transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>().enabled = false;
@@ -200,7 +226,7 @@ public class PlayerHealth : MonoBehaviour {
         deathEvent.Invoke();
         _canTakeDamage = false;
 
-     
+
 
     }
 }

@@ -13,14 +13,15 @@ public class OfferItem : MonoBehaviour
 
     private bool itemHasBeenGotten;
 
-    private Collider _childCollider;
+    public Collider _childCollider;
     // Start is called before the first frame update
     void Start()
     {
         highlight= transform.Find("Pointer").gameObject;
 
         itemHasBeenGotten = false;
-        _childCollider=this.transform.GetChild(0).GetComponent<Collider>();
+        if(_childCollider==null)
+            _childCollider=this.transform.GetChild(0).GetComponent<Collider>();
     }
 
     // Update is called once per frame

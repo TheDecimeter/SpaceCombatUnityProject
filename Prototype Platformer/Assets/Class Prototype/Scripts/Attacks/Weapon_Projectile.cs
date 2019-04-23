@@ -9,6 +9,7 @@ public class Weapon_Projectile : Weapon {
     public float fireRate = 0.25f;
 
     private bool _canFire = true;
+    
 
     public override bool Fire (Transform attackSpawnPoint, GameObject friendly)
     {
@@ -21,6 +22,7 @@ public class Weapon_Projectile : Weapon {
         GameObject projectile = (GameObject)Instantiate(projectilePrefab, attackSpawnPoint.position, attackSpawnPoint.rotation, null);
         //Physics.IgnoreCollision(attackSpawnPoint.GetComponent<Collider>(), projectile.GetComponent<Collider>());
 
+        projectile.SetActive(true);
         
         Physics.IgnoreCollision(friendly.transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
             projectile.GetComponent<Collider>());
@@ -29,6 +31,9 @@ public class Weapon_Projectile : Weapon {
 
         projectile.GetComponent<Projectile_Direct>().friend = friendly;
         projectile.GetComponent<DealDamage>().friend = friendly;
+        projectile.GetComponent<DealDamage>().effect=effect;
+
+        //projectile.transform.parent = null;
 
         _canFire = false;
 

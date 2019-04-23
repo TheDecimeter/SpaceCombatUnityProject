@@ -19,6 +19,8 @@ public class DealDamage : MonoBehaviour {
     [Header("Trigger Collider Only")]
     public bool continuousDamage = false;
 
+    public string effect = "set in weapon";
+
 
     private bool _canDamage = true;
 
@@ -33,7 +35,7 @@ public class DealDamage : MonoBehaviour {
         if (other.CompareTag(targetTag))
         {
             //print("trigger enter dammmage "+other.ToString());
-            other.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, friend), SendMessageOptions.DontRequireReceiver);
+            other.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, effect, friend), SendMessageOptions.DontRequireReceiver);
             _canDamage = false;
             StartCoroutine(ResetDamage());
         }
@@ -47,7 +49,7 @@ public class DealDamage : MonoBehaviour {
         if (continuousDamage && (other.CompareTag(targetTag)))
         {
             //print("trigger damage " + other.ToString());
-            other.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, friend), SendMessageOptions.DontRequireReceiver);
+            other.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, effect, friend), SendMessageOptions.DontRequireReceiver);
             _canDamage = false;
             StartCoroutine(ResetDamage()); 
         }
@@ -62,7 +64,7 @@ public class DealDamage : MonoBehaviour {
         if (col.gameObject.CompareTag(targetTag))
         {
             //print("colission dammmage");
-            col.gameObject.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, friend), SendMessageOptions.DontRequireReceiver);
+            col.gameObject.SendMessageUpwards(damageFunctionName, new DamageMessage(damageAmount, effect, friend), SendMessageOptions.DontRequireReceiver);
             _canDamage = false;
             StartCoroutine(ResetDamage());
         }

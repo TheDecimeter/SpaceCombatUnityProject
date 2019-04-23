@@ -13,11 +13,12 @@ public class GunPrototype : Item
     public GameObject pickupHud;
     public GameObject inUseHud;
 
+
     public UnityEvent onUse;
 
     [Header("Attack Properties")]
     public Weapon Attack;
-
+    
 
     public override GameObject getInUseHUD()
     {
@@ -52,13 +53,14 @@ public class GunPrototype : Item
         if (Attack.Fire(attackSpawnPoint, user.gameObject))
         {
             onUse.Invoke();
-            audio.Play("rifle");
+            //audio.Play("rifle");
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        Attack.effect = effect;
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
     }

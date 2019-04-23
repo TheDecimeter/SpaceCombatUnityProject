@@ -16,8 +16,7 @@ public class ShivPrototype : Item
 
     [Header("Attack Properties")]
     public Weapon Attack;
-
-
+    
 
     public override GameObject getInUseHUD()
     {
@@ -58,6 +57,7 @@ public class ShivPrototype : Item
     // Start is called before the first frame update
     void Start()
     {
+        Attack.effect = effect;
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
     }

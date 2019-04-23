@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MeleeAttack : Weapon
 {
@@ -9,18 +10,19 @@ public class MeleeAttack : Weapon
     public float fireRate = 0.25f;
     public float range = 5;
     public int damage = 3;
-
-    public string effect = "blur";
+    
 
     [Header("Where are players stored:")]
     public GameObject PlayerArray;
 
     private bool _canFire = true;
 
+    public UnityEvent onUse;
+
     public override bool Fire(Transform attackSpawnPoint, GameObject friendly)
     {
         if (!_canFire) return false;
-
+        onUse.Invoke();
         bool ret = false;
         //print(" firing ");
 
@@ -31,8 +33,6 @@ public class MeleeAttack : Weapon
                 {
                     child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(damage, effect, friendly));
                     ret = true;
-
-
                 }
 
         /*

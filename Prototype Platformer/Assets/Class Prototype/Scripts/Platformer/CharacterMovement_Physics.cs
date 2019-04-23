@@ -63,6 +63,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     //private GameObject _currentItem;
     public Item _currentItem;
+    private Item defaultWeapon;
     public TextManager info;
     //public Text currentItemHUD;
     private GameObject HUDmount;
@@ -82,6 +83,14 @@ public class CharacterMovement_Physics : MonoBehaviour
     public HUDPointer NavPoint;
 
     private List<HUDPointer> navPoints;
+
+    public GameObject inGameMenu;
+    [HideInInspector]
+    public float damageFactor=1;
+
+    private bool gameMenuActive=false;
+
+    private bool ignoreInput = false;
 
     private HashSet<DoorController> currentDoors = new HashSet<DoorController>();
 
@@ -118,6 +127,8 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         GameObject g = Instantiate(FindObjectOfType<CommonPunch>().gameObject);
         _currentItem = g.GetComponent<Item>();
+        GameObject g2 = Instantiate(g);
+        defaultWeapon = g2.GetComponent<Item>();
 
         //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
         _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
@@ -135,7 +146,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void Update()
     {
-        if (!_canMove) return;
+        if (!_canMove||gameMenuActive) return;
 
         if (_canJump && _isGrounded)
         {
@@ -175,6 +186,46 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (ignoreInput)
+        {
+            if (_controllerStatus.B) return;
+            if (_controllerStatus.jump) return;
+            if (_controllerStatus.inGameMenu) return;
+            ignoreInput = false;
+        }
+        if (gameMenuActive)
+        {
+            if (_controllerStatus.B)
+            {
+                inGameMenu.SetActive(false);
+                FindObjectOfType<UndestroyableData>().OpenStartMenu();
+                SceneLoader loader=FindObjectOfType<SceneLoader>();
+
+                ignoreInput = true;
+
+                loader.sceneLoadDelay = 0;
+                loader.sceneFadeDuration = 0;
+                loader.RestartScene();
+                
+            }
+            else if (_controllerStatus.jump || _controllerStatus.inGameMenu)
+            {
+                inGameMenu.SetActive(false);
+                gameMenuActive = false;
+                ignoreInput = true;
+                _canJump = false;
+            }
+            return;
+        }
+
+        if (_controllerStatus.inGameMenu)
+        {
+            inGameMenu.SetActive(true);
+            gameMenuActive = true;
+            ignoreInput = true;
+            return;
+        }
+
         if (!_canMove)
         {
             _rigidbody.velocity = Vector3.zero;
@@ -470,7 +521,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
             ///anim.SetBool(_currentItem.getAnimationFlag(), true);
-            if (_currentItem == null) print("current item is null");
+            if (_currentItem == null) print("current item is null "+name[PlayerNumber]);
 
             Transform atkPt = new GameObject().transform;
             atkPt.position = new Vector3(
@@ -478,7 +529,25 @@ public class CharacterMovement_Physics : MonoBehaviour
                 mountingBone.transform.position.y,
                 transform.position.z);
             atkPt.rotation = transform.rotation;
-            _currentItem.use(atkPt, this.transform);
+            _currentItem.use(attackPoint, this.transform);
+
+            if (_currentItem.effect.Contains("useonce"))
+            {
+                if (_currentItem.effect.Contains("shield"))
+                {
+                    damageFactor = 1f;
+                }
+                AnimState.updateAnimationState(_currentItem.getAnimationFlag(), false);
+                GameObject oldItem = _currentItem.transform.parent.gameObject;
+                releaseItem();
+                print("        OLD ITEM"+oldItem.name);
+                Destroy(oldItem);
+                _currentItem = Instantiate(defaultWeapon);
+                print("use once");
+            }
+            if (defaultWeapon == null) print("default item is null " + name[PlayerNumber]);
+
+
             //I know I put this method here for your convenience, but technically,
             //attacking sounds should go in the individual "use" methods in the weapon
             //scripts found at scripts/ItemPickup/PunchPrototype.cs (or ShivPrototype or GunPrototype)
@@ -629,10 +698,20 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         _currentItem = item;
         item.itemExterior.SendMessageUpwards("feedback", true, SendMessageOptions.DontRequireReceiver);
+        if (_currentItem.effect.Contains("shield"))
+        {
+            string[] tokens = _currentItem.effect.Split(',');
+            if (!float.TryParse(tokens[1], out damageFactor))
+                print("incorrectly parsed shield");
+        }
     }
 
     private void releaseItem()
     {
+        if(_currentItem.effect.Contains("shield"))
+        {
+            damageFactor = 1f;
+        }
         //make sure you're not animating an attack with the item to be dropped
         //anim.SetBool(_currentItem.getAnimationFlag(), false);
         AnimState.updateAnimationState(_currentItem.getAnimationFlag(), false);

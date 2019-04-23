@@ -15,9 +15,12 @@ public class PlayerSetter : MonoBehaviour
         foreach (Transform child in PlayerArray.transform)
         {
             string name = "HUD_"+nameOf[child.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber];
-            //if (child.gameObject.GetComponent<CharacterMovement_Physics>().currentItemHUD == null)
-            //    child.gameObject.GetComponent<CharacterMovement_Physics>().currentItemHUD
-            //        = HUD.transform.Find(name+"/Item").gameObject.GetComponent<Text>();
+            if (child.gameObject.GetComponent<CharacterMovement_Physics>().inGameMenu == null)
+                child.gameObject.GetComponent<CharacterMovement_Physics>().inGameMenu
+                    = HUD.transform.Find(name + "/inGameMenu").gameObject;
+
+            HUD.transform.Find(name + "/inGameMenu").gameObject.SetActive(false);
+
             if (child.gameObject.GetComponent<PlayerHealth>().health == null)
                 child.gameObject.GetComponent<PlayerHealth>().health
                     = HUD.transform.Find(name + "/Health").gameObject.GetComponent<Text>();

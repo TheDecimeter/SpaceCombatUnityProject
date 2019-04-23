@@ -55,7 +55,8 @@ public class PunchPrototype : Item
     // Start is called before the first frame update
     void Start()
     {
-        if(audio==null)
+        Attack.effect = effect;
+        if (audio==null)
             audio= FindObjectOfType<AudioManager>();
     }
 

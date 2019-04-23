@@ -1,22 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
-public class Projectile_Direct : Projectile 
+public class Projectile_Direct : Projectile
 {
     public float projectileSpeed = 10f;
     public float timeToDie = 5f;
+    public float StayAliveAfterColission = 0f;
 
     private Rigidbody _rigidbody;
 
     public GameObject friend;
 
+    public UnityEvent onUse;
+    
+
     public void Start()
     {
         _rigidbody = this.GetComponent<Rigidbody>();
 
-        StartCoroutine(Timout());
+        StartCoroutine(Timout(timeToDie));
     }
 
     void Update () 
@@ -51,14 +56,22 @@ public class Projectile_Direct : Projectile
             }
         }
 
+        onUse.Invoke();
+
         //print("destroyed due to colission "+ collision.collider.ToString());
-        Destroy(this.gameObject);
+        if (StayAliveAfterColission > 0)
+            StartCoroutine(Timout(StayAliveAfterColission));
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        
     }
 
-    IEnumerator Timout ()
+    IEnumerator Timout (float time)
     {
-        yield return new WaitForSeconds(timeToDie);
-
+        yield return new WaitForSeconds(time);
+        
         Destroy(this.gameObject);
     }
 

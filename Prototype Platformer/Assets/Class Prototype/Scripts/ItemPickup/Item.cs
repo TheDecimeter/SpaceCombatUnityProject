@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class Item : MonoBehaviour
 {
+
+    public string effect = "none";
     protected static AudioManager audio;
     public const int Ranged = 0, Stab = 1, Punch=-1;
     public GameObject itemExterior;

@@ -86,6 +86,7 @@ public class StartMenu : MonoBehaviour
             savedData.HowManyRounds(SuggestedRounds);
             savedData.CloseStartMenu();
             sceneLoader.sceneLoadDelay = 0;
+            sceneLoader.sceneFadeDuration = 0;
             sceneLoader.RestartScene();
         }
         if (controls.door)

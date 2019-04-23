@@ -109,7 +109,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileSpeed: 20
   timeToDie: 5
+  StayAliveAfterColission: 0
   friend: {fileID: 0}
+  onUse:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!54 &54413831679874814
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -139,10 +145,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTag: Player
-  damageAmount: 10
+  damageAmount: 8
   damageTickRate: 0.5
   damageFunctionName: DealDamage
   continuousDamage: 0
+  effect: set in weapon
   friend: {fileID: 0}
 --- !u!108 &3846987280359887281
 Light:
@@ -151,7 +158,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850919846350010}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 0.35686275, g: 1, b: 0.35686275, a: 1}
