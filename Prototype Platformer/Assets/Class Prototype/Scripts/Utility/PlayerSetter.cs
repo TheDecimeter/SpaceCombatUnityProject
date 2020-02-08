@@ -17,13 +17,13 @@ public class PlayerSetter : MonoBehaviour
             string name = "HUD_"+nameOf[child.gameObject.GetComponent<CharacterMovement_Physics>().PlayerNumber];
             if (child.gameObject.GetComponent<CharacterMovement_Physics>().inGameMenu == null)
                 child.gameObject.GetComponent<CharacterMovement_Physics>().inGameMenu
-                    = HUD.transform.Find(name + "/inGameMenu").gameObject;
+                    = HUD.transform.Find(name + "/HUD/inGameMenu").gameObject;
 
-            HUD.transform.Find(name + "/inGameMenu").gameObject.SetActive(false);
+            HUD.transform.Find(name + "/HUD/inGameMenu").gameObject.SetActive(false);
 
             if (child.gameObject.GetComponent<PlayerHealth>().health == null)
                 child.gameObject.GetComponent<PlayerHealth>().health
-                    = HUD.transform.Find(name + "/Health").gameObject.GetComponent<Text>();
+                    = HUD.transform.Find(name + "/HUD/Health").gameObject.GetComponent<Text>();
             child.gameObject.GetComponent<PlayerHealth>().health.text
                 = " " + child.gameObject.GetComponent<PlayerHealth>().getHealth();
 

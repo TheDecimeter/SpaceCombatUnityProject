@@ -21,12 +21,32 @@ ModelImporter:
     3300002: polySurface11
     4300000: polySurface10
     4300002: polySurface11
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: blinn1
+    second: {fileID: 2100000, guid: 8beabf232180da2459e6edcbf4a61202, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phongE2
+    second: {fileID: 2100000, guid: ff19fa6d15accd3429685e5f2310cbad, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phongE3
+    second: {fileID: 2100000, guid: d49aa0b46b56eff419bf1ab27ea2b8a3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phongE4
+    second: {fileID: 2100000, guid: ff19fa6d15accd3429685e5f2310cbad, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0

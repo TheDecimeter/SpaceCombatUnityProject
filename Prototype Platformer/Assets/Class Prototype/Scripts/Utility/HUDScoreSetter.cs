@@ -14,9 +14,9 @@ public class HUDScoreSetter : MonoBehaviour
         int playerNum = 0;
         foreach (int i in FindObjectOfType<UndestroyableData>().GetScore())
             if(i>0)
-                HUD.transform.Find("HUD_" + nameOf[playerNum++] + "/Score").gameObject.GetComponent<Text>().text=""+i;
+                HUD.transform.Find("HUD_" + nameOf[playerNum++] + "/HUD/Score").gameObject.GetComponent<Text>().text=""+i;
             else
-                HUD.transform.Find("HUD_"+nameOf[playerNum++] + "/Score").gameObject.GetComponent<Text>().text = "";
+                HUD.transform.Find("HUD_"+nameOf[playerNum++] + "/HUD/Score").gameObject.GetComponent<Text>().text = "";
     }
 
     // Update is called once per frame

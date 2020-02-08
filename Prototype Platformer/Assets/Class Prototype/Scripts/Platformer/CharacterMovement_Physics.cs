@@ -122,7 +122,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     void Start()
     {
-        HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/ItemInfoMountPoint").gameObject;
+        HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/HUD/ItemInfoMountPoint").gameObject;
         navPoints = new List<HUDPointer>();
 
         GameObject g = Instantiate(FindObjectOfType<CommonPunch>().gameObject);
