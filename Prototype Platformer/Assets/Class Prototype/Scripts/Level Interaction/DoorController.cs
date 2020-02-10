@@ -213,7 +213,6 @@ public class DoorController : MonoBehaviour
                 if (i!=playernum&&displayedQues[i].orientation == displayedQues[playernum].orientation)
                 {
                     displayedQues.Remove(playernum);
-                    print("other player present in door");
                     return false;
                 }
         }

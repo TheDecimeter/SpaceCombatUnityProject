@@ -103,7 +103,7 @@ public class DoorBehavior : MonoBehaviour
         if (isOpenable)
         {
             //door opening sounds can go here
-            print("DoorOpen");
+            //print("DoorOpen");
             audio.Play("DoorOpen");
 
             this.transform.localScale = new Vector3(0, 0, 0);

@@ -27,12 +27,13 @@ public class PlayerHealth : MonoBehaviour {
     public PostProcessVolume camEffects;
     private PostProcessVolume defaultCamEffects;
     public Text health;
+    
 
     private int framesDamage = 0, damageRate = 0;
     private int secondsCounter = 0;
 
     private CharacterMovement_Physics character;
-
+    private bool deathQuip = true;
     public bool isDead{get; protected set;}
 
     public void Start ()
@@ -70,6 +71,7 @@ public class PlayerHealth : MonoBehaviour {
             {
                 secondsCounter = 0;
                 framesDamage--;
+                HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
                 DealDamage(new DamageMessage(damageRate, null));
             }
         }
@@ -85,13 +87,25 @@ public class PlayerHealth : MonoBehaviour {
         if (message.damage < 0)
         {
             //heal poison
-            framesDamage = 0;
-
+            if (framesDamage != 0)
+            {
+                HealthParticle.Create(transform, "Poison\nCured", Color.green, true);
+                framesDamage = 0;
+            }
             if (_currentHealth > maxHealth)
                 return;
             _currentHealth -= message.damage;
             if (_currentHealth > maxHealth)
+            {
+                if(!MaxHealthQuip())
+                    HealthParticle.Create(transform, "MAX HP", Color.cyan, true);
+
                 _currentHealth = maxHealth;
+            }
+            else
+            {
+                HealthParticle.Create(transform, -message.damage);
+            }
             info.say("HP: " + _currentHealth, 15);
             return;
         }
@@ -116,16 +130,27 @@ public class PlayerHealth : MonoBehaviour {
             int.TryParse(tokens[2], out framesDamage);
         }
 
-        _currentHealth -= (int)(message.damage*character.damageFactor);
+        int damage;
+        if (character.damageFactor != 1)
+        {
+            damage = (int)(message.damage * character.damageFactor);
+            HealthParticle.Create(transform, "Resist\n"+(message.damage-damage), Color.cyan, true);
+        }
+        else
+            damage = message.damage;
+
+        _currentHealth -= damage;
 
         //print("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
+        HealthParticle.Create(transform, -damage);
         health.text =" "+ _currentHealth;
 
         damageEvent.Invoke();
 
         if (_currentHealth <= 0)
         {
+            KilledQuip();
             PlayerDeath();
             _currentHealth = 0;
         }
@@ -178,8 +203,43 @@ public class PlayerHealth : MonoBehaviour {
             df.enabled.value = false;
     }
 
+    private void KilledQuip()
+    {
+        deathQuip = true;
+        switch (Random.Range(0, 11))
+        {
+            case 0:
+                health.text = " : (";
+                info.say("Why didn't\nI choose love", -1);
+                break;
+            case 1:
+                health.text = " :'{";
+                info.say("KAAHHHHNN", -1);
+                break;
+            case 3:
+                health.text = " : P";
+                info.say("REKT??", -1);
+                break;
+            case 4:
+                health.text = " :'{";
+                info.say("Momma was right\nabout you", -1);
+                break;
+            case 5:
+                health.text = " :'{";
+                info.say("Et tu, Brute?", -1);
+                break;
+            default:
+                health.text = "0";
+                info.say("", -1);
+                break;
+        }
+    }
+
     public void PlayerDeath ()
     {
+        if (!deathQuip)
+            AsteroidQuip();
+
         if (AnimState == null)
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.startDie();
@@ -196,11 +256,18 @@ public class PlayerHealth : MonoBehaviour {
         audio.Play("Death" + name[PlayerNumber]);
         //print("Death" + name[PlayerNumber]);
 
-        switch (Random.Range(1, 11))
+        
+        deathEvent.Invoke();
+        _canTakeDamage = false;
+    }
+
+    private void AsteroidQuip()
+    {
+        switch (Random.Range(0, 8))
         {
             case 0:
                 health.text = " : (";
-                info.say("Why didn't I choose love", -1);
+                info.say("But paper was\nsupposed to beat rock.", -1);
                 break;
             case 1:
                 health.text = " :'{";
@@ -208,25 +275,40 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 3:
                 health.text = " : P";
-                info.say("REKT??", -1);
+                info.say("Long Live Rock!", -1);
                 break;
             case 4:
                 health.text = " :'{";
-                info.say("Momma was right about you", -1);
+                info.say("Huh...", -1);
                 break;
             case 5:
                 health.text = " :'{";
-                info.say("Et tu, Brute?", -1);
+                info.say("Speak of this\nTo no one!", -1);
                 break;
             default:
                 health.text = "0";
                 info.say("", -1);
                 break;
         }
-        deathEvent.Invoke();
-        _canTakeDamage = false;
+    }
 
-
-
+    private bool MaxHealthQuip()
+    {
+        switch (Random.Range(0, 20))
+        {
+            case 0:
+                HealthParticle.Create(transform, "No loitering!", Color.yellow, true);
+                return true;
+            case 1:
+                HealthParticle.Create(transform, "Kill something!", Color.yellow, true);
+                return true;
+            case 3:
+                HealthParticle.Create(transform, "Healed!\nIn the name of\nCthulhu", Color.yellow, true);
+                return true;
+            case 4:
+                HealthParticle.Create(transform, "Seek Rehab", Color.yellow, true);
+                return true;
+        }
+        return false;
     }
 }

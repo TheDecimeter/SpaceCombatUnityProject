@@ -46,7 +46,7 @@ public class CloseTile
                              map[i - 1][j] == null || map[i + 1][j] == null ||
                              map[i][j - 1] == null || map[i][j + 1] == null))
                             closableList[count++]=new Node(i,j);
-                MonoBehaviour.print("closable List size " + closableList.Length);
+                //MonoBehaviour.print("closable List size " + closableList.Length);
                 break;
 
             case South:

@@ -48,7 +48,7 @@ public class UndestroyableData : MonoBehaviour
     }
     public void SetupStartMenu(ref int RecommendedRounds, ref bool OpenStartMenu)
     {
-        print("menuNotSaved" + save.StartMenu.MenuNotSaved);
+        //print("menuNotSaved" + save.StartMenu.MenuNotSaved);
         if (save.StartMenu.MenuNotSaved)
         {
             save.StartMenu.MenuNotSaved = false;
@@ -70,7 +70,7 @@ public class UndestroyableData : MonoBehaviour
     public void IncreaseScore(int PlayerNumber, int HowMuch)
     {
         save.ScoreKeeper.player[PlayerNumber] += HowMuch;
-        print("score increased for " + PlayerNumber + " score: " + save.ScoreKeeper.player[PlayerNumber]);
+        //print("score increased for " + PlayerNumber + " score: " + save.ScoreKeeper.player[PlayerNumber]);
     }
     public IEnumerable<int> GetScore()
     {
@@ -158,7 +158,7 @@ public class UndestroyableData : MonoBehaviour
         }
         else
         {
-            print("start menu closed in LevelSetup");
+            //print("start menu closed in LevelSetup");
             xDim = save.Play.MapDemensionX;
             yDim = save.Play.MapDemensionY;
 

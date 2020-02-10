@@ -487,7 +487,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         //Random.Range[0,5] and you'll get a 0,1,2,3, or 4 (not 5).
 
         //here's an example of what that might look like, this will print when a player jumps
-        print("Jump_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
+        //print("Jump_" + name[PlayerNumber] + "_" + Random.Range(1, 5));
 
         //technically you said you might want to just go male of female for now and individual characters
         //later, for that I would recommend just copying each file (two males and two females) and still
@@ -496,7 +496,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         //yourself... so more work that way.
 
         //That said, if you really want male or female tags, here's how you could get that string:
-        print("Jump_" + (name[PlayerNumber] == "Hobbs" || name[PlayerNumber] == "Leslie" ? "Female" : "Male") );
+        //print("Jump_" + (name[PlayerNumber] == "Hobbs" || name[PlayerNumber] == "Leslie" ? "Female" : "Male") );
 
         if(YayOrNay)audio.Play("Jump" + name[PlayerNumber]);
 
