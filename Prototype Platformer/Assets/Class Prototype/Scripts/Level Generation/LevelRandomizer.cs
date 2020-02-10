@@ -64,8 +64,8 @@ public class LevelRandomizer : MonoBehaviour
     private ItemSpawner[] ItemSpawners;
 
     //the various things created in a specific level (changes every round)
-    private GameObject[] PlacedItems;
-    private TileInformation[][] Map;
+    public GameObject[] PlacedItems { get; protected set; }
+    public TileInformation[][] Map { get; protected set; }
     private List<Object> PlacedTileList;
     //private List<DoorBehavior> LevelDoors;
 
