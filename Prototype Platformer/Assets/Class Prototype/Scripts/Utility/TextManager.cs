@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class TextManager : MonoBehaviour
 {
 
     private int delay = 0;
-    public TextMesh info;
+    public TextMeshPro info;
 
 
     // Start is called before the first frame update

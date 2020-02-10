@@ -57,6 +57,7 @@ public class ShivPrototype : Item
     // Start is called before the first frame update
     void Start()
     {
+        ItemName = ItemName.Replace("\\n", "\n");
         Attack.effect = effect;
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
