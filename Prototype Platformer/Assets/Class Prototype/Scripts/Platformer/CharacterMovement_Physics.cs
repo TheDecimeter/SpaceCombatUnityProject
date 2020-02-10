@@ -134,7 +134,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
         
 
-        _controllerStatus = new ControlStruct();
+        _controllerStatus = new ControlStruct(ControlStruct.None);
 
         _rigidbody = this.GetComponent<Rigidbody>();
 
@@ -451,7 +451,10 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     public void ControllerListener(ControlStruct controls)
     {
-        _controllerStatus = controls;
+        if (_controllerStatus.fromSource(controls.source))
+            _controllerStatus = controls;
+        else
+            _controllerStatus.combine(controls);
         //if (controls.jump)
         //    print("player " + PlayerNumber + " received the jump instruction");
         //if (controls.action)
@@ -461,6 +464,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         //if (controls.moveLeft != 0)
         //    print("player " + PlayerNumber + " received the move instruction " + controls.moveLeft);
     }
+
 
     
 

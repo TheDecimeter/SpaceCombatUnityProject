@@ -33,7 +33,7 @@ public class Input_via_Keyboard : MonoBehaviour
 
     private void sendArrowcontrols()
     {
-        ControlStruct c = new ControlStruct();
+        ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
         c.jump = Input.GetKey(KeyCode.UpArrow);
         c.attack = Input.GetKey(KeyCode.RightShift);
@@ -55,7 +55,7 @@ public class Input_via_Keyboard : MonoBehaviour
 
     private void sendWASDcontrols()
     {
-        ControlStruct c = new ControlStruct();
+        ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
         c.jump = Input.GetKey(KeyCode.W);
         c.attack = Input.GetKey(KeyCode.Space);
@@ -77,7 +77,7 @@ public class Input_via_Keyboard : MonoBehaviour
 
     private void sendIJKLcontrols()
     {
-        ControlStruct c = new ControlStruct();
+        ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
         c.jump = Input.GetKey(KeyCode.I);
         c.attack = Input.GetKey(KeyCode.H);
@@ -99,7 +99,7 @@ public class Input_via_Keyboard : MonoBehaviour
 
     private void sendNumPadcontrols()
     {
-        ControlStruct c = new ControlStruct();
+        ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
         c.jump = Input.GetKey(KeyCode.Keypad8);
         c.attack = Input.GetKey(KeyCode.KeypadEnter);

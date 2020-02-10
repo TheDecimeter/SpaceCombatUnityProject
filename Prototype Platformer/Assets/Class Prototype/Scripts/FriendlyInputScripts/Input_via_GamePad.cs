@@ -47,7 +47,7 @@ public class Input_via_GamePad : MonoBehaviour
     {
         previousControls = new List<ControlStruct>(maxPlayers);
         for (int i = 0; i < maxPlayers; ++i)
-            previousControls.Add(new ControlStruct());
+            previousControls.Add(new ControlStruct(ControlStruct.Controller));
     }
     
     
@@ -73,7 +73,7 @@ public class Input_via_GamePad : MonoBehaviour
             foreach (GamepadDevice gamepad in input.gamepads)
             {
                 //create a structure for holding controls
-                ControlStruct playerControls = new ControlStruct();
+                ControlStruct playerControls = new ControlStruct(ControlStruct.Controller);
 
 
                 int[] buttonValues = (int[])System.Enum.GetValues(typeof(GamepadButton));

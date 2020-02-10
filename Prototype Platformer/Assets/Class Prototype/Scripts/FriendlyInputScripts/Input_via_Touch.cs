@@ -31,7 +31,7 @@ public class Input_via_Touch : MonoBehaviour
 
     private void player1Check()
     {
-        ControlStruct c = new ControlStruct();
+        ControlStruct c = new ControlStruct(ControlStruct.Mobile);
 
         if (Player1_jump)
         {
