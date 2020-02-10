@@ -16,22 +16,52 @@ public class DoorBehavior : MonoBehaviour
     public int FramesToStayOpen=8;
     // Start is called before the first frame update
     public bool isOpenable = true;
-    private Color LockedColor = new Color(.3f,0,0);
-    private Color unLockedColor = new Color(0, 0, 0);
+    private Color LockedColor = new Color(.3f,0,0,.655f);
+    private Color unLockedColor=new Color(.1691f,.4842f,1, .655f);//new Color(0, 0, 0);
 
     private int _state=Closed;
     private int _frameCounter=0;
 
-    private const string emission = "_EmissionColor";
+    private const string element = "_TintColor";
 
     private static AudioManager audio;
     void Start()
     {
+        //getCurrentTint();
         //unLockedColor = GetComponent<Renderer>().material.GetColor(emission);
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
         //if(isOpenable)
         //    this.transform.localScale = new Vector3(0, 0, 0);
+    }
+
+    //private void getCurrentTint()
+    //{
+    //    Transform current = transform;
+    //    current = transform.parent.transform.parent;
+    //    foreach (Transform child in current)
+    //    {
+    //        Renderer r = child.GetComponent<Renderer>();
+    //        if (r)
+    //        {
+    //            unLockedColor=r.material.GetColor(element);
+    //            break;
+    //        }
+    //    }
+    //}
+
+    private void setCurrentTint(Color color)
+    {
+        Transform current = transform;
+        current = transform.parent.transform.parent;
+        foreach (Transform child in current)
+        {
+            Renderer r = child.GetComponent<Renderer>();
+            if (r)
+            {
+                r.material.SetColor(element, color);
+            }
+        }
     }
     
 
@@ -57,11 +87,12 @@ public class DoorBehavior : MonoBehaviour
         if (!isOpenable)
         {
             close();
-            GetComponent<Renderer>().material.SetColor(emission,LockedColor);
+            //GetComponent<Renderer>().material.SetColor(element,LockedColor);
+            setCurrentTint(LockedColor);
 
         }
         else
-            GetComponent<Renderer>().material.SetColor(emission, unLockedColor);
+            setCurrentTint(unLockedColor); // GetComponent<Renderer>().material.SetColor(element, unLockedColor);
     }
 
     public void open()
