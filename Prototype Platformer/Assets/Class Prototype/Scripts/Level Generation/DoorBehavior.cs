@@ -16,30 +16,24 @@ public class DoorBehavior : MonoBehaviour
     public int FramesToStayOpen=8;
     // Start is called before the first frame update
     public bool isOpenable = true;
+    private Color LockedColor = new Color(.3f,0,0);
+    private Color unLockedColor = new Color(0, 0, 0);
 
     private int _state=Closed;
     private int _frameCounter=0;
 
+    private const string emission = "_EmissionColor";
 
     private static AudioManager audio;
     void Start()
     {
+        //unLockedColor = GetComponent<Renderer>().material.GetColor(emission);
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
         //if(isOpenable)
         //    this.transform.localScale = new Vector3(0, 0, 0);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (_state == Closed)
-            return;
-
-        //_frameCounter--;
-        //if (_frameCounter == 0)
-            //close();
-    }
+    
 
     public bool isOpened()
     {
@@ -61,7 +55,13 @@ public class DoorBehavior : MonoBehaviour
     {
         isOpenable = value;
         if (!isOpenable)
+        {
             close();
+            GetComponent<Renderer>().material.SetColor(emission,LockedColor);
+
+        }
+        else
+            GetComponent<Renderer>().material.SetColor(emission, unLockedColor);
     }
 
     public void open()

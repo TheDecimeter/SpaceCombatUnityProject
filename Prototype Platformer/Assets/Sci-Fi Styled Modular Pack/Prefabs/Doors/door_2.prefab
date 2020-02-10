@@ -129,7 +129,6 @@ GameObject:
   - component: {fileID: 476950}
   - component: {fileID: 3302294}
   - component: {fileID: 2326398}
-  - component: {fileID: 9594526}
   - component: {fileID: 6532628}
   m_Layer: 0
   m_Name: door_2_right
@@ -177,7 +176,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 10de6384af0c3b54e8166f9c3f936e88, type: 2}
+  - {fileID: 2100000, guid: 4ed119e1c4c42374e813d33ec550a9ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -197,25 +196,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!95 &9594526
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141230}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 791a433f9653b904dade303d1345882f, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!65 &6532628
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -240,7 +220,6 @@ GameObject:
   - component: {fileID: 485782}
   - component: {fileID: 3372734}
   - component: {fileID: 2388998}
-  - component: {fileID: 9598446}
   - component: {fileID: 6500228}
   m_Layer: 0
   m_Name: door_2_left
@@ -279,7 +258,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187554}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -288,7 +267,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 10de6384af0c3b54e8166f9c3f936e88, type: 2}
+  - {fileID: 2100000, guid: 4ed119e1c4c42374e813d33ec550a9ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -308,25 +287,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!95 &9598446
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 187554}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: c4e7e92b29579c940be181092de59dc1, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!65 &6500228
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -353,7 +313,7 @@ GameObject:
   - component: {fileID: 1028807629462145660}
   - component: {fileID: 5982037479396737409}
   m_Layer: 0
-  m_Name: Floor (1)
+  m_Name: Top of door frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

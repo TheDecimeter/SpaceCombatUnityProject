@@ -74,9 +74,9 @@ public class WarningLightManager : MonoBehaviour
     public void AddWarningLight(float x, float y, float z)
     {
         if (gActiveWarningLight == null)
-            gActiveWarningLight = Instantiate(WarningLight);
-
-        ActiveWarningLight= gActiveWarningLight.GetComponent<Light>();
+            gActiveWarningLight = WarningLight;// Instantiate(WarningLight);
+        gActiveWarningLight.SetActive(true);
+        ActiveWarningLight = gActiveWarningLight.GetComponent<Light>();
 
         gActiveWarningLight.transform.position = new Vector3(x, y, z);
         ActiveWarningLight.intensity = wMin;
@@ -86,7 +86,7 @@ public class WarningLightManager : MonoBehaviour
 
     public void AddDisabledRoom(float x, float y, float z)
     {
-        ActiveDisabledLights.Add(new DisabledLightNode(x, y, z,dMax,dMin,dExtremeMargin,dFluctuation,dFluctuationMargin, DisabledRoomLight));
+        //ActiveDisabledLights.Add(new DisabledLightNode(x, y, z,dMax,dMin,dExtremeMargin,dFluctuation,dFluctuationMargin, DisabledRoomLight));
     }
 
     public void reset()
@@ -96,7 +96,7 @@ public class WarningLightManager : MonoBehaviour
         ActiveDisabledLights = new List<DisabledLightNode>();
 
         if(gActiveWarningLight!=null)
-            Destroy(gActiveWarningLight);
+            gActiveWarningLight.SetActive(false); //Destroy(gActiveWarningLight);
     }
 
     public void PhaseDisabledRoomLights()
