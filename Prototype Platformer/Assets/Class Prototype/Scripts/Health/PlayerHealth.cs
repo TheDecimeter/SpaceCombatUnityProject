@@ -24,7 +24,7 @@ public class PlayerHealth : MonoBehaviour {
     public TextManager info;
     private AnimationStates AnimState;
     public PostProcessLayer blurComponent;
-    public PostProcessVolume camEffects;
+    //public PostProcessVolume camEffects;
     private PostProcessVolume defaultCamEffects;
     public Text health;
     
@@ -40,12 +40,12 @@ public class PlayerHealth : MonoBehaviour {
     {
 
 
-        MotionBlur mb;
-        if (camEffects.profile.TryGetSettings(out mb))
-            mb.enabled.value = false;
-        DepthOfField df;
-        if (camEffects.profile.TryGetSettings(out df))
-            df.enabled.value = false;
+        //MotionBlur mb;
+        //if (camEffects.profile.TryGetSettings(out mb))
+        //    mb.enabled.value = false;
+        //DepthOfField df;
+        //if (camEffects.profile.TryGetSettings(out df))
+        //    df.enabled.value = false;
 
         isDead = false;
         _currentHealth = startingHealth;
@@ -173,12 +173,12 @@ public class PlayerHealth : MonoBehaviour {
         //camEffects.profile.AddSettings<MotionBlur>().sampleCount = si;
         //camEffects.profile.AddSettings<DepthOfField>().aperture= af;
 
-        MotionBlur mb;
-        camEffects.profile.TryGetSettings(out mb);
-        mb.enabled.value = true;
-        DepthOfField df;
-        camEffects.profile.TryGetSettings(out df);
-        df.enabled.value = true;
+        //MotionBlur mb;
+        //camEffects.profile.TryGetSettings(out mb);
+        //mb.enabled.value = true;
+        //DepthOfField df;
+        //camEffects.profile.TryGetSettings(out df);
+        //df.enabled.value = true;
 
         frameCounter = 0;
     }
@@ -195,12 +195,12 @@ public class PlayerHealth : MonoBehaviour {
         //camEffects.profile.AddSettings<DepthOfField>().aperture = af;
 
 
-        MotionBlur mb;
-        if(camEffects.profile.TryGetSettings(out mb))
-            mb.enabled.value = false;
-        DepthOfField df;
-        if(camEffects.profile.TryGetSettings(out df))
-            df.enabled.value = false;
+        //MotionBlur mb;
+        //if(camEffects.profile.TryGetSettings(out mb))
+        //    mb.enabled.value = false;
+        //DepthOfField df;
+        //if(camEffects.profile.TryGetSettings(out df))
+        //    df.enabled.value = false;
     }
 
     private void KilledQuip()
