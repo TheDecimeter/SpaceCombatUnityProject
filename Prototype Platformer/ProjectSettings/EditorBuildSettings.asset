@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Class Prototype/Scenes/SpaceWarsPrototype.unity
     guid: a19db12e4a510d24aa044cb1636344b0
+  - enabled: 0
+    path: Assets/Class Prototype/Scenes/Empty.unity
+    guid: 75e803bd8f58fd54fba8a8820de60866
   m_configObjects: {}
