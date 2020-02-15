@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AI : MonoBehaviour
+public partial class AI : MonoBehaviour
 {
     private const int North = 1, South = 2, East = 4, West = 8;
     private float StartX, StartY;
@@ -11,6 +11,9 @@ public class AI : MonoBehaviour
     private int targetX, targetY;
     Rigidbody rb;
     private float roomCell;
+
+    private HashSet<Collision> EastObstructions = new HashSet<Collision>();
+    private HashSet<Collision> WestObstructions = new HashSet<Collision>();
 
     private const int ignoreLayer= (1 << 14) | (1 << 15) | (1 << 16) | (1 << 17);
 
@@ -23,6 +26,7 @@ public class AI : MonoBehaviour
         StartY = levelStats.startY - levelStats.yTileSize/2;
         StartX = levelStats.startX;
         roomCell = levelStats.yTileSize / 2;
+        
 
         levelPath = new bool[levelStats.MapDemensionsY][];
         for (int i = 0; i < levelStats.MapDemensionsY; ++i)
@@ -43,7 +47,7 @@ public class AI : MonoBehaviour
         int x;
         int y;
         //GetRoomGrid(transform.position, out x, out y);
-        MapRoom();
+        //MapRoom();
     }
 
     private void SetLevelPath()
@@ -51,7 +55,7 @@ public class AI : MonoBehaviour
         
     }
 
-    private void MapRoom()
+    private int MapRoom()
     {
         ResetRoomPath();
         int gridx; int gridy;
@@ -80,10 +84,10 @@ public class AI : MonoBehaviour
             //print("at " + c.x + "," + c.y);
             roomPath[c.y][c.x] = c.cost;
 
-            Debug.DrawRay(c.loc, Vector3.left * roomCell * .8f);
-            Debug.DrawRay(c.loc, Vector3.right * roomCell * .8f, Color.red);
-            Debug.DrawRay(c.loc, Vector3.up * roomCell * .8f, Color.gray);
-            Debug.DrawRay(c.loc, Vector3.down * roomCell * .8f, Color.blue);
+            //Debug.DrawRay(c.loc, Vector3.left * roomCell * .8f);
+            //Debug.DrawRay(c.loc, Vector3.right * roomCell * .8f, Color.red);
+            //Debug.DrawRay(c.loc, Vector3.up * roomCell * .8f, Color.gray);
+            //Debug.DrawRay(c.loc, Vector3.down * roomCell * .8f, Color.blue);
             //check left
             if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0))
             {
@@ -141,22 +145,22 @@ public class AI : MonoBehaviour
             }
         }
 
-        string s = "\n";
+        //string s = "\n";
 
-        for (int j = 0; j < 3; ++j)
-        {
-            s += roomPath[1][j];
-        }
-        s += "\n";
-        for (int j = 0; j < 3; ++j)
-        {
-            s += roomPath[0][j];
-        }
-        s += "\ntile(" + gridx + "," + gridy + ") room (" + roomx + "," + roomy + ")" +
-            "\n"+centerOfRoomGrid;
+        //for (int j = 0; j < 3; ++j)
+        //{
+        //    s += roomPath[1][j];
+        //}
+        //s += "\n";
+        //for (int j = 0; j < 3; ++j)
+        //{
+        //    s += roomPath[0][j];
+        //}
+        //s += "\ntile(" + gridx + "," + gridy + ") room (" + roomx + "," + roomy + ")" +
+        //    "\n"+centerOfRoomGrid;
 
-        print(s);
-
+        //print(s);
+        return complete;
     }
 
     private bool isAPlayer(RaycastHit h, out int player)
@@ -378,6 +382,62 @@ public class AI : MonoBehaviour
         return closest;
     }
 
+    private int Move(float x, float y)
+    {
+        ControlStruct c = new ControlStruct(ControlStruct.AI);
+        if (y > 0)
+            c.jump = true;
+        else
+            c.jump = false;
+
+        if (x != 0)
+        {
+            x = Mathf.Clamp(x, -1, 1);
+            c.moveLeft = x;
+        }
+        player.ControllerListener(c);
+        return inProgress;
+    }
+
+
+    private void OnCollisionStay(Collision col)
+    {
+        foreach (ContactPoint cp in col.contacts)
+        {
+            if (isEastObstruction(cp))
+            {
+                EastObstructions.Add(col);
+                WestObstructions.Remove(col);
+                return;
+            }
+        }
+        foreach (ContactPoint cp in col.contacts)
+        {
+            if (isWestObstruction(cp))
+            {
+                WestObstructions.Add(col);
+                EastObstructions.Remove(col);
+                return;
+            }
+        }
+        EastObstructions.Remove(col);
+        WestObstructions.Remove(col);
+    }
+    void OnCollisionExit(Collision col)
+    {
+        EastObstructions.Remove(col);
+        WestObstructions.Remove(col);
+    }
+
+    private bool isEastObstruction(ContactPoint cp)
+    {
+        return cp.normal.x > .5f;
+    }
+    private bool isWestObstruction(ContactPoint cp)
+    {
+        return cp.normal.x < -.5f;
+    }
+
     private struct MapNode
     {
         public int x;
@@ -394,4 +454,7 @@ public class AI : MonoBehaviour
         }
 
     }
+
+
+    
 }

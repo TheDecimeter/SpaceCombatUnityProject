@@ -92,6 +92,10 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private bool ignoreInput = false;
 
+    private HashSet<GameObject> PositiveNormalForce=new HashSet<GameObject>();
+    private float groundTimer = 0;
+    private const float groundTime = .2f;
+
     private HashSet<DoorController> currentDoors = new HashSet<DoorController>();
 
     public int AddDoor(DoorController cont, out DoorController.DoorType newOrientation)
@@ -148,8 +152,24 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         if (!_canMove||gameMenuActive) return;
 
+        if (isGrounded())
+        {
+            //print("grounded");
+            if (!_isGrounded)
+                setLanding(true);
+            _isGrounded = true;
+            _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
+        }
+        else
+            _isGrounded = false;
+
+
+        if (gameObject.name.Contains("0"))
+            print("    grounded= " + _isGrounded);
+
         if (_canJump && _isGrounded)
         {
+
             Jump();
         }
         else
@@ -333,8 +353,9 @@ public class CharacterMovement_Physics : MonoBehaviour
     private void Jump()
     {
         if (_controllerStatus.jump)
-        //if (Input.GetAxis(jumpAxis) > 0.5f)
         {
+            if (gameObject.name.Contains("0"))
+                print("jump");
             //add vertical impulse force
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
@@ -347,7 +368,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             _canJump = false;
 
             _isGrounded = false;
-            
+            PositiveNormalForce.Clear();
+            groundTimer = 0;
         }
     }
 
@@ -362,39 +384,66 @@ public class CharacterMovement_Physics : MonoBehaviour
     }
 
 
-    private void OnCollisionEnter(Collision col)
+    //private void OnCollisionEnter(Collision col)
+    //{
+    //    bool isGrounded = false;
+
+    //    foreach (ContactPoint contact in col.contacts)
+    //    {
+    //        if (contact.point.y < this.transform.position.y - .75f) isGrounded = true;
+    //    }
+
+
+    //    if (isGrounded)
+    //    {
+    //        //print("grounded");
+    //        if(!_isGrounded)
+    //            setLanding(true);
+    //        _isGrounded = true;
+    //        _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
+    //    }
+
+    //}
+
+    private bool isGrounded()
+    {
+        if(groundTimer>groundTime)
+        {
+            if (!_isGrounded)
+                setLanding(true);
+            return true;
+        }
+        if( PositiveNormalForce.Count > 0)
+        {
+            groundTimer += Time.deltaTime;
+        }
+        return false;
+    }
+
+    private void OnCollisionStay(Collision col)
     {
         bool isGrounded = false;
 
         foreach (ContactPoint contact in col.contacts)
         {
-            if (contact.point.y < this.transform.position.y - .75f) isGrounded = true;
+            if (isPositiveNormalForce(contact))
+            {
+                PositiveNormalForce.Add(col.gameObject);
+                isGrounded = true;
+                break;
+            }
         }
-
-
-        if (isGrounded)
-        {
-            //print("grounded");
-            if(!_isGrounded)
-                setLanding(true);
-            _isGrounded = true;
-            _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
-        }
+        if (!isGrounded)
+            PositiveNormalForce.Remove(col.gameObject);
 
     }
     void OnCollisionExit(Collision col)
     {
-        //foreach (ContactPoint contact in col.contacts)
-        //{
-        //    if (contact.point.y < this.transform.position.y - .75f)
-        //    {
-        //        print("   col exit");
-        //        AnimState.updateAnimationState(AnimationStates.Tag.jump, true);
-        //        _isGrounded = false;
-        //    }
-        //}
-        //print("col exit");
-        //_isGrounded = false;
+        PositiveNormalForce.Remove(col.gameObject);
+    }
+    private bool isPositiveNormalForce(ContactPoint cp)
+    {
+        return cp.normal.y > .01f;
     }
 
     private void Attack()
