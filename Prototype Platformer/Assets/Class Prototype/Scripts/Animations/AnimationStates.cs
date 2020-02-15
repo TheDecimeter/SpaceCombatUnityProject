@@ -48,6 +48,8 @@ public class AnimationStates
     {
         if (run==value)
             return;
+
+        //Debug.Log("run "+value);
         run = value;
         anim.SetBool(Tag.run, value);
 
@@ -65,6 +67,8 @@ public class AnimationStates
     {
         if (jump == value)
             return;
+
+        //Debug.Log("jump " + value);
         jump = value;
         anim.SetBool(Tag.jump, value);
 
@@ -101,6 +105,8 @@ public class AnimationStates
     {
         if (land == value)
             return;
+
+        //Debug.Log("land " + value);
         land = value;
         anim.SetBool(Tag.land, value);
 

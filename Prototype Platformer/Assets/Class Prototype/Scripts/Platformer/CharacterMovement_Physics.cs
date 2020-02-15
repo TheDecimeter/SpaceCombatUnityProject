@@ -130,8 +130,10 @@ public class CharacterMovement_Physics : MonoBehaviour
         navPoints = new List<HUDPointer>();
 
         GameObject g = Instantiate(FindObjectOfType<CommonPunch>().gameObject);
+        g.transform.position = new Vector3(0,0,100);
         _currentItem = g.GetComponent<Item>();
         GameObject g2 = Instantiate(g);
+        g2.transform.position = new Vector3(0, 0, 100);
         defaultWeapon = g2.GetComponent<Item>();
 
         //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
@@ -156,16 +158,30 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             //print("grounded");
             if (!_isGrounded)
+            {
+                //if (gameObject.name.Contains("0"))
+                //    print("land");
                 setLanding(true);
+            }
             _isGrounded = true;
-            _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
         }
         else
+        {
+            //if (_isGrounded)
+            //{
+            //    if (gameObject.name.Contains("0"))
+            //        print("in air");
+            //    setJump(true);
+            //}
+            //else
+            //{
+            //    if (gameObject.name.Contains("0"))
+            //        print("is grounded already false");
+            //}
             _isGrounded = false;
+        }
 
-
-        if (gameObject.name.Contains("0"))
-            print("    grounded= " + _isGrounded);
+        
 
         if (_canJump && _isGrounded)
         {
@@ -354,8 +370,6 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         if (_controllerStatus.jump)
         {
-            if (gameObject.name.Contains("0"))
-                print("jump");
             //add vertical impulse force
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
@@ -384,62 +398,68 @@ public class CharacterMovement_Physics : MonoBehaviour
     }
 
 
-    //private void OnCollisionEnter(Collision col)
-    //{
-    //    bool isGrounded = false;
+    private void OnCollisionEnter(Collision col)
+    {
+        bool isGrounded = false;
 
-    //    foreach (ContactPoint contact in col.contacts)
-    //    {
-    //        if (contact.point.y < this.transform.position.y - .75f) isGrounded = true;
-    //    }
+        foreach (ContactPoint contact in col.contacts)
+        {
+            if (contact.point.y < this.transform.position.y - .75f) isGrounded = true;
+        }
 
 
-    //    if (isGrounded)
-    //    {
-    //        //print("grounded");
-    //        if(!_isGrounded)
-    //            setLanding(true);
-    //        _isGrounded = true;
-    //        _rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
-    //    }
+        if (isGrounded)
+        {
+            //print("grounded");
+            if (!_isGrounded)
+            {
+                setLanding(true);
+                groundTimer = groundTime+1;
+            }
+            //_isGrounded = true;
+            //_rigidbody.velocity = new Vector3(_storedVelocity.x, _rigidbody.velocity.y, 0f);
+        }
 
-    //}
+    }
 
     private bool isGrounded()
     {
         if(groundTimer>groundTime)
         {
-            if (!_isGrounded)
-                setLanding(true);
+            //if (gameObject.name.Contains("0"))
+            //    print("isGrounded =True");
             return true;
         }
         if( PositiveNormalForce.Count > 0)
         {
             groundTimer += Time.deltaTime;
         }
+        //if (gameObject.name.Contains("0"))
+        //    print("isGrounded =False");
         return false;
     }
 
     private void OnCollisionStay(Collision col)
     {
-        bool isGrounded = false;
 
         foreach (ContactPoint contact in col.contacts)
         {
             if (isPositiveNormalForce(contact))
             {
                 PositiveNormalForce.Add(col.gameObject);
-                isGrounded = true;
-                break;
+                return;
             }
         }
-        if (!isGrounded)
-            PositiveNormalForce.Remove(col.gameObject);
+        PositiveNormalForce.Remove(col.gameObject);
+        if (PositiveNormalForce.Count == 0)
+            groundTimer = 0;
 
     }
     void OnCollisionExit(Collision col)
     {
         PositiveNormalForce.Remove(col.gameObject);
+        if (PositiveNormalForce.Count == 0)
+            groundTimer = 0;
     }
     private bool isPositiveNormalForce(ContactPoint cp)
     {
@@ -562,7 +582,9 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void setRunning(bool YayOrNay)
     {
-        //anim.SetBool("isRunning", YayOrNay);
+
+        //if (gameObject.name.Contains("0"))
+        //    print("setRunning ="+YayOrNay+"isGrounded "+_isGrounded);
         if (YayOrNay == true)
             AnimState.updateAnimationState(AnimationStates.Tag.run, true);
         else
