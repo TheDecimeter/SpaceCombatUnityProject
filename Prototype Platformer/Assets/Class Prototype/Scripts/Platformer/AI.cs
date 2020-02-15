@@ -12,6 +12,8 @@ public class AI : MonoBehaviour
     Rigidbody rb;
     private float roomCell;
 
+    private const int ignoreLayer= (1 << 14) | (1 << 15) | (1 << 16) | (1 << 17);
+
     private bool [][] levelPath;
     private int[][] roomPath;
     void Start()
@@ -58,57 +60,111 @@ public class AI : MonoBehaviour
         GetRoomGrid(transform.position, out roomx, out roomy);
 
         Queue<MapNode> n = new Queue<MapNode>();
+        Vector3 centerOfRoomGrid = GetCenterOfRoomGrid(transform.position);
 
-        n.Enqueue(new MapNode(roomx, roomy, 1, transform.position));
+        n.Enqueue(new MapNode(roomx, roomy, 1, centerOfRoomGrid));
 
         RaycastHit h;
-
+        int player, tmpPlayer;
+        
+        //For some reason ignoring a layer seems to ignore all layers on ray cast.
+        // I couldn't find anything about this bug for this verison of unity, but it
+        // just isn't working, therefore if a ray intersects a player I just assume the path
+        // is clear (going to kill that player anyway)
         while (n.Count > 0)
         {
             MapNode c = n.Dequeue();
 
-            if (roomPath[c.y][c.x] != 0)
+            if (c.x < 0 || c.x > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x] != 0)
                 continue;
             //print("at " + c.x + "," + c.y);
             roomPath[c.y][c.x] = c.cost;
 
-            //Debug.DrawRay(c.loc, Vector3.left * roomCell * .8f);
-            //Debug.DrawRay(c.loc, Vector3.right * roomCell * .8f, Color.red);
-            //Debug.DrawRay(c.loc, Vector3.up * roomCell * 1.5f, Color.gray);
-            //Debug.DrawRay(c.loc, Vector3.down * roomCell * 5f, Color.blue);
+            Debug.DrawRay(c.loc, Vector3.left * roomCell * .8f);
+            Debug.DrawRay(c.loc, Vector3.right * roomCell * .8f, Color.red);
+            Debug.DrawRay(c.loc, Vector3.up * roomCell * .8f, Color.gray);
+            Debug.DrawRay(c.loc, Vector3.down * roomCell * .8f, Color.blue);
             //check left
-            if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0)&&
-                !Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .8f))
-                n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
+            if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0))
+            {
+                if (Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f))
+                {
+                    if(isAPlayer(h, out player))
+                    {
+                        if (Physics.Raycast(new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z), Vector3.right, out h, roomCell * .9f))
+                            if(isAPlayer(h,out tmpPlayer)&&tmpPlayer==player)
+                                n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
+                    }
+                }
+                else
+                    n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
+            }
+                
             //check right
-            if (!(c.x + 1 < 0 || c.x + 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x + 1] != 0) &&
-                !Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .8f))
-                n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
+            if (!(c.x + 1 < 0 || c.x + 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x + 1] != 0))
+            {
+                if(Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f))
+                {
+                    if (isAPlayer(h, out player))
+                    {
+                        if (Physics.Raycast(new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z), Vector3.left, out h, roomCell * .9f))
+                            if (isAPlayer(h, out tmpPlayer) && tmpPlayer == player)
+                                n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
+                    }
+                }
+                else
+                    n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
+            }
+               
+                
             //check up
-            if (!(c.x < 0 || c.x > 2 || c.y + 1 < 0 || c.y + 1 > 1 || roomPath[c.y + 1][c.x] != 0) &&
-                !Physics.Raycast(c.loc, Vector3.up, out h, roomCell * 1.5f))
-                n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
+            if (!(c.x < 0 || c.x > 2 || c.y + 1 < 0 || c.y + 1 > 1 || roomPath[c.y + 1][c.x] != 0))
+            {
+                if(Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f))
+                {
+                    if(isAPlayer(h, out player))
+                        n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
+                }
+                else
+                    n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
+            }
             //check down
-            if (!(c.x < 0 || c.x > 2 || c.y - 1 < 0 || c.y - 1 > 1 || roomPath[c.y - 1][c.x] != 0) &&
-                !Physics.Raycast(c.loc, Vector3.down, out h, roomCell*.5f ))
-                n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
+            if (!(c.x < 0 || c.x > 2 || c.y - 1 < 0 || c.y - 1 > 1 || roomPath[c.y - 1][c.x] != 0))
+            {
+                if(Physics.Raycast(c.loc, Vector3.down, out h, roomCell * .9f))
+                {
+                    if(isAPlayer(h, out player))
+                        n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
+                }
+                else
+                    n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
+            }
         }
 
-        //string s = "\n";
+        string s = "\n";
 
-        //for (int j = 0; j < 3; ++j)
-        //{
-        //    s += roomPath[1][j];
-        //}
-        //s += "\n";
-        //for (int j = 0; j < 3; ++j)
-        //{
-        //    s += roomPath[0][j];
-        //}
+        for (int j = 0; j < 3; ++j)
+        {
+            s += roomPath[1][j];
+        }
+        s += "\n";
+        for (int j = 0; j < 3; ++j)
+        {
+            s += roomPath[0][j];
+        }
+        s += "\ntile(" + gridx + "," + gridy + ") room (" + roomx + "," + roomy + ")" +
+            "\n"+centerOfRoomGrid;
 
-        //print(s);
+        print(s);
 
     }
+
+    private bool isAPlayer(RaycastHit h, out int player)
+    {
+        player = h.transform.gameObject.layer - 13;
+        return player>=1 && player<=4;
+    }
+    
 
     private void ResetRoomPath()
     {
@@ -185,6 +241,25 @@ public class AI : MonoBehaviour
         x = Mathf.Clamp(x, 0, 2);
         y = Mathf.Clamp(y, 0, 1);
 
+    }
+
+    private Vector3 GetCenterOfRoomGrid(Vector3 loc)
+    {
+        int gridX;
+        int gridY;
+        int x;
+        int y;
+        GetGridPos(loc, out gridX, out gridY);
+        TileInformation room = levelStats.Map[gridY][gridX];
+        Vector3 roomLoc = room.transform.position;
+        x = (int)((loc.x - roomLoc.x) / 4);
+        y = (int)((loc.y - (roomLoc.y + StartY)) / 3);
+        x = Mathf.Clamp(x, 0, 2);
+        y = Mathf.Clamp(y, 0, 1);
+
+        float centx = roomLoc.x + x * roomCell + roomCell / 2;
+        float centy = (roomLoc.y + StartY) + y * roomCell + roomCell / 2;
+        return new Vector3(centx, centy, loc.z);
     }
     
     private int FindNearestExit()
