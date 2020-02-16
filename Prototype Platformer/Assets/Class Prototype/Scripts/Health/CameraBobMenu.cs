@@ -18,23 +18,11 @@ public class CameraBobMenu : MonoBehaviour
         oldX = transform.localPosition.x;
         oldY = transform.localPosition.y;
         Xcur = 0; Ycur = 0;
-        //print("x " + oldX + " y " + oldY);
-        //Bob = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-            //if (Xcur > X || Xcur < -X || Xrate == 0)
-            //{
-            //    if (Xrate < 0) Xrate = Random.Range(0, X / d);
-            //    else Xrate = Random.Range(-X / d, 0);
-            //}
-            //if (Ycur > Y || Ycur < -Y || Yrate == 0)
-            //{
-            //    if (Yrate < 0) Yrate = Random.Range(0, Y / d);
-            //    else Yrate = Random.Range(-Y / d, 0);
-            //}
             if (which)
                 Xrate *= -1;
             else
