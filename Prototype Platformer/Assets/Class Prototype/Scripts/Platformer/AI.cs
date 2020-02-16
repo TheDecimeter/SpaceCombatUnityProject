@@ -9,12 +9,19 @@ public partial class AI : MonoBehaviour
     private CharacterMovement_Physics player;
     public LevelRandomizer levelStats;
     private int targetX, targetY;
-    Rigidbody rb;
+    private Rigidbody rb;
     private float roomCell;
+    private ControlStruct controls=new ControlStruct(ControlStruct.AI);
+    private float buttonPressTimer = 0;
+    private const float buttonPressTime = .3f;
+    private int currentMapX,currentMapY;
 
     private HashSet<Collision> EastObstructions = new HashSet<Collision>();
     private HashSet<Collision> WestObstructions = new HashSet<Collision>();
 
+    private Stack<Task> TaskList = new Stack<Task>();
+    private Task currentTask;
+    
     private const int ignoreLayer= (1 << 14) | (1 << 15) | (1 << 16) | (1 << 17);
 
     private bool [][] levelPath;
@@ -38,24 +45,55 @@ public partial class AI : MonoBehaviour
         {
             roomPath[i] = new int[3];
         }
+
+        currentTask = TaskMapRoom;
+
+
+        TaskList.Push(TaskSetMapXY);
+        TaskList.Push(TaskGoToEastDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskGoToWestDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskGoToEastDoor);
     }
 
     // Update is called once per frame
     void Update()
     {
+        controls.reset();
+        int status = complete;
+        //while (status == complete)
+        //{
+        status=currentTask();
+        if (status == complete)
+        {
+            if(TaskList.Count==1)
+            {
+                TaskList.Push(TaskMapRoom);
+                TaskList.Push(TaskGoToWestDoor);
+                TaskList.Push(TaskMapRoom);
+                TaskList.Push(TaskGoToEastDoor);
+            }
+            if (TaskList.Count > 0)
+                currentTask = TaskList.Pop();
+                
+        }
+        //}
+        player.ControllerListener(controls);
         //print(FindNearestExit());
-        int x;
-        int y;
+        //int x;
+        //int y;
         //GetRoomGrid(transform.position, out x, out y);
         //MapRoom();
     }
+    
 
     private void SetLevelPath()
     {
         
     }
 
-    private int MapRoom()
+    private int TaskMapRoom()
     {
         ResetRoomPath();
         int gridx; int gridy;
@@ -145,22 +183,27 @@ public partial class AI : MonoBehaviour
             }
         }
 
-        //string s = "\n";
+        
 
-        //for (int j = 0; j < 3; ++j)
-        //{
-        //    s += roomPath[1][j];
-        //}
-        //s += "\n";
-        //for (int j = 0; j < 3; ++j)
-        //{
-        //    s += roomPath[0][j];
-        //}
-        //s += "\ntile(" + gridx + "," + gridy + ") room (" + roomx + "," + roomy + ")" +
-        //    "\n"+centerOfRoomGrid;
-
-        //print(s);
+        //print(roomGridString());
         return complete;
+    }
+
+    private string roomGridString()
+    {
+        string s = "\n";
+
+        for (int j = 0; j < 3; ++j)
+        {
+            s += roomPath[1][j];
+        }
+        s += "\n";
+        for (int j = 0; j < 3; ++j)
+        {
+            s += roomPath[0][j];
+        }
+        s += "\n";
+        return s;
     }
 
     private bool isAPlayer(RaycastHit h, out int player)
@@ -384,20 +427,50 @@ public partial class AI : MonoBehaviour
 
     private int Move(float x, float y)
     {
-        ControlStruct c = new ControlStruct(ControlStruct.AI);
+        //print("Move (" + x + "," + y + ")\n"+roomGridString());
         if (y > 0)
-            c.jump = true;
+        {
+            controls.jump = jumpPresser();
+            //print("Move jump " + controls.jump + " " + x);
+        }
         else
-            c.jump = false;
+            controls.jump = false;
 
         if (x != 0)
         {
             x = Mathf.Clamp(x, -1, 1);
-            c.moveLeft = x;
+            if ((x < 0 && WestObstructions.Count > 0) || (x > 0 && EastObstructions.Count > 0))
+            {
+                if (!controls.jump)
+                {
+                    //foreach (Collision c in EastObstructions)
+                    //    print("obsticle east " + c.gameObject.name);
+                    controls.jump = jumpPresser();
+                    //print("Move obsticle jump " + controls.jump + " " + x);
+                }
+            }
+            //else
+            //    print("Move " + x);
+            controls.moveLeft = x;
         }
-        player.ControllerListener(c);
         return inProgress;
     }
+
+
+    private bool jumpPresser()
+    {
+        buttonPressTimer += Time.deltaTime;
+        if (buttonPressTimer > buttonPressTime)
+        {
+            if (buttonPressTimer > buttonPressTime * 2)
+                buttonPressTimer = 0;
+            return false;
+        }
+        else
+            return true;
+    }
+
+    
 
 
     private void OnCollisionStay(Collision col)
@@ -431,11 +504,11 @@ public partial class AI : MonoBehaviour
 
     private bool isEastObstruction(ContactPoint cp)
     {
-        return cp.normal.x > .5f;
+        return cp.normal.x < -.1f;
     }
     private bool isWestObstruction(ContactPoint cp)
     {
-        return cp.normal.x < -.5f;
+        return cp.normal.x > .1f;
     }
 
     private struct MapNode

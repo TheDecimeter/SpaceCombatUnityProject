@@ -185,11 +185,14 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (_canJump && _isGrounded)
         {
-
+            //if (gameObject.name.Contains("3"))
+            //    print("player try jump");
             Jump();
         }
         else
         {
+            //if (gameObject.name.Contains("3"))
+            //    print("player can't jump " + _isGrounded + " " + _canJump);
             // Force the player to release the jump button between jumps, catch for 2x jump power corner case
             //if (Input.GetAxis("Jump") == 0f) _canJump = true;
             if (!_controllerStatus.jump) _canJump = true;
@@ -370,6 +373,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         if (_controllerStatus.jump)
         {
+            //print("player jump");
             //add vertical impulse force
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
@@ -523,7 +527,9 @@ public class CharacterMovement_Physics : MonoBehaviour
         //if the new controls message comes from AI, don't let input come from another source
         //otherwise, if the input comes from the last source, overwrite the state
         // if the input comes from a different source, combine states (allows keyboard and controller simotaniously
-        if (controls.fromSource(ControlStruct.AI)||_controllerStatus.fromSource(controls.source))
+        if(controls.fromSource(ControlStruct.AI))
+            _controllerStatus = controls;
+        else if (!_controllerStatus.fromSource(ControlStruct.AI) && _controllerStatus.fromSource(controls.source))
             _controllerStatus = controls;
         else
             _controllerStatus.combine(controls);

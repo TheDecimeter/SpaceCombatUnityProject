@@ -26,6 +26,17 @@ public class ControlStruct
         this.source = (this.source | source);
     }
 
+    public void reset()
+    {
+        moveLeft = 0;
+        jump = false;
+        action = false;
+        door = false;
+        B = false;
+        attack = false;
+        inGameMenu = false;
+    }
+
     public void combine(ControlStruct other)
     {
         addSource(other.source);
