@@ -23,8 +23,10 @@ public class PlayerHealth : MonoBehaviour {
 
     public TextManager info;
     private AnimationStates AnimState;
-    public PostProcessLayer blurComponent;
-    public PostProcessVolume camEffects;
+    public Camera blurComponent;
+    public RenderTexture blurScreen;
+    public RawImage blurLayer;
+
     private PostProcessVolume defaultCamEffects;
     public Text health;
     
@@ -40,12 +42,12 @@ public class PlayerHealth : MonoBehaviour {
     {
 
 
-        MotionBlur mb;
-        if (camEffects.profile.TryGetSettings(out mb))
-            mb.enabled.value = false;
-        DepthOfField df;
-        if (camEffects.profile.TryGetSettings(out df))
-            df.enabled.value = false;
+        //MotionBlur mb;
+        //if (camEffects.profile.TryGetSettings(out mb))
+        //    mb.enabled.value = false;
+        //DepthOfField df;
+        //if (camEffects.profile.TryGetSettings(out df))
+        //    df.enabled.value = false;
 
         isDead = false;
         _currentHealth = startingHealth;
@@ -163,44 +165,19 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
-        FloatParameter sf = new FloatParameter { value = 360f };
-        FloatParameter af = new FloatParameter { value = 24f };
-        IntParameter si = new IntParameter { value = 32 };
-        //print("start blur");
+        print("Start blur " + gameObject.name);
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
-        //blurComponent.enabled = true;
-        //camEffects.profile.AddSettings<MotionBlur>().shutterAngle = sf;
-        //camEffects.profile.AddSettings<MotionBlur>().sampleCount = si;
-        //camEffects.profile.AddSettings<DepthOfField>().aperture= af;
+        blurComponent.targetTexture = blurScreen;
+        blurLayer.gameObject.SetActive(true);
 
-        MotionBlur mb;
-        camEffects.profile.TryGetSettings(out mb);
-        mb.enabled.value = true;
-        DepthOfField df;
-        camEffects.profile.TryGetSettings(out df);
-        df.enabled.value = true;
 
         frameCounter = 0;
     }
     private void endBlur()
     {
-        FloatParameter sf = new FloatParameter { value = 4f };
-        FloatParameter af = new FloatParameter { value = 32f };
-        IntParameter si = new IntParameter { value = 0 };
-        //print("end blur");
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
-        //blurComponent.enabled = false;
-        //camEffects.profile.AddSettings<MotionBlur>().shutterAngle = sf;
-        //camEffects.profile.AddSettings<MotionBlur>().sampleCount = si;
-        //camEffects.profile.AddSettings<DepthOfField>().aperture = af;
-
-
-        MotionBlur mb;
-        if(camEffects.profile.TryGetSettings(out mb))
-            mb.enabled.value = false;
-        DepthOfField df;
-        if(camEffects.profile.TryGetSettings(out df))
-            df.enabled.value = false;
+        blurComponent.targetTexture = null;
+        blurLayer.gameObject.SetActive(false);
     }
 
     private void KilledQuip()
