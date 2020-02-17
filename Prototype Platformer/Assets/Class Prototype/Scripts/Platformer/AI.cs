@@ -26,8 +26,7 @@ public partial class AI : MonoBehaviour
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
     private Task currentTask;
-    private List<Checker> GoalCheckers = new List<Checker>();
-    private byte[][] levelPath;
+    private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
 
     private const int ignoreLayer= ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
@@ -42,11 +41,6 @@ public partial class AI : MonoBehaviour
         roomCell = levelStats.yTileSize / 2;
         
 
-        levelPath = new byte[levelStats.MapDemensionsY][];
-        for (int i = 0; i < levelStats.MapDemensionsY; ++i)
-        {
-            levelPath[i] = new byte[levelStats.MapDemensionsX];
-        }
         roomPath = new byte[2][];
         for (int i = 0; i < 2; ++i)
         {
