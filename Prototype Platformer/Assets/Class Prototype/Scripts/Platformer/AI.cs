@@ -26,6 +26,7 @@ public partial class AI : MonoBehaviour
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
     private Task currentTask;
+    private List<Checker> GoalCheckers = new List<Checker>();
     private byte[][] levelPath;
     private byte[][] roomPath;
 
@@ -35,6 +36,7 @@ public partial class AI : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         player = GetComponent<CharacterMovement_Physics>();
+
         StartY = levelStats.startY - levelStats.yTileSize/2;
         StartX = levelStats.startX;
         roomCell = levelStats.yTileSize / 2;
@@ -54,6 +56,7 @@ public partial class AI : MonoBehaviour
 
         TaskList.Push(TaskAssignGoThroughNorthDoor);
         currentTask = TaskList.Pop();
+        
     }
 
     // Update is called once per frame
@@ -66,13 +69,6 @@ public partial class AI : MonoBehaviour
             status = currentTask();
             if (status == complete)
             {
-                //if(TaskList.Count==1)
-                //{
-                //    TaskList.Push(TaskMapRoom);
-                //    TaskList.Push(TaskGoToWestDoor);
-                //    TaskList.Push(TaskMapRoom);
-                //    TaskList.Push(TaskGoToEastDoor);
-                //}
                 if (TaskList.Count > 0)
                     currentTask = TaskList.Pop();
                 else
