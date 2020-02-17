@@ -7,6 +7,85 @@ public partial class AI : MonoBehaviour
     private const int inProgress = 0, impossible = -1, complete = 1;
     private delegate int Task();
 
+    private int TaskAssignGoThroughEastDoor()
+    {
+        //order is backwards because the task list is a stack
+        TaskList.Push(TaskGoThroughEastDoor);
+        TaskList.Push(TaskGoToEastDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskSetMapXY);
+        return complete;
+    }
+
+    private int TaskAssignGoThroughWestDoor()
+    {
+        //order is backwards because the task list is a stack
+        TaskList.Push(TaskGoThroughWestDoor);
+        TaskList.Push(TaskGoToWestDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskSetMapXY);
+        return complete;
+    }
+
+    private int TaskAssignGoThroughSouthDoor()
+    {
+        //order is backwards because the task list is a stack
+        TaskList.Push(TaskGoThroughSouthDoor);
+        TaskList.Push(TaskGoToSouthDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskSetMapXY);
+        return complete;
+    }
+
+    private int TaskAssignGoThroughNorthDoor()
+    {
+        //order is backwards because the task list is a stack
+        TaskList.Push(TaskGoThroughNorthDoor);
+        TaskList.Push(TaskGoToNorthDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskSetMapXY);
+        return complete;
+    }
+
+
+
+    private int TaskGoToSouthDoor()
+    {
+        DoorBehavior S;
+        if (!TryFindSouthDoor(out S))
+            return impossible;
+
+        int doorX, doorY;
+        GetRoomGrid(S.GetComponent<Collider>().bounds.center, out doorX, out doorY);
+
+        int Tx = doorX;
+        int Ty = 0;
+
+        int x; int y;
+        GetRoomGrid(transform.position, out x, out y);
+        int ret = GoToTarget(x, y, Tx, Ty);
+        print(gameObject.name + " going south " + Tx);
+        return ret;
+    }
+    private int TaskGoToNorthDoor()
+    {
+        DoorBehavior N;
+        if (!TryFindNorthDoor(out N))
+            return impossible;
+
+        int doorX, doorY;
+        GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
+        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center);
+        int Tx = doorX;
+        int Ty = 1;
+
+        int x; int y;
+        GetRoomGrid(transform.position, out x, out y);
+        int ret = GoToTarget(x, y, Tx, Ty);
+        print(gameObject.name + " going north " + Tx);
+        return ret;
+    }
+
     private int TaskGoToEastDoor()
     {
         int Tx = 2;
@@ -18,6 +97,22 @@ public partial class AI : MonoBehaviour
         //print("going east");
         return ret;
     }
+
+    private int TaskGoThroughEastDoor()
+    {
+        int x; int y;
+        GetMapGridPos(transform.position, out x, out y);
+
+        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        if (x != currentMapX || y != currentMapY)
+            return complete;
+        Move(1, 0);
+
+        controls.door = ButtonPresser();
+        //print(gameObject.name + " move (" + controls.door + ")");
+        return inProgress;
+    }
+
     private int TaskGoToWestDoor()
     {
         int Tx = 0;
@@ -31,22 +126,64 @@ public partial class AI : MonoBehaviour
         return ret;
     }
 
-    private int TaskGoThroughEastDoor()
+    private int TaskGoThroughWestDoor()
     {
         int x; int y;
-        GetGridPos(transform.position, out x, out y);
+        GetMapGridPos(transform.position, out x, out y);
+
+        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
-        Move(1, 0);
+        Move(-1, 0);
 
-        controls.door = !controls.door;
+        controls.door = ButtonPresser();
         //print(gameObject.name + " move (" + controls.door + ")");
+        return inProgress;
+    }
+    private int TaskGoThroughSouthDoor()
+    {
+        int x; int y;
+        GetMapGridPos(transform.position, out x, out y);
+
+        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        if (x != currentMapX || y != currentMapY)
+            return complete;
+        float ox = XoffsetToCenter(.2f);
+        Move(ox, -1);
+
+        controls.door = ButtonPresser();
+        //print(gameObject.name + " move throgh south door (" + controls.door + ")");
+        return inProgress;
+    }
+    private int TaskGoThroughNorthDoor()
+    {
+        DoorBehavior N;
+        if (!TryFindNorthDoor(out N))
+            return impossible;
+
+        int doorX, doorY;
+        GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
+        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center);
+
+
+        int x; int y;
+        GetMapGridPos(transform.position, out x, out y);
+
+        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        if (x != currentMapX || y != currentMapY)
+            return complete;
+        float ox = XoffsetToCenter(.2f);
+        Move(ox, 1);
+
+        controls.door = ButtonPresser();
+        //print(gameObject.name + " move throgh north door (" + controls.door + ")");
         return inProgress;
     }
 
     private int TaskSetMapXY()
     {
-        GetGridPos(transform.position, out currentMapX, out currentMapY);
+        GetMapGridPos(transform.position, out currentMapX, out currentMapY);
+        //print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;
     }
 
