@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Class Prototype/Scenes/Example.unity
+    guid: fd71d173c9eee453c86117250fac9cd3
+  - enabled: 1
+    path: Assets/Class Prototype/Scenes/SpaceWarsPrototype.unity
+    guid: a19db12e4a510d24aa044cb1636344b0
+  m_configObjects: {}

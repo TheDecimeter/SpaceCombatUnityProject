@@ -1,0 +1,179 @@
+fileFormatVersion: 2
+guid: 972aa8bff97e2f14e8dda72858f566ab
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Chain
+    100004: cluster1Handle
+    100006: cluster2Handle
+    100008: pasted__pasted__shackle-chain-09
+    100010: pasted__pasted__shackle-chain-11
+    100012: pasted__pasted__shackle-chain-12
+    100014: pasted__pasted__shackle-chain-13
+    100016: pasted__shackle-chain-09
+    100018: pasted__shackle-chain-11
+    100020: pasted__shackle-chain-12
+    100022: pasted__shackle-chain-13
+    100024: pSphere1
+    100026: pTorus1
+    100028: Shackle
+    100030: shackle-05
+    100032: shackle-06
+    100034: shackle-07
+    100036: shackle-07 1
+    100038: shackle-chain-09
+    100040: shackle-chain-11
+    100042: transform1
+    100044: transform2
+    100046: transform3
+    400000: //RootNode
+    400002: Chain
+    400004: cluster1Handle
+    400006: cluster2Handle
+    400008: pasted__pasted__shackle-chain-09
+    400010: pasted__pasted__shackle-chain-11
+    400012: pasted__pasted__shackle-chain-12
+    400014: pasted__pasted__shackle-chain-13
+    400016: pasted__shackle-chain-09
+    400018: pasted__shackle-chain-11
+    400020: pasted__shackle-chain-12
+    400022: pasted__shackle-chain-13
+    400024: pSphere1
+    400026: pTorus1
+    400028: Shackle
+    400030: shackle-05
+    400032: shackle-06
+    400034: shackle-07
+    400036: shackle-07 1
+    400038: shackle-chain-09
+    400040: shackle-chain-11
+    400042: transform1
+    400044: transform2
+    400046: transform3
+    2100000: lambert1
+    2300000: pasted__pasted__shackle-chain-09
+    2300002: pasted__pasted__shackle-chain-11
+    2300004: pasted__pasted__shackle-chain-12
+    2300006: pasted__pasted__shackle-chain-13
+    2300008: pasted__shackle-chain-09
+    2300010: pasted__shackle-chain-11
+    2300012: pasted__shackle-chain-12
+    2300014: pasted__shackle-chain-13
+    2300016: shackle-07
+    2300018: shackle-chain-09
+    2300020: shackle-chain-11
+    3300000: pasted__pasted__shackle-chain-09
+    3300002: pasted__pasted__shackle-chain-11
+    3300004: pasted__pasted__shackle-chain-12
+    3300006: pasted__pasted__shackle-chain-13
+    3300008: pasted__shackle-chain-09
+    3300010: pasted__shackle-chain-11
+    3300012: pasted__shackle-chain-12
+    3300014: pasted__shackle-chain-13
+    3300016: shackle-07
+    3300018: shackle-chain-09
+    3300020: shackle-chain-11
+    4300000: shackle-07
+    4300002: shackle-chain-09
+    4300004: shackle-chain-11
+    4300006: pasted__shackle-chain-09
+    4300008: pasted__shackle-chain-11
+    4300010: pasted__shackle-chain-13
+    4300012: pasted__shackle-chain-12
+    4300014: pasted__pasted__shackle-chain-09
+    4300016: pasted__pasted__shackle-chain-11
+    4300018: pasted__pasted__shackle-chain-13
+    4300020: pasted__pasted__shackle-chain-12
+    4300022: pSphere1
+    4300024: pTorus1
+    9500000: //RootNode
+    13700000: pSphere1
+    13700002: pTorus1
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
