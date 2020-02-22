@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This portion of AI uses smaller methods found in the AI file
+/// to make broader movements and actions.
+/// </summary>
 public partial class AI : MonoBehaviour
 {
     private const int inProgress = 0, impossible = -1, complete = 1;
@@ -185,6 +189,11 @@ public partial class AI : MonoBehaviour
         GetMapGridPos(transform.position, out currentMapX, out currentMapY);
         //print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;
+    }
+
+    private int TaskAttackPlayerInRoom(PlayerHealth player)
+    {
+        return inProgress;
     }
 
 

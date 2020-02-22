@@ -26,6 +26,7 @@ public partial class AI : MonoBehaviour
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
     private Task currentTask;
+    private int priority;
     private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
 
@@ -46,16 +47,21 @@ public partial class AI : MonoBehaviour
         {
             roomPath[i] = new byte[3];
         }
-        
+        priority = 5;
+        GoalCheckers.Add(new CheckerKillNearestPlayer(this,priority));
 
-        TaskList.Push(TaskAssignGoThroughNorthDoor);
-        currentTask = TaskList.Pop();
+        //TaskList.Push(TaskAssignGoThroughNorthDoor);
+        //currentTask = TaskList.Pop();
         
     }
 
     // Update is called once per frame
     void Update()
     {
+        foreach (IChecker checker in GoalCheckers)
+            priority=checker.Do(priority);
+
+
         controls.reset();
         int status = complete;
         while (status == complete)
