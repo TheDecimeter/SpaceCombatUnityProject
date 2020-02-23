@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 public class Input_via_GamePad : MonoBehaviour
 {
-#if !UNITY_ANDROID
     [System.Serializable]
     public class ControlEvent : UnityEvent<ControlStruct> { }
 
@@ -16,10 +15,11 @@ public class Input_via_GamePad : MonoBehaviour
     public ControlEvent controller2;
     public ControlEvent controller3;
     public ControlEvent controller4;
-
+    
 
     public int maxPlayers = 4;
 
+#if !UNITY_ANDROID
     private List<ControlStruct> previousControls;
     //Axis 4=lefttrig, 5=righttrig, 0=leftAnalogH
 

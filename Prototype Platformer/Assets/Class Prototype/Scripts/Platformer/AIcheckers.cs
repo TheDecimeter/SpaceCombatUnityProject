@@ -60,12 +60,14 @@ public partial class AI : MonoBehaviour
                             {
                                 minDist = distToPlayer;
                                 closestPlayer = p;
+                                //TODO XXX remove this break which seaks first player
+                                break;
                             }
                         }
                     }
                 }
             }
-
+            
             TargetPlayer = closestPlayer;
             MakePathToTarget();
         }
@@ -90,14 +92,23 @@ public partial class AI : MonoBehaviour
             int Tx; int Ty;
             outer.GetMapGridPos(TargetPlayer.transform.position, out Tx, out Ty);
 
-
+            int count = 100;
             //bfs around to target
             while (q.Count > 0)
             {
+                count -= 1;
+                if (count < 0)
+                {
+                    Debug.LogError("Had to use loop counter bfs player loc");
+                    break;
+                }
                 Node c = q.Dequeue();
+
                 if (!validTile(c.x, c.y))
                     continue;
-                
+                if (levelPath[c.y][c.x] != 0)
+                    continue;
+
                 levelPath[c.y][c.x] = c.cost;
 
                 if (c.x == Tx && c.y == Ty)
@@ -109,37 +120,54 @@ public partial class AI : MonoBehaviour
                 q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
             }
 
+            print("grid to player \n" + AI.GridToString(levelPath));
+
+            count = 100;
             //work from target pos to your pos to convert mapped route to tasks
             outer.TaskList.Clear();
             outer.TaskList.Push( ()=>outer.TaskAttackPlayerInRoom(TargetPlayer) );
             int cx = Tx; int cy = Ty; int cc = levelPath[Ty][Tx];
-            while (cx != x && cy != y)
+            print("startingCost " + cc);
+            while (cx != x || cy != y)
             {
+                count -= 1;
+                if (count < 0)
+                {
+                    Debug.LogError("Had to use loop counter task loading");
+                    break;
+                }
                 //check left
                 if (nextStep(cx - 1, cy, cc, levelPath))
                 {
-                    outer.TaskList.Push(outer.TaskAssignGoThroughWestDoor);
+                    print("go East " + cx + "," + cy);
+                    outer.TaskList.Push(outer.TaskAssignGoThroughEastDoor);
                     cx -= 1;
                 }
                 //check right
                 if (nextStep(cx + 1, cy, cc, levelPath))
                 {
-                    outer.TaskList.Push(outer.TaskAssignGoThroughEastDoor);
+                    print("go West " + cx + "," + cy);
+                    outer.TaskList.Push(outer.TaskAssignGoThroughWestDoor);
                     cx += 1;
                 }
                 //check down
                 if (nextStep(cx, cy - 1, cc, levelPath))
                 {
+                    print("go North " + cx + "," + cy);
                     outer.TaskList.Push(outer.TaskAssignGoThroughNorthDoor);
-                    cx -= 1;
+                    cy -= 1;
                 }
                 //check up
                 if (nextStep(cx, cy + 1, cc, levelPath))
                 {
+                    print("go South "+cx+","+cy);
                     outer.TaskList.Push(outer.TaskAssignGoThroughSouthDoor);
-                    cx -= 1;
+                    cy += 1;
                 }
+                cc--;
             }
+
+            print("\n");
 
             outer.currentTask = outer.TaskList.Pop();
         }
@@ -178,6 +206,17 @@ public partial class AI : MonoBehaviour
     }
 
 
+    public static string GridToString(int[][] p)
+    {
+        string s = "";
+        for(int i=p.Length-1; i>=0; i--)
+        {
+            for (int j = 0; j < p[i].Length; ++j)
+                s += "" + p[i][j];
+            s += "\n";
+        }
+        return s;
+    }
 
 
 

@@ -61,11 +61,17 @@ public partial class AI : MonoBehaviour
         foreach (IChecker checker in GoalCheckers)
             priority=checker.Do(priority);
 
-
+        int count = 100;
         controls.reset();
         int status = complete;
         while (status == complete)
         {
+            count -= 1;
+            if (count < 0)
+            {
+                Debug.LogError("Had to use loop counter task update");
+                break;
+            }
             status = currentTask();
             if (status == complete)
             {
@@ -125,15 +131,17 @@ public partial class AI : MonoBehaviour
             //print("at " + c.x + "," + c.y);
             roomPath[c.y][c.x] = c.cost;
 
-            //Debug.DrawRay(c.loc, Vector3.left * roomCell * .8f);
-            //Debug.DrawRay(c.loc, Vector3.right * roomCell * .8f, Color.red);
-            //Debug.DrawRay(c.loc, Vector3.up * roomCell * .8f, Color.gray);
-            //Debug.DrawRay(c.loc, Vector3.down * roomCell * .8f, Color.blue);
+            Debug.DrawRay(c.loc, Vector3.left * roomCell * .9f);
+            Debug.DrawRay(c.loc, Vector3.right * roomCell * .9f, Color.red);
+            Debug.DrawRay(c.loc, Vector3.up * roomCell * .9f, Color.gray);
+            Debug.DrawRay(c.loc, Vector3.down * roomCell * .9f, Color.blue);
             //check left
             if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0))
             {
                 if (!Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f,ignoreLayer,QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
+                else
+                    print("hit " + h.collider.gameObject.name);
             }
                 
             //check right
@@ -141,6 +149,8 @@ public partial class AI : MonoBehaviour
             {
                 if(!Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
+                else
+                    print("hit " + h.collider.gameObject.name);
             }
                
                 
@@ -149,12 +159,16 @@ public partial class AI : MonoBehaviour
             {
                 if(!Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
+                else
+                    print("hit " + h.collider.gameObject.name);
             }
             //check down
             if (!(c.x < 0 || c.x > 2 || c.y - 1 < 0 || c.y - 1 > 1 || roomPath[c.y - 1][c.x] != 0))
             {
-                if(!Physics.Raycast(c.loc, Vector3.down, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
+                if (!Physics.Raycast(c.loc, Vector3.down, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
+                else
+                    print("hit " + h.collider.gameObject.name);
             }
         }
 
@@ -430,7 +444,7 @@ public partial class AI : MonoBehaviour
         if (y > 0)
         {
             controls.jump = ButtonPresser();
-            //print("Move jump " + controls.jump + " " + x);
+            print("Move jump " + controls.jump + " " + x);
         }
         else
             controls.jump = false;
@@ -442,8 +456,12 @@ public partial class AI : MonoBehaviour
             {
                 if (!controls.jump)
                 {
-                    //foreach (Collision c in EastObstructions)
-                    //    print("obsticle east " + c.gameObject.name);
+                    if (x > 0)
+                        foreach (Collision c in EastObstructions)
+                            print("obsticle east " + c.gameObject.name);
+                    if(x < 0)
+                        foreach (Collision c in WestObstructions)
+                            print("obsticle west " + c.gameObject.name);
                     controls.jump = ButtonPresser();
                     //print("Move obsticle jump " + controls.jump + " " + x);
                 }
@@ -472,7 +490,7 @@ public partial class AI : MonoBehaviour
     
 
 
-    private void OnCollisionStay(Collision col)
+    private void OnCollisionEnter(Collision col)
     {
         foreach (ContactPoint cp in col.contacts)
         {
@@ -503,11 +521,24 @@ public partial class AI : MonoBehaviour
 
     private bool isEastObstruction(ContactPoint cp)
     {
-        return cp.normal.x < -.1f;
+
+        if (cp.normal.x > -.1f)
+            return false;
+        return isObsticle(cp); 
+
     }
     private bool isWestObstruction(ContactPoint cp)
     {
-        return cp.normal.x > .1f;
+
+        if (cp.normal.x < .1f)
+            return false;
+        return isObsticle(cp);
+    }
+    private bool isObsticle(ContactPoint cp)
+    {
+        if (cp.otherCollider.gameObject.GetComponent<DoorBehavior>())
+            return false;
+        return true;
     }
 
     private struct MapNode

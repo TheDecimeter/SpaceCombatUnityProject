@@ -68,7 +68,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        print(gameObject.name + " going south " + Tx);
+        //print(gameObject.name + " going south " + Tx);
         return ret;
     }
     private int TaskGoToNorthDoor()
@@ -86,7 +86,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        print(gameObject.name + " going north " + Tx);
+        //print(gameObject.name + " going north " + Tx);
         return ret;
     }
 
@@ -113,7 +113,7 @@ public partial class AI : MonoBehaviour
         Move(1, 0);
 
         controls.door = ButtonPresser();
-        //print(gameObject.name + " move (" + controls.door + ")");
+        ////print(gameObject.name + " move (" + controls.door + ")");
         return inProgress;
     }
 
@@ -135,13 +135,13 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        //print("  go through West door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
         Move(-1, 0);
 
         controls.door = ButtonPresser();
-        //print(gameObject.name + " move (" + controls.door + ")");
+        ////print(gameObject.name + " move (" + controls.door + ")");
         return inProgress;
     }
     private int TaskGoThroughSouthDoor()
@@ -149,14 +149,14 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        //print("  go through south door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
         float ox = XoffsetToCenter(.2f);
         Move(ox, -1);
 
         controls.door = ButtonPresser();
-        //print(gameObject.name + " move throgh south door (" + controls.door + ")");
+        ////print(gameObject.name + " move throgh south door (" + controls.door + ")");
         return inProgress;
     }
     private int TaskGoThroughNorthDoor()
@@ -173,21 +173,21 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        //print("  go through north door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
         float ox = XoffsetToCenter(.2f);
         Move(ox, 1);
 
         controls.door = ButtonPresser();
-        //print(gameObject.name + " move throgh north door (" + controls.door + ")");
+        ////print(gameObject.name + " move throgh north door (" + controls.door + ")");
         return inProgress;
     }
 
     private int TaskSetMapXY()
     {
         GetMapGridPos(transform.position, out currentMapX, out currentMapY);
-        //print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
+        ////print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;
     }
 
@@ -202,7 +202,7 @@ public partial class AI : MonoBehaviour
         if (x == Tx && y == Ty)
             return complete;
 
-        //print("  GO TO TARGET at(" + x + "," + y + ") targ(" + Tx + "," + Ty + ")");
+        ////print("  GO TO TARGET at(" + x + "," + y + ") targ(" + Tx + "," + Ty + ")");
         //if you are to the west of target
         if (x < Tx)
         {
@@ -235,7 +235,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveEast(int x, int y)
     {
-        //print("   MOVEeast");
+        ////print("   MOVEeast");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x + 1, y) == current + 1)
@@ -257,7 +257,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveWest(int x, int y)
     {
-        //print("   MOVEwest");
+        ////print("   MOVEwest");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x - 1, y) == current + 1)
@@ -279,7 +279,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveNorth(int x, int y, int Tx, int Ty)
     {
-        //print("   MOVEnorth");
+        ////print("   MOVEnorth");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x, y + 1) == current + 1)
@@ -317,7 +317,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveSouth(int x, int y, int Tx, int Ty)
     {
-        //print("   MOVEsouth");
+        ////print("   MOVEsouth");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x, y - 1) == current + 1)
@@ -356,6 +356,7 @@ public partial class AI : MonoBehaviour
 
     private void ErrorCorrect()
     {
+        //print("error correct")
         TaskMapRoom();
     }
 
