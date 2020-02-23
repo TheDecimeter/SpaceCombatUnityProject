@@ -522,21 +522,27 @@ public partial class AI : MonoBehaviour
     private bool isEastObstruction(ContactPoint cp)
     {
 
-        if (cp.normal.x > -.1f)
+        if (cp.normal.x < -.2f)
             return false;
+        print("   adding east " + cp.otherCollider.gameObject + " " + cp.normal.x);
         return isObsticle(cp); 
 
     }
     private bool isWestObstruction(ContactPoint cp)
     {
 
-        if (cp.normal.x < .1f)
+        if (cp.normal.x > .2f)
             return false;
+        print("   adding west " + cp.otherCollider.gameObject + " " + cp.normal.x);
         return isObsticle(cp);
     }
     private bool isObsticle(ContactPoint cp)
     {
         if (cp.otherCollider.gameObject.GetComponent<DoorBehavior>())
+            return false;
+        float otherHeight = cp.otherCollider.bounds.center.x + cp.otherCollider.bounds.extents.x / 2;
+        float thisHeight= cp.thisCollider.bounds.center.x + cp.thisCollider.bounds.extents.x / 2;
+        if(thisHeight<otherHeight)
             return false;
         return true;
     }
