@@ -14,28 +14,28 @@ public class AIspecialDirections : MonoBehaviour
         Transform current = other.transform;
         while (current)
         {
-            print("special directions enter "+current.gameObject.name);
+            //print("special directions enter "+current.gameObject.name+" "+gameObject.name);
             AI ai = current.GetComponent<AI>();
             if (ai)
             {
-                print("special directions dilevered");
+               // print("special directions dilevered" + " " + gameObject.name);
                 ai.SetDirections(up, down, left, right);
                 return;
             }
             current = current.parent;
         }
-        print("special directions NOT dilevered");
+        //print("special directions NOT dilevered" + " " + gameObject.name);
     }
     public void OnTriggerExit(Collider other)
     {
         Transform current = other.transform;
         while (current)
         {
-            print("special directions exit " + other.gameObject.name);
+            //print("special directions exit " + other.gameObject.name + " " + gameObject.name);
             AI ai = current.GetComponent<AI>();
             if (ai)
             {
-                print("special directions removed");
+                //print("special directions removed" + " " + gameObject.name);
                 ai.RemoveDirections();
                 return;
             }

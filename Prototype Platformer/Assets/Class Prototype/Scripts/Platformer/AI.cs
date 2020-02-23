@@ -23,18 +23,23 @@ public partial class AI : MonoBehaviour
     private HashSet<GameObject> EastObstructions = new HashSet<GameObject>();
     private HashSet<GameObject> WestObstructions = new HashSet<GameObject>();
 
+    private Vector3 lastPosition;
+    private float stagnateTimer = 0;
+    private const float stagnateTime = .5f;
+
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
     private Task currentTask;
     private int priority;
     private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
-    private bool specialDirections = false, up, down, left, right;
+    private bool specialDirections = false, up, down, left, right, failed=false;
 
     private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
 
     void Start()
     {
+        lastPosition = transform.position;
         rb = GetComponent<Rigidbody>();
         player = GetComponent<CharacterMovement_Physics>();
 
@@ -59,8 +64,14 @@ public partial class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (player.GetComponent<PlayerHealth>().isDead)
+        {
+            enabled = false;
+            return;
+        }
         foreach (IChecker checker in GoalCheckers)
-            priority = checker.Do(priority);
+            priority = checker.Do(priority, failed);
+        failed = false;
 
         int count = 100;
         controls.reset();
@@ -88,7 +99,10 @@ public partial class AI : MonoBehaviour
         }
 
         if (status == impossible)
+        {
+            failed = true;
             print(gameObject.name + "      IMPOSSIBLE !");
+        }
 
         player.ControllerListener(controls);
         //print(FindNearestExit());
@@ -126,7 +140,7 @@ public partial class AI : MonoBehaviour
 
         if(specialDirections)
         {
-            print("special directions ");
+            //print("special directions ");
             roomPath[roomy][roomx] = 1;
             if (up)
                 n.Enqueue(new MapNode(roomx, roomy + 1, 2, new Vector3(centerOfRoomGrid.x, centerOfRoomGrid.y + roomCell, centerOfRoomGrid.z)));
@@ -464,8 +478,48 @@ public partial class AI : MonoBehaviour
         return closest;
     }
 
+    /// <summary>
+    /// Normally this happens if the AI gets stuck in a door
+    /// This should only be called if the AI is trying to move.
+    /// </summary>
+    /// <returns>true if the ai has been in one place for a while</returns>
+    private bool stagnate()
+    {
+        if ((lastPosition - transform.position).magnitude < .1f)
+        {
+            if (stagnateTimer > stagnateTime)
+                return true;
+            stagnateTimer += Time.deltaTime;
+            return false;
+        }
+        lastPosition = transform.position;
+        stagnateTimer = 0;
+        return false;
+    }
+
+    /// <summary>
+    /// wiggle wiggle wiggle
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private int freeYourself(float x, float y)
+    {
+        if (x > 0)
+            controls.moveLeft = -1;
+        else
+            controls.moveLeft = 1;
+        controls.jump = controls.door = ButtonPresser();
+
+        return inProgress;
+    }
+
     private int Move(float x, float y)
     {
+        if (stagnate())
+        {
+            return freeYourself(x, y);
+        }
         //print("Move (" + x + "," + y + ")\n"+roomGridString());
         if (y > 0)
         {

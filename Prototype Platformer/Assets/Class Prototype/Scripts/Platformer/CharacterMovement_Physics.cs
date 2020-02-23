@@ -58,7 +58,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private Vector3 _storedVelocity = Vector3.zero;
     private CharacterState _storedState;
-    private SphereCollider _collider;
+    private CapsuleCollider _collider;
     public PhysicMaterial NoFriction;
 
     //private GameObject _currentItem;
@@ -137,7 +137,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         defaultWeapon = g2.GetComponent<Item>();
 
         //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
-        _collider = transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>();
+        _collider = transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>();
         
 
         _controllerStatus = new ControlStruct(ControlStruct.None);

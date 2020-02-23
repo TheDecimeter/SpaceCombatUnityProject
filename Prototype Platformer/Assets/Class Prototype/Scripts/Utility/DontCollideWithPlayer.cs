@@ -10,8 +10,8 @@ public class DontCollideWithPlayer : MonoBehaviour
         GameObject players=FindObjectOfType<PlayerArray>().gameObject;
         foreach (Transform player in players.transform)
         {
-            Physics.IgnoreCollision(player.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
-                this.GetComponent<Collider>());
+            //Physics.IgnoreCollision(player.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
+            //    this.GetComponent<Collider>());
             Physics.IgnoreCollision(player.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>(),
                 this.GetComponent<Collider>());
         }

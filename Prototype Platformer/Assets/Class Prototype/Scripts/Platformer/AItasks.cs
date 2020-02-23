@@ -290,7 +290,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveNorth(int x, int y, int Tx, int Ty)
     {
-        print("   MOVEnorth");
+       // print("   MOVEnorth");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x, y + 1) == current + 1)

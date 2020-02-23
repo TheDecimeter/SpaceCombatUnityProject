@@ -25,14 +25,14 @@ public partial class AI : MonoBehaviour
             this.priority = priority;
         }
 
-        public int Do(int priority)
+        public int Do(int priority, bool failed=false)
         {
             //if you are currently performing a higher level task,
             //don't override it!
             if (priority > this.priority)
                 return priority;
 
-            if (timer == 0)
+            if (timer == 0||failed)
                 Reset();
 
             timer += Time.deltaTime;
@@ -114,10 +114,14 @@ public partial class AI : MonoBehaviour
                 if (c.x == Tx && c.y == Ty)
                     break; //stop when you've reached the target
 
-                q.Enqueue(new Node(c.x, c.y + 1, c.cost + 1));
-                q.Enqueue(new Node(c.x, c.y - 1, c.cost + 1));
-                q.Enqueue(new Node(c.x + 1, c.y, c.cost + 1));
-                q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
+                if(c.y+1<levelPath.Length)
+                    q.Enqueue(new Node(c.x, c.y + 1, c.cost + 1));
+                if(c.y-1>=0)
+                    q.Enqueue(new Node(c.x, c.y - 1, c.cost + 1));
+                if(c.x+1<levelPath[0].Length)
+                    q.Enqueue(new Node(c.x + 1, c.y, c.cost + 1));
+                if(c.x-1>=0)
+                    q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
             }
 
             print("grid to player \n" + AI.GridToString(levelPath));
@@ -183,10 +187,10 @@ public partial class AI : MonoBehaviour
 
         private bool validTile(int x, int y)
         {
-            if (x < 0 || x > outer.levelStats.MapDemensionsX - 1)
-                return false;
-            if (y < 0 || y > outer.levelStats.MapDemensionsY - 1)
-                return false;
+            //if (x < 0 || x > outer.levelStats.MapDemensionsX - 1)
+            //    return false;
+            //if (y < 0 || y > outer.levelStats.MapDemensionsY - 1)
+            //    return false;
             if (outer.levelStats.Map[y][x] != null && !outer.levelStats.Map[y][x].isClosed)
                 return true;
             return false;
@@ -222,6 +226,6 @@ public partial class AI : MonoBehaviour
 
     private interface IChecker
     {
-        int Do(int priority);
+        int Do(int priority, bool failed=false);
     }
 }
