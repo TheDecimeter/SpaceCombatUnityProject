@@ -92,7 +92,7 @@ public partial class AI : MonoBehaviour
             int Tx; int Ty;
             outer.GetMapGridPos(TargetPlayer.transform.position, out Tx, out Ty);
 
-            int count = 100;
+            int count = 1000;
             //bfs around to target
             while (q.Count > 0)
             {

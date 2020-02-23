@@ -18,10 +18,10 @@ public partial class AI : MonoBehaviour
 
     //status checking
     private Rigidbody rb;
-    private int currentMapX,currentMapY;
+    private int currentMapX, currentMapY;
 
-    private HashSet<Collision> EastObstructions = new HashSet<Collision>();
-    private HashSet<Collision> WestObstructions = new HashSet<Collision>();
+    private HashSet<GameObject> EastObstructions = new HashSet<GameObject>();
+    private HashSet<GameObject> WestObstructions = new HashSet<GameObject>();
 
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
@@ -29,18 +29,19 @@ public partial class AI : MonoBehaviour
     private int priority;
     private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
+    private bool specialDirections = false, up, down, left, right;
 
-    private const int ignoreLayer= ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
+    private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         player = GetComponent<CharacterMovement_Physics>();
 
-        StartY = levelStats.startY - levelStats.yTileSize/2;
+        StartY = levelStats.startY - levelStats.yTileSize / 2;
         StartX = levelStats.startX;
         roomCell = levelStats.yTileSize / 2;
-        
+
 
         roomPath = new byte[2][];
         for (int i = 0; i < 2; ++i)
@@ -48,18 +49,18 @@ public partial class AI : MonoBehaviour
             roomPath[i] = new byte[3];
         }
         priority = 5;
-        GoalCheckers.Add(new CheckerKillNearestPlayer(this,priority));
+        GoalCheckers.Add(new CheckerKillNearestPlayer(this, priority));
 
         //TaskList.Push(TaskAssignGoThroughNorthDoor);
         //currentTask = TaskList.Pop();
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         foreach (IChecker checker in GoalCheckers)
-            priority=checker.Do(priority);
+            priority = checker.Do(priority);
 
         int count = 100;
         controls.reset();
@@ -79,10 +80,10 @@ public partial class AI : MonoBehaviour
                     currentTask = TaskList.Pop();
                 else
                 {
-                    print(gameObject.name+ " end of task list " + TaskList.Count);
+                    print(gameObject.name + " end of task list " + TaskList.Count);
                     break;
                 }
-                
+
             }
         }
 
@@ -96,12 +97,21 @@ public partial class AI : MonoBehaviour
         //GetRoomGrid(transform.position, out x, out y);
         //MapRoom();
     }
-    
 
-    private void SetLevelPath()
+    public void SetDirections(bool up, bool down, bool left, bool right)
     {
-        
+        this.up = up;
+        this.down = down;
+        this.left = left;
+        this.right = right;
+        specialDirections = true;
     }
+
+    public void RemoveDirections()
+    {
+        specialDirections = false;
+    }
+
 
     private int TaskMapRoom()
     {
@@ -114,7 +124,21 @@ public partial class AI : MonoBehaviour
         Queue<MapNode> n = new Queue<MapNode>();
         Vector3 centerOfRoomGrid = GetCenterOfRoomGrid(transform.position);
 
-        n.Enqueue(new MapNode(roomx, roomy, 1, centerOfRoomGrid));
+        if(specialDirections)
+        {
+            print("special directions ");
+            roomPath[roomy][roomx] = 1;
+            if (up)
+                n.Enqueue(new MapNode(roomx, roomy + 1, 2, new Vector3(centerOfRoomGrid.x, centerOfRoomGrid.y + roomCell, centerOfRoomGrid.z)));
+            if (down)
+                n.Enqueue(new MapNode(roomx, roomy - 1, 2, new Vector3(centerOfRoomGrid.x, centerOfRoomGrid.y - roomCell, centerOfRoomGrid.z)));
+            if (left)
+                n.Enqueue(new MapNode(roomx - 1, roomy, 2, new Vector3(centerOfRoomGrid.x - roomCell, centerOfRoomGrid.y, centerOfRoomGrid.z)));
+            if (right)
+                n.Enqueue(new MapNode(roomx + 1, roomy, 2, new Vector3(centerOfRoomGrid.x + roomCell, centerOfRoomGrid.y, centerOfRoomGrid.z)));
+        }
+        else
+            n.Enqueue(new MapNode(roomx, roomy, 1, centerOfRoomGrid));
 
         RaycastHit h;
         
@@ -135,13 +159,15 @@ public partial class AI : MonoBehaviour
             Debug.DrawRay(c.loc, Vector3.right * roomCell * .9f, Color.red);
             Debug.DrawRay(c.loc, Vector3.up * roomCell * .9f, Color.gray);
             Debug.DrawRay(c.loc, Vector3.down * roomCell * .9f, Color.blue);
+
+
             //check left
             if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0))
             {
                 if (!Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f,ignoreLayer,QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
-                else
-                    print("hit " + h.collider.gameObject.name);
+                //else
+                //    print("hit " + h.collider.gameObject.name);
             }
                 
             //check right
@@ -149,8 +175,8 @@ public partial class AI : MonoBehaviour
             {
                 if(!Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
-                else
-                    print("hit " + h.collider.gameObject.name);
+                //else
+                //    print("hit " + h.collider.gameObject.name);
             }
                
                 
@@ -159,16 +185,16 @@ public partial class AI : MonoBehaviour
             {
                 if(!Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
-                else
-                    print("hit " + h.collider.gameObject.name);
+                //else
+                //    print("hit " + h.collider.gameObject.name);
             }
             //check down
             if (!(c.x < 0 || c.x > 2 || c.y - 1 < 0 || c.y - 1 > 1 || roomPath[c.y - 1][c.x] != 0))
             {
                 if (!Physics.Raycast(c.loc, Vector3.down, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
-                else
-                    print("hit " + h.collider.gameObject.name);
+                //else
+                //    print("hit " + h.collider.gameObject.name);
             }
         }
 
@@ -444,7 +470,7 @@ public partial class AI : MonoBehaviour
         if (y > 0)
         {
             controls.jump = ButtonPresser();
-            print("Move jump " + controls.jump + " " + x);
+            //print("Move jump " + controls.jump + " " + x);
         }
         else
             controls.jump = false;
@@ -456,18 +482,19 @@ public partial class AI : MonoBehaviour
             {
                 if (!controls.jump)
                 {
-                    if (x > 0)
-                        foreach (Collision c in EastObstructions)
-                            print("obsticle east " + c.gameObject.name);
-                    if(x < 0)
-                        foreach (Collision c in WestObstructions)
-                            print("obsticle west " + c.gameObject.name);
+                    //print("\n");
+                    //if (x > 0)
+                    //    foreach (GameObject c in EastObstructions)
+                    //        print("obsticle east " + c.name);
+                    //if (x < 0)
+                    //    foreach (GameObject c in WestObstructions)
+                    //        print("obsticle west " + c.name);
                     controls.jump = ButtonPresser();
                     //print("Move obsticle jump " + controls.jump + " " + x);
                 }
             }
             //else
-            //    print("Move " + x);
+            //    print("Move " + x + " E:" + EastObstructions.Count + " W:" + WestObstructions.Count + "\n for " + gameObject.name);
             controls.moveLeft = x;
         }
         return inProgress;
@@ -490,14 +517,15 @@ public partial class AI : MonoBehaviour
     
 
 
-    private void OnCollisionEnter(Collision col)
+    private void OnCollisionStay(Collision col)
     {
         foreach (ContactPoint cp in col.contacts)
         {
             if (isEastObstruction(cp))
             {
-                EastObstructions.Add(col);
-                WestObstructions.Remove(col);
+                //print("   adding east " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
+                EastObstructions.Add(col.gameObject);
+                WestObstructions.Remove(col.gameObject);
                 return;
             }
         }
@@ -505,44 +533,45 @@ public partial class AI : MonoBehaviour
         {
             if (isWestObstruction(cp))
             {
-                WestObstructions.Add(col);
-                EastObstructions.Remove(col);
+                //print("   adding west " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
+                WestObstructions.Add(col.gameObject);
+                EastObstructions.Remove(col.gameObject);
                 return;
             }
         }
-        EastObstructions.Remove(col);
-        WestObstructions.Remove(col);
+        EastObstructions.Remove(col.gameObject);
+        WestObstructions.Remove(col.gameObject);
     }
     void OnCollisionExit(Collision col)
     {
-        EastObstructions.Remove(col);
-        WestObstructions.Remove(col);
+        EastObstructions.Remove(col.gameObject);
+        WestObstructions.Remove(col.gameObject);
     }
 
     private bool isEastObstruction(ContactPoint cp)
     {
 
-        if (cp.normal.x < -.2f)
+        if (cp.normal.x > -.1f)
             return false;
-        print("   adding east " + cp.otherCollider.gameObject + " " + cp.normal.x);
         return isObsticle(cp); 
 
     }
     private bool isWestObstruction(ContactPoint cp)
     {
 
-        if (cp.normal.x > .2f)
+        if (cp.normal.x < .1f)
             return false;
-        print("   adding west " + cp.otherCollider.gameObject + " " + cp.normal.x);
         return isObsticle(cp);
     }
     private bool isObsticle(ContactPoint cp)
     {
         if (cp.otherCollider.gameObject.GetComponent<DoorBehavior>())
             return false;
-        float otherHeight = cp.otherCollider.bounds.center.x + cp.otherCollider.bounds.extents.x / 2;
-        float thisHeight= cp.thisCollider.bounds.center.x + cp.thisCollider.bounds.extents.x / 2;
-        if(thisHeight<otherHeight)
+        float otherHeight = cp.otherCollider.bounds.center.y + cp.otherCollider.bounds.extents.y / 2;
+        float thisHeight= cp.thisCollider.bounds.center.y + cp.thisCollider.bounds.extents.y / 2;
+        //print("heights this: "+thisHeight + " other " + otherHeight + "\n for " + gameObject.name);
+        //print("this collider " + cp.thisCollider.gameObject.name + " other: " + cp.otherCollider.gameObject.name);
+        if (thisHeight<otherHeight)
             return false;
         return true;
     }
