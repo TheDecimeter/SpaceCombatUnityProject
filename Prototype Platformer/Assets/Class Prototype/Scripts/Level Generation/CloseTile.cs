@@ -13,6 +13,8 @@ public class CloseTile
     int closableListEnd;
     int openTiles, stopAt;
 
+    LinkedList<Node> CloseOrder = new LinkedList<Node>();
+
 
     HashSet<Node> visited;
     int visitedTiles;
@@ -169,6 +171,47 @@ public class CloseTile
     {
         if (activeCloser == null)
         {
+            List<Node> candidates = new List<Node>();
+            for (int i = 0; i < map.Length; ++i)
+                for (int j = 0; j < map[i].Length; ++j)
+                {
+                    if (map[i][j] != null && !map[i][j].isClosed)
+                    {
+                        candidates.Add(new Node(i, j));
+                    }
+                }
+            candidates.Sort((a, b) => Random.Range(-1, 1));
+            CloseOrder = new LinkedList<Node>(candidates);
+
+            activeCloser = CloseOrder.First.Value;
+            CloseOrder.RemoveFirst();
+        }
+
+        if (map[activeCloser.i][activeCloser.j].isClosed)
+        {
+            activeCloser = CloseOrder.First.Value;
+            CloseOrder.RemoveFirst();
+        }
+
+        int count = 111;
+
+        while (ClosingSplitsMap(activeCloser))
+        {
+            count--;
+            if (count == 0)
+            {
+                Debug.LogError("used loop count ");
+                break;
+            }
+            CloseOrder.AddLast(activeCloser);
+            activeCloser = CloseOrder.First.Value;
+            CloseOrder.RemoveFirst();
+        }
+
+        return;
+
+        if (activeCloser == null)
+        {
             activeCloser = closableList[Random.Range(0, closableListEnd)];
             while (ClosingSplitsMap(activeCloser))
                 activeCloserIsWorthless();
@@ -179,17 +222,31 @@ public class CloseTile
             {
 
                 //make a list of neighbors to the active closer to see which one should be closed
+                //List<Node> candidates = new List<Node>();
+                //if (positionContainsOpenTile(activeCloser.j, activeCloser.i - 1))
+                //    candidates.Add(new Node(activeCloser.i - 1, activeCloser.j));
+                //if (positionContainsOpenTile(activeCloser.j, activeCloser.i + 1))
+                //    candidates.Add(new Node(activeCloser.i + 1, activeCloser.j));
+                //if (positionContainsOpenTile(activeCloser.j - 1, activeCloser.i))
+                //    candidates.Add(new Node(activeCloser.i, activeCloser.j - 1));
+                //if (positionContainsOpenTile(activeCloser.j + 1, activeCloser.i))
+                //    candidates.Add(new Node(activeCloser.i, activeCloser.j + 1));
+
+
+                //Get all the open tiles in a list instead of picking from nearby tiles
                 List<Node> candidates = new List<Node>();
-                if (positionContainsOpenTile(activeCloser.j, activeCloser.i - 1))
-                    candidates.Add(new Node(activeCloser.i - 1, activeCloser.j));
-                if (positionContainsOpenTile(activeCloser.j, activeCloser.i + 1))
-                    candidates.Add(new Node(activeCloser.i + 1, activeCloser.j));
-                if (positionContainsOpenTile(activeCloser.j - 1, activeCloser.i))
-                    candidates.Add(new Node(activeCloser.i, activeCloser.j - 1));
-                if (positionContainsOpenTile(activeCloser.j + 1, activeCloser.i))
-                    candidates.Add(new Node(activeCloser.i, activeCloser.j + 1));
+                for(int i=0; i<map.Length; ++i)
+                    for(int j=0; j<map[i].Length; ++j)
+                    {
+                        if(map[i][j]!=null && !map[i][j].isClosed)
+                        {
+                            candidates.Add(new Node(i, j));
+                        }
+                    }
 
-
+                //Randomize the list
+                candidates.Sort((a, b) => (Random.Range(-1,1)));
+                
 
                 //go through the list and get the first candidate that can
                 //be closed without splitting the level.
@@ -288,7 +345,7 @@ public class CloseTile
         else activeCloser = null;
     }
 
-    private class Node
+    private class Node //: System.IComparable<Node>
     {
         public int i, j;
 
@@ -322,5 +379,11 @@ public class CloseTile
             Node that = (Node)o;
             return (this.i == that.i && this.j == that.j);
         }
+        
+
+        //public int CompareTo(Node other)
+        //{
+        //    return Random.Range(-1, 1);
+        //}
     }
 }

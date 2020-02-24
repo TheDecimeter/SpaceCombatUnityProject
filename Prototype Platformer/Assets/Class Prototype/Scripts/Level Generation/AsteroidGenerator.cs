@@ -79,8 +79,8 @@ public class AsteroidGenerator : MonoBehaviour
         else if (hasWarned)
         {
             hasWarned = false;
-            foreach (GameObject g in chuckedAsteroids)
-                Destroy(g);
+            //foreach (GameObject g in chuckedAsteroids)
+            //    Destroy(g);
             chuckedAsteroids = new List<GameObject>();
             return true;
         }
@@ -111,7 +111,11 @@ public class AsteroidGenerator : MonoBehaviour
         tmp.SetActive(true);
         Vector3 target = new Vector3(whereX+Random.Range(-xMargin,xMargin), whereY + Random.Range(-yMargin, yMargin), startz);
         tmp.transform.position = new Vector3(whereX, whereY, startz - 25);
-        tmp.GetComponent<Rigidbody>().AddForce((target-tmp.transform.position)*AsteroidSpeed, ForceMode.Acceleration);
+
+        Rigidbody rb = tmp.GetComponent<Rigidbody>();
+        rb.AddForce((target - tmp.transform.position) * AsteroidSpeed, ForceMode.Acceleration);
+        rb.AddTorque(Random.Range(-100, 100), Random.Range(-100, 100), Random.Range(-100, 100), ForceMode.VelocityChange);
+
         chuckedAsteroids.Add(tmp);
     }
 }
