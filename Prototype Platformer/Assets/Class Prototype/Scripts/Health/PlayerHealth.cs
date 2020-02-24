@@ -225,7 +225,7 @@ public class PlayerHealth : MonoBehaviour {
 
         framesDamage = 0;
 
-        transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
+        //transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
         transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>().enabled = false;
 
 

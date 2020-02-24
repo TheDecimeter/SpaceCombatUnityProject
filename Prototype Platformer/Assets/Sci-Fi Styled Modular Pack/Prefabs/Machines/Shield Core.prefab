@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 407284}
   - component: {fileID: 3398720}
   - component: {fileID: 2312182}
-  - component: {fileID: 6475516}
   m_Layer: 0
   m_Name: glass_panel_1_corner
   m_TagString: Untagged
@@ -79,20 +78,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6475516
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 102150}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: 87697a119091a8042b8edd7358266a70, type: 3}
 --- !u!1 &104032
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,7 +89,6 @@ GameObject:
   - component: {fileID: 424666}
   - component: {fileID: 3388688}
   - component: {fileID: 2334734}
-  - component: {fileID: 6561504}
   m_Layer: 0
   m_Name: Battery (2)
   m_TagString: Untagged
@@ -172,19 +156,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6561504
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 104032}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2.879192, z: 2}
-  m_Center: {x: 0, y: 1.439596, z: 0}
 --- !u!1 &125118
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +167,6 @@ GameObject:
   - component: {fileID: 471532}
   - component: {fileID: 3343070}
   - component: {fileID: 2338352}
-  - component: {fileID: 6464802}
   m_Layer: 0
   m_Name: shield_generator
   m_TagString: Untagged
@@ -263,20 +233,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6464802
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125118}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: fcf5cb51929ff5446bd8ae59de56ea02, type: 3}
 --- !u!1 &140976
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +287,6 @@ GameObject:
   - component: {fileID: 410936}
   - component: {fileID: 3337326}
   - component: {fileID: 2335036}
-  - component: {fileID: 6434740}
   m_Layer: 0
   m_Name: glass_panel_1_corner (3)
   m_TagString: Untagged
@@ -399,20 +354,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6434740
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 149650}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: 87697a119091a8042b8edd7358266a70, type: 3}
 --- !u!1 &160692
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +365,6 @@ GameObject:
   - component: {fileID: 487422}
   - component: {fileID: 3394304}
   - component: {fileID: 2308264}
-  - component: {fileID: 6415996}
   m_Layer: 0
   m_Name: glass_panel_1_corner (2)
   m_TagString: Untagged
@@ -492,20 +432,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6415996
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160692}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: 87697a119091a8042b8edd7358266a70, type: 3}
 --- !u!1 &162682
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,7 +443,6 @@ GameObject:
   - component: {fileID: 403230}
   - component: {fileID: 3384144}
   - component: {fileID: 2322394}
-  - component: {fileID: 6587902}
   m_Layer: 0
   m_Name: Battery
   m_TagString: Untagged
@@ -585,19 +510,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6587902
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 162682}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2.879192, z: 2}
-  m_Center: {x: 0, y: 1.439596, z: 0}
 --- !u!1 &169050
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +521,6 @@ GameObject:
   - component: {fileID: 479652}
   - component: {fileID: 3388746}
   - component: {fileID: 2362258}
-  - component: {fileID: 6502966}
   m_Layer: 0
   m_Name: floor_5 (1)
   m_TagString: Untagged
@@ -678,19 +589,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6502966
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 169050}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.000001, y: 0.1817455, z: 4}
-  m_Center: {x: -0.00000047683716, y: 0.0908726, z: 0.00000047683716}
 --- !u!1 &169398
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,7 +600,6 @@ GameObject:
   - component: {fileID: 484916}
   - component: {fileID: 3377728}
   - component: {fileID: 2362980}
-  - component: {fileID: 6409254}
   m_Layer: 0
   m_Name: glass_panel_1_corner (1)
   m_TagString: Untagged
@@ -770,20 +667,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &6409254
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 169398}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: 87697a119091a8042b8edd7358266a70, type: 3}
 --- !u!1 &172186
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,7 +678,6 @@ GameObject:
   - component: {fileID: 419858}
   - component: {fileID: 3324224}
   - component: {fileID: 2313454}
-  - component: {fileID: 6532994}
   m_Layer: 0
   m_Name: floor_5
   m_TagString: Untagged
@@ -864,19 +746,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6532994
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172186}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.000001, y: 0.1817455, z: 4}
-  m_Center: {x: -0.00000047683716, y: 0.0908726, z: 0.00000047683716}
 --- !u!1 &173044
 GameObject:
   m_ObjectHideFlags: 0
@@ -10436,7 +10305,6 @@ GameObject:
   - component: {fileID: 499898}
   - component: {fileID: 3321098}
   - component: {fileID: 2355380}
-  - component: {fileID: 6505218}
   m_Layer: 0
   m_Name: Battery (3)
   m_TagString: Untagged
@@ -10504,19 +10372,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6505218
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 194442}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2.879192, z: 2}
-  m_Center: {x: 0, y: 1.439596, z: 0}
 --- !u!1 &199082
 GameObject:
   m_ObjectHideFlags: 0
@@ -10528,7 +10383,6 @@ GameObject:
   - component: {fileID: 434476}
   - component: {fileID: 3349286}
   - component: {fileID: 2377704}
-  - component: {fileID: 6590676}
   m_Layer: 0
   m_Name: Battery (1)
   m_TagString: Untagged
@@ -10596,16 +10450,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &6590676
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 199082}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2, y: 2.879192, z: 2}
-  m_Center: {x: 0, y: 1.439596, z: 0}

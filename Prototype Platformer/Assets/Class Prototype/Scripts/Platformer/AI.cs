@@ -24,8 +24,8 @@ public partial class AI : MonoBehaviour
     private HashSet<GameObject> WestObstructions = new HashSet<GameObject>();
 
     private Vector3 lastPosition;
-    private float stagnateTimer = 0;
-    private const float stagnateTime = .5f;
+    private float stagnateTimer = 0, freedomTimer=0;
+    private const float stagnateTime = .5f, freedomTime=stagnateTime/2;
 
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
@@ -490,10 +490,13 @@ public partial class AI : MonoBehaviour
             if (stagnateTimer > stagnateTime)
                 return true;
             stagnateTimer += Time.deltaTime;
+            freedomTimer = 0;
+            //print("not stagnate time " + stagnateTimer);
             return false;
         }
+        //print("not stagnate " + lastPosition + " " + transform.position);
         lastPosition = transform.position;
-        stagnateTimer = 0;
+        stagnateTimer = 0; 
         return false;
     }
 
@@ -505,11 +508,21 @@ public partial class AI : MonoBehaviour
     /// <returns></returns>
     private int freeYourself(float x, float y)
     {
-        if (x > 0)
-            controls.moveLeft = -1;
+        if (freedomTimer > freedomTime)
+        {
+            if (x > 0)
+                controls.moveLeft = -1;
+            else
+                controls.moveLeft = 1;
+            controls.jump = controls.door = ButtonPresser();
+        }
         else
-            controls.moveLeft = 1;
-        controls.jump = controls.door = ButtonPresser();
+        {
+            controls.door = ButtonPresser();
+        }
+        freedomTimer += Time.deltaTime;
+        if (freedomTimer > stagnateTime)
+            freedomTimer = 0;
 
         return inProgress;
     }
@@ -518,6 +531,7 @@ public partial class AI : MonoBehaviour
     {
         if (stagnate())
         {
+            print("    FREEDOM");
             return freeYourself(x, y);
         }
         //print("Move (" + x + "," + y + ")\n"+roomGridString());
