@@ -17,12 +17,12 @@ public class DoorBehavior : MonoBehaviour
     // Start is called before the first frame update
     public bool isOpenable = true;
     private Color LockedColor = new Color(.3f,0,0,.655f);
-    private Color unLockedColor=new Color(.1691f,.4842f,1, .655f);//new Color(0, 0, 0);
+    private Color unLockedColor=new Color(0.5019608f, 1,1, 0.5882353f);//new Color(0, 0, 0);
 
     private int _state=Closed;
     private int _frameCounter=0;
 
-    private const string element = "_TintColor";
+    private const string element = "_Color";//"_TintColor";
 
     private static AudioManager audio;
     void Start()

@@ -1,9 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+/// <summary>
+/// TODO
+/// Add whether or not camera rotation is a thing and only return a non zero cam rotation if that is the case
+/// use player count in file settings
+/// </summary>
 
 public class UndestroyableData : MonoBehaviour
 {
+    private string fileName = "/SCCdata.dat";
+
     [Header("Map Size in Menu")]
     public int MenuMapDemensionX = 8;
     public int MenuMapDemensionY = 8;
@@ -18,47 +28,50 @@ public class UndestroyableData : MonoBehaviour
     
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        if (save.ScoreKeeper.player == null)
-            save.ScoreKeeper.player = new int[4];
+        if (sSave.ScoreKeeper.player == null)
+        {
+            sSave.ScoreKeeper.player = new int[4];
+            sSave.CamRot.player = new int[4];
+            LoadFile(fileName);
+        }
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    private void OnDestroy()
     {
-        
+        SaveFile(fileName);
     }
-    
+
 
     public void HowManyRounds(int rounds)
     {
-        save.RoundCounter = -1;
-        save.Rounds = rounds;
+        sSave.RoundCounter = -1;
+        sSave.Rounds = rounds;
 
-        save.ScoreKeeper.player = new int[4];
+        sSave.ScoreKeeper.player = new int[4];
     }
     public void CloseStartMenu()
     {
-        save.StartMenu.StartMenuOpened = false;
+        sSave.StartMenu.StartMenuOpened = false;
     }
     public void OpenStartMenu()
     {
-        save.StartMenu.StartMenuOpened = true;
+        sSave.StartMenu.StartMenuOpened = true;
     }
     public void SetupStartMenu(ref int RecommendedRounds, ref bool OpenStartMenu)
     {
         //print("menuNotSaved" + save.StartMenu.MenuNotSaved);
-        if (save.StartMenu.MenuNotSaved)
+        if (sSave.StartMenu.MenuNotSaved)
         {
-            save.StartMenu.MenuNotSaved = false;
-            save.Rounds = RecommendedRounds;
+            sSave.StartMenu.MenuNotSaved = false;
+            sSave.Rounds = RecommendedRounds;
             isMenuOpened();
         }
         else
         {
             //print("menuSaved, should it be opened?" + save.StartMenu.MenuNotSaved);
-            RecommendedRounds = save.Rounds;
+            RecommendedRounds = sSave.Rounds;
             OpenStartMenu = isMenuOpened();
         }
     }
@@ -69,15 +82,15 @@ public class UndestroyableData : MonoBehaviour
 
     public void IncreaseScore(int PlayerNumber, int HowMuch)
     {
-        save.ScoreKeeper.player[PlayerNumber] += HowMuch;
+        sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
         //print("score increased for " + PlayerNumber + " score: " + save.ScoreKeeper.player[PlayerNumber]);
     }
     public IEnumerable<int> GetScore()
     {
-        if (save.ScoreKeeper.player == null)
-            save.ScoreKeeper.player = new int[4];
+        if (sSave.ScoreKeeper.player == null)
+            sSave.ScoreKeeper.player = new int[4];
         for(int i=0; i<4;++i)
-            yield return save.ScoreKeeper.player[i];
+            yield return sSave.ScoreKeeper.player[i];
     }
 
 
@@ -86,96 +99,104 @@ public class UndestroyableData : MonoBehaviour
 
     public void EndRound()
     {
-        save.RoundCounter++;
-        if (save.Rounds == save.RoundCounter)
-            save.StartMenu.StartMenuOpened = true;
+        sSave.RoundCounter++;
+        if (sSave.Rounds == sSave.RoundCounter)
+            sSave.StartMenu.StartMenuOpened = true;
     }
 
     public bool isMenuOpened()
     {
-        if (save.StartMenu.MenuOpenedNotSaved)
-            save.StartMenu.StartMenuOpened = FindObjectOfType<StartMenu>().OpenMenuOnStart;
-        save.StartMenu.MenuOpenedNotSaved = false;
-        return save.StartMenu.StartMenuOpened;
+        if (sSave.StartMenu.MenuOpenedNotSaved)
+            sSave.StartMenu.StartMenuOpened = FindObjectOfType<StartMenu>().OpenMenuOnStart;
+        sSave.StartMenu.MenuOpenedNotSaved = false;
+        return sSave.StartMenu.StartMenuOpened;
     }
 
     public void SetUpLevel(ref int xDim, ref int yDim, ref bool FillLevel, ref int maxTiles,
         ref int WarnFrames, ref int closeFrames,
         ref int asteroidSpeed, ref int chuckAsteroidFrames, ref int PlusOrMinus)
     {
-        if (save.StartMenu.LevelNotSaved)
+        if (sSave.StartMenu.LevelNotSaved)
         {
             //save.StartMenu.StartMenuOpened=FindObjectOfType<StartMenu>().OpenMenuOnStart;
             isMenuOpened();
-            save.StartMenu.LevelNotSaved = false;
+            sSave.StartMenu.LevelNotSaved = false;
 
             //save play settings
-            save.Play.MapDemensionX = xDim;
-            save.Play.MapDemensionY = yDim;
+            sSave.Play.MapDemensionX = xDim;
+            sSave.Play.MapDemensionY = yDim;
 
-            save.Play.MaxTiles = maxTiles;
-            save.Play.FillLevel = FillLevel;
+            sSave.Play.MaxTiles = maxTiles;
+            sSave.Play.FillLevel = FillLevel;
 
-            save.Play.WarnRoomFrames = WarnFrames;
-            save.Play.CloseRoomFrames = closeFrames;
+            sSave.Play.WarnRoomFrames = WarnFrames;
+            sSave.Play.CloseRoomFrames = closeFrames;
 
-            save.Play.AsteroidSpeed = asteroidSpeed;
-            save.Play.ChuckAsteroidEvery = chuckAsteroidFrames;
-            save.Play.ChuckAsteroidPlusOrMinus = PlusOrMinus;
+            sSave.Play.AsteroidSpeed = asteroidSpeed;
+            sSave.Play.ChuckAsteroidEvery = chuckAsteroidFrames;
+            sSave.Play.ChuckAsteroidPlusOrMinus = PlusOrMinus;
             
 
             //save menu settings
-            save.StartMenu.MapDemensionX = MenuMapDemensionX;
-            save.StartMenu.MapDemensionY = MenuMapDemensionY;
+            sSave.StartMenu.MapDemensionX = MenuMapDemensionX;
+            sSave.StartMenu.MapDemensionY = MenuMapDemensionY;
 
-            save.StartMenu.MaxTiles = MenuMaxTileQuantity;
-            save.StartMenu.FillLevel = MenuFillLevel;
+            sSave.StartMenu.MaxTiles = MenuMaxTileQuantity;
+            sSave.StartMenu.FillLevel = MenuFillLevel;
 
-            save.StartMenu.WarnRoomFrames = MenuCloseTileWarnFrames;
-            save.StartMenu.CloseRoomFrames = MenuCloseTileXManyFrames;
+            sSave.StartMenu.WarnRoomFrames = MenuCloseTileWarnFrames;
+            sSave.StartMenu.CloseRoomFrames = MenuCloseTileXManyFrames;
 
-            save.StartMenu.AsteroidSpeed = MenuChuckAsteroidSpeed;
-            save.StartMenu.ChuckAsteroidEvery = MenuChuckAsteroidEvery;
-            save.StartMenu.ChuckAsteroidPlusOrMinus = MenuChuckAsteroidPlusOrMinus;
+            sSave.StartMenu.AsteroidSpeed = MenuChuckAsteroidSpeed;
+            sSave.StartMenu.ChuckAsteroidEvery = MenuChuckAsteroidEvery;
+            sSave.StartMenu.ChuckAsteroidPlusOrMinus = MenuChuckAsteroidPlusOrMinus;
         }
 
         //then load the appropriate level settings
-        if (save.StartMenu.StartMenuOpened)
+        if (sSave.StartMenu.StartMenuOpened)
         {
-            print("start menu opened in LevelSetup");
-            xDim = save.StartMenu.MapDemensionX;
-            yDim = save.StartMenu.MapDemensionY;
+            xDim = sSave.StartMenu.MapDemensionX;
+            yDim = sSave.StartMenu.MapDemensionY;
 
-            maxTiles = save.StartMenu.MaxTiles;
-            FillLevel = save.StartMenu.FillLevel;
+            maxTiles = sSave.StartMenu.MaxTiles;
+            FillLevel = sSave.StartMenu.FillLevel;
 
-            WarnFrames = save.StartMenu.WarnRoomFrames;
-            closeFrames = save.StartMenu.CloseRoomFrames;
+            WarnFrames = sSave.StartMenu.WarnRoomFrames;
+            closeFrames = sSave.StartMenu.CloseRoomFrames;
 
-            asteroidSpeed = save.StartMenu.AsteroidSpeed;
-            chuckAsteroidFrames = save.StartMenu.ChuckAsteroidEvery;
-            PlusOrMinus = save.StartMenu.ChuckAsteroidPlusOrMinus;
+            asteroidSpeed = sSave.StartMenu.AsteroidSpeed;
+            chuckAsteroidFrames = sSave.StartMenu.ChuckAsteroidEvery;
+            PlusOrMinus = sSave.StartMenu.ChuckAsteroidPlusOrMinus;
         }
         else
         {
             //print("start menu closed in LevelSetup");
-            xDim = save.Play.MapDemensionX;
-            yDim = save.Play.MapDemensionY;
+            xDim = sSave.Play.MapDemensionX;
+            yDim = sSave.Play.MapDemensionY;
 
-            maxTiles = save.Play.MaxTiles;
-            FillLevel = save.Play.FillLevel;
+            maxTiles = sSave.Play.MaxTiles;
+            FillLevel = sSave.Play.FillLevel;
 
-            WarnFrames = save.Play.WarnRoomFrames;
-            closeFrames = save.Play.CloseRoomFrames;
+            WarnFrames = sSave.Play.WarnRoomFrames;
+            closeFrames = sSave.Play.CloseRoomFrames;
 
-            asteroidSpeed = save.Play.AsteroidSpeed;
-            chuckAsteroidFrames = save.Play.ChuckAsteroidEvery;
-            PlusOrMinus = save.Play.ChuckAsteroidPlusOrMinus;
+            asteroidSpeed = sSave.Play.AsteroidSpeed;
+            chuckAsteroidFrames = sSave.Play.ChuckAsteroidEvery;
+            PlusOrMinus = sSave.Play.ChuckAsteroidPlusOrMinus;
         }
         
     }
 
-    private static class save
+    public int GetRotation(int player)
+    {
+        return sSave.CamRot.player[player];
+    }
+    public void SetRotation(int player, int val)
+    {
+        sSave.CamRot.player[player]=val;
+    }
+
+    private static class sSave
     {
         public static class StartMenu
         {
@@ -199,7 +220,59 @@ public class UndestroyableData : MonoBehaviour
                 AsteroidSpeed, ChuckAsteroidEvery, ChuckAsteroidPlusOrMinus;
             public static bool FillLevel;
         }
-        public static int RoundCounter, Rounds;
+        public static int RoundCounter, Rounds, PlayerCount;
         public static bool NotYetHappened=true;
+
+        public static class CamRot
+        {
+            public static int [] player;
+        }
+    }
+
+    [System.Serializable]
+    private class fSave
+    {
+        public int[] PlayerRot;
+        public int PlayerCount;
+
+        public fSave(int [] playerRot, int playerCount)
+        {
+            this.PlayerCount = playerCount;
+            this.PlayerRot = playerRot;
+        }
+    }
+
+    public void SaveFile(string fileName)
+    {
+        string destination = Application.persistentDataPath + fileName;
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenWrite(destination);
+        else file = File.Create(destination);
+
+        fSave data = new fSave(sSave.CamRot.player,sSave.PlayerCount);
+        BinaryFormatter bf = new BinaryFormatter();
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    public void LoadFile(string fileName)
+    {
+        string destination = Application.persistentDataPath + fileName;
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenRead(destination);
+        else
+        {
+            Debug.LogError("File not found");
+            return;
+        }
+
+        BinaryFormatter bf = new BinaryFormatter();
+        fSave data = (fSave)bf.Deserialize(file);
+        file.Close();
+
+        sSave.PlayerCount = data.PlayerCount;
+        sSave.CamRot.player = data.PlayerRot;
     }
 }
