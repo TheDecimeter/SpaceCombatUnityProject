@@ -6,22 +6,13 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class SceneLoader : MonoBehaviour {
-    public TextMeshProUGUI WinText;
     public UndestroyableData saveData;
     public float sceneLoadDelay = 3f;
     public CanvasGroup sceneFadeOverlay;
     public float sceneFadeDuration = 0f;
 
-    private int [] scores=new int[4];
-
     public void Start()
     {
-        WinText.text = "";
-        int id = 0;
-        foreach(int i in saveData.GetScore())
-        {
-            scores[id++] = i;
-        }
 
 
         if (sceneFadeOverlay != null) StartCoroutine(FadeGameIn());
@@ -36,16 +27,6 @@ public class SceneLoader : MonoBehaviour {
 
     public void RestartScene ()
     {
-        int id = 0;
-        foreach (int i in saveData.GetScore())
-        {
-            if (scores[id++] != i)
-            {
-                WinText.text = "Player " + id + "\nWins";
-                break;
-            }
-        }
-
         saveData.EndRound();
         StartCoroutine(LoadSceneDelay(SceneManager.GetActiveScene().name));
     }
