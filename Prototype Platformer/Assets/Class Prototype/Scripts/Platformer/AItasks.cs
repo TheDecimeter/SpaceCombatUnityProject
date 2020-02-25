@@ -370,7 +370,8 @@ public partial class AI : MonoBehaviour
 
     private void ErrorCorrect()
     {
-        //print("error correct")
+        print("error correct");
+        Move(0, 0);//perform a "nothing" move so that if the player is really stuck they will try to free themselves
         TaskMapRoom();
     }
 

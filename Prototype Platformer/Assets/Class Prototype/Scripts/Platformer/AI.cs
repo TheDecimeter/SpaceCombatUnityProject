@@ -334,6 +334,11 @@ public partial class AI : MonoBehaviour
         
         if (x < levelStats.MapDemensionsX - 1)
         {
+            if (!levelStats.Map[y][x + 1])
+            {
+                door = null;
+                return false;
+            }
             DoorBehavior North = levelStats.Map[y][x + 1].WestDoors[1];
             if (IsValid(North))
             {
@@ -351,6 +356,11 @@ public partial class AI : MonoBehaviour
 
         if (y < levelStats.MapDemensionsY - 1)
         {
+            if (!levelStats.Map[y + 1][x])
+            {
+                door = null;
+                return false;
+            }
             DoorBehavior East = levelStats.Map[y + 1][x].SouthDoors[1];
             if (IsValid(East))
             {

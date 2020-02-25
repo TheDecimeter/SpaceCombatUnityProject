@@ -69,146 +69,155 @@ public partial class AI : MonoBehaviour
             }
             
             TargetPlayer = closestPlayer;
-            MakePathToTarget();
-        }
-
-
-        private void MakePathToTarget()
-        {
-            int[][] levelPath;
-
-            levelPath = new int[outer.levelStats.MapDemensionsY][];
-            for (int i = 0; i < outer.levelStats.MapDemensionsY; ++i)
-            {
-                levelPath[i] = new int[outer.levelStats.MapDemensionsX];
-            }
-
-            //find map pos for target and outer
-            Queue<Node> q = new Queue<Node>();
-            int x;int y;
-            outer.GetMapGridPos(outer.transform.position, out x, out y);
-            q.Enqueue(new Node(x, y, 1));
-
-            int Tx; int Ty;
-            outer.GetMapGridPos(TargetPlayer.transform.position, out Tx, out Ty);
-
-            int count = 1000;
-            //bfs around to target
-            while (q.Count > 0)
-            {
-                count -= 1;
-                if (count < 0)
-                {
-                    Debug.LogError("Had to use loop counter bfs player loc");
-                    break;
-                }
-                Node c = q.Dequeue();
-
-                if (!validTile(c.x, c.y))
-                    continue;
-                if (levelPath[c.y][c.x] != 0)
-                    continue;
-
-                levelPath[c.y][c.x] = c.cost;
-
-                if (c.x == Tx && c.y == Ty)
-                    break; //stop when you've reached the target
-
-                if(c.y+1<levelPath.Length)
-                    q.Enqueue(new Node(c.x, c.y + 1, c.cost + 1));
-                if(c.y-1>=0)
-                    q.Enqueue(new Node(c.x, c.y - 1, c.cost + 1));
-                if(c.x+1<levelPath[0].Length)
-                    q.Enqueue(new Node(c.x + 1, c.y, c.cost + 1));
-                if(c.x-1>=0)
-                    q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
-            }
-
-            print("grid to player \n" + AI.GridToString(levelPath));
-
-            count = 100;
-            //work from target pos to your pos to convert mapped route to tasks
-            outer.TaskList.Clear();
-            outer.TaskList.Push( ()=>outer.TaskAttackPlayerInRoom(TargetPlayer) );
-            int cx = Tx; int cy = Ty; int cc = levelPath[Ty][Tx];
-            print("startingCost " + cc);
-            while (cx != x || cy != y)
-            {
-                count -= 1;
-                if (count < 0)
-                {
-                    Debug.LogError("Had to use loop counter task loading");
-                    break;
-                }
-                //check left
-                if (nextStep(cx - 1, cy, cc, levelPath))
-                {
-                    print("go East " + cx + "," + cy);
-                    outer.TaskList.Push(outer.TaskAssignGoThroughEastDoor);
-                    cx -= 1;
-                }
-                //check right
-                if (nextStep(cx + 1, cy, cc, levelPath))
-                {
-                    print("go West " + cx + "," + cy);
-                    outer.TaskList.Push(outer.TaskAssignGoThroughWestDoor);
-                    cx += 1;
-                }
-                //check down
-                if (nextStep(cx, cy - 1, cc, levelPath))
-                {
-                    print("go North " + cx + "," + cy);
-                    outer.TaskList.Push(outer.TaskAssignGoThroughNorthDoor);
-                    cy -= 1;
-                }
-                //check up
-                if (nextStep(cx, cy + 1, cc, levelPath))
-                {
-                    print("go South "+cx+","+cy);
-                    outer.TaskList.Push(outer.TaskAssignGoThroughSouthDoor);
-                    cy += 1;
-                }
-                cc--;
-            }
-
-            print("\n");
-
-            outer.currentTask = outer.TaskList.Pop();
-        }
-
-        private bool nextStep(int x, int y,int cost, int[][] levelPath)
-        {
-            if (x < 0 || x > outer.levelStats.MapDemensionsX - 1)
-                return false;
-            if (y < 0 || y > outer.levelStats.MapDemensionsY - 1)
-                return false;
-            return levelPath[y][x]==cost-1;
-        }
-
-        private bool validTile(int x, int y)
-        {
-            //if (x < 0 || x > outer.levelStats.MapDemensionsX - 1)
-            //    return false;
-            //if (y < 0 || y > outer.levelStats.MapDemensionsY - 1)
-            //    return false;
-            if (outer.levelStats.Map[y][x] != null && !outer.levelStats.Map[y][x].isClosed)
-                return true;
-            return false;
-        }
-
-        private class Node
-        {
-            public int x, y;
-            public int cost;
-            public Node(int x, int y, int cost)
-            {
-                this.x = x;
-                this.y = y;
-                this.cost = cost;
-            }
+            outer.MakePathToTarget(TargetPlayer.gameObject, () => outer.TaskAttackPlayerInRoom(TargetPlayer));
         }
     }
 
+
+    private void MakePathToTarget(GameObject Target, Task EndTask)
+    {
+        int[][] levelPath;
+
+        levelPath = new int[levelStats.MapDemensionsY][];
+        for (int i = 0; i < levelStats.MapDemensionsY; ++i)
+        {
+            levelPath[i] = new int[levelStats.MapDemensionsX];
+        }
+
+        //find map pos for target and outer
+        Queue<Node> q = new Queue<Node>();
+        int x,  y;
+        GetMapGridPos(transform.position, out x, out y);
+        q.Enqueue(new Node(x, y, 1));
+
+        int Tx,  Ty;
+        GetMapGridPos(Target.transform.position, out Tx, out Ty);
+
+        //get asteroid colission position and avoid if applicaple
+        int Ax, Ay;
+        WarningLightManager warningLight = levelStats.GetComponent<WarningLightManager>();
+        if(warningLight.WarningLight.activeInHierarchy)
+            GetMapGridPos(warningLight.WarningLight.transform.position, out Ax, out Ay);
+        else
+        {
+            Ax = -1;
+            Ay = -1;
+        }
+
+        int count = 1000;
+        //bfs around to target
+        while (q.Count > 0)
+        {
+            count -= 1;
+            if (count < 0)
+            {
+                Debug.LogError("Had to use loop counter bfs player loc");
+                break;
+            }
+            Node c = q.Dequeue();
+
+            if (!validTile(c.x, c.y))
+                continue;
+            if (levelPath[c.y][c.x] != 0)
+                continue;
+
+            levelPath[c.y][c.x] = c.cost;
+
+            if (c.x == Tx && c.y == Ty)
+                break; //stop when you've reached the target
+
+            if (c.y + 1 < levelPath.Length && !(c.x==Ax&&c.y + 1==Ay))
+                q.Enqueue(new Node(c.x, c.y + 1, c.cost + 1));
+            if (c.y - 1 >= 0 && !(c.x == Ax && c.y - 1 == Ay))
+                q.Enqueue(new Node(c.x, c.y - 1, c.cost + 1));
+            if (c.x + 1 < levelPath[0].Length && !(c.x + 1 == Ax && c.y == Ay))
+                q.Enqueue(new Node(c.x + 1, c.y, c.cost + 1));
+            if (c.x - 1 >= 0 && !(c.x - 1== Ax && c.y == Ay))
+                q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
+        }
+
+        //print("grid to player \n" + AI.GridToString(levelPath));
+
+        count = 100;
+        //work from target pos to your pos to convert mapped route to tasks
+        TaskList.Clear();
+        TaskList.Push(EndTask);
+        int cx = Tx,  cy = Ty,  cc = levelPath[Ty][Tx];
+        //print("startingCost " + cc);
+        while (cx != x || cy != y)
+        {
+            count -= 1;
+            if (count < 0)
+            {
+                Debug.LogError("Had to use loop counter task loading");
+                break;
+            }
+            //check left
+            if (nextStep(cx - 1, cy, cc, levelPath))
+            {
+                //print("go East " + cx + "," + cy);
+                TaskList.Push(TaskAssignGoThroughEastDoor);
+                cx -= 1;
+            }
+            //check right
+            if (nextStep(cx + 1, cy, cc, levelPath))
+            {
+                //print("go West " + cx + "," + cy);
+                TaskList.Push(TaskAssignGoThroughWestDoor);
+                cx += 1;
+            }
+            //check down
+            if (nextStep(cx, cy - 1, cc, levelPath))
+            {
+                //print("go North " + cx + "," + cy);
+                TaskList.Push(TaskAssignGoThroughNorthDoor);
+                cy -= 1;
+            }
+            //check up
+            if (nextStep(cx, cy + 1, cc, levelPath))
+            {
+                //print("go South "+cx+","+cy);
+                TaskList.Push(TaskAssignGoThroughSouthDoor);
+                cy += 1;
+            }
+            cc--;
+        }
+
+        print("\n");
+
+        currentTask = TaskList.Pop();
+    }
+
+    private bool nextStep(int x, int y, int cost, int[][] levelPath)
+    {
+        if (x < 0 || x > levelStats.MapDemensionsX - 1)
+            return false;
+        if (y < 0 || y > levelStats.MapDemensionsY - 1)
+            return false;
+        return levelPath[y][x] == cost - 1;
+    }
+
+    private bool validTile(int x, int y)
+    {
+        //if (x < 0 || x > outer.levelStats.MapDemensionsX - 1)
+        //    return false;
+        //if (y < 0 || y > outer.levelStats.MapDemensionsY - 1)
+        //    return false;
+        if (levelStats.Map[y][x] != null && !levelStats.Map[y][x].isClosed)
+            return true;
+        return false;
+    }
+    private class Node
+    {
+        public int x, y;
+        public int cost;
+        public Node(int x, int y, int cost)
+        {
+            this.x = x;
+            this.y = y;
+            this.cost = cost;
+        }
+    }
 
     public static string GridToString(int[][] p)
     {
