@@ -514,7 +514,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     public void PointTo(Transform target)
     {
         HUDPointer navPoint = Instantiate(NavPoint);
-        navPoint.Init(target, transform, Vector3.zero, null);
+        navPoint.Init(target, transform, 3,GetComponent<CameraLocator>().CameraLocation);
         navPoints.Add(navPoint);
     }
     public void ClearNavPoints()

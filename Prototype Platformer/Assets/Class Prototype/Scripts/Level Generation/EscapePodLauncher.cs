@@ -67,6 +67,7 @@ public class EscapePodLauncher : MonoBehaviour
 
         //GameObject tmp = Instantiate(EscapePod);
         GameObject tmp = EscapePod;
+        tmp.GetComponent<EscapePodBehavior>().ShowNavPoints();
         tmp.SetActive(true);
         Vector3 target = new Vector3(x, y, z);
         tmp.transform.position = new Vector3(x, y, z - 25);

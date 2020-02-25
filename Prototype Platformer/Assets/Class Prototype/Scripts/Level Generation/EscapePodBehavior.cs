@@ -15,15 +15,14 @@ public class EscapePodBehavior : MonoBehaviour
     private int frameCounter;
     private GameObject PlayerArray;
     public float DistanceToEnter = 3;
+    
 
-    void Start()
+    public void ShowNavPoints()
     {
-
         PlayerArray = GameObject.Find("/Players/PlayerArray");
-        if (gameObject.name.Contains("(Clone)"))
-            foreach (Transform child in PlayerArray.transform)
-                if (!child.gameObject.GetComponent<PlayerHealth>().isDead)
-                    child.gameObject.GetComponent<CharacterMovement_Physics>().PointTo(transform);
+        foreach (Transform child in PlayerArray.transform)
+            if (!child.gameObject.GetComponent<PlayerHealth>().isDead)
+                child.gameObject.GetComponent<CharacterMovement_Physics>().PointTo(transform);
     }
 
     void FixedUpdate()
