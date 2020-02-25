@@ -14,17 +14,14 @@ public class DeathCounter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        deaths = 0;
+        Debug.LogWarning(" starting new match");
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 
     public void playerDied(int playerID)
     {
+        Debug.LogWarning("Player died " + playerID);
         deaths++;
         if (deaths == DeathsToEvent)
             DeathEvent.Invoke();

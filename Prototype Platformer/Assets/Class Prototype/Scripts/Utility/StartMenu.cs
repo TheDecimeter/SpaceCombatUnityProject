@@ -83,7 +83,7 @@ public class StartMenu : MonoBehaviour
         {
             //turn off menu
             //reload scene
-            savedData.HowManyRounds(SuggestedRounds);
+            savedData.SetRounds(SuggestedRounds);
             savedData.CloseStartMenu();
             sceneLoader.sceneLoadDelay = 0;
             sceneLoader.sceneFadeDuration = 0;

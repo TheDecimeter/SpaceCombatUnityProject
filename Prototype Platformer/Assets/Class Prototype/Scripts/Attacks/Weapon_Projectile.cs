@@ -24,8 +24,8 @@ public class Weapon_Projectile : Weapon {
 
         projectile.SetActive(true);
         
-        Physics.IgnoreCollision(friendly.transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
-            projectile.GetComponent<Collider>());
+        //Physics.IgnoreCollision(friendly.transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>(),
+        //    projectile.GetComponent<Collider>());
         Physics.IgnoreCollision(friendly.transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>(),
             projectile.GetComponent<Collider>());
 

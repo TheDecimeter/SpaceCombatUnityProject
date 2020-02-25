@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using TMPro;
 
 /// <summary>
 /// TODO
@@ -25,11 +26,15 @@ public class UndestroyableData : MonoBehaviour
     public int MenuChuckAsteroidSpeed = 70;
     public int MenuChuckAsteroidEvery = 20;
     public int MenuChuckAsteroidPlusOrMinus = 5;
+
+    [Header("GUI Stuff")]
+    public TextMeshProUGUI WinText;
     
 
     // Start is called before the first frame update
     void Awake()
     {
+        WinText.text = "";
         if (sSave.ScoreKeeper.player == null)
         {
             sSave.ScoreKeeper.player = new int[4];
@@ -44,7 +49,7 @@ public class UndestroyableData : MonoBehaviour
     }
 
 
-    public void HowManyRounds(int rounds)
+    public void SetRounds(int rounds)
     {
         sSave.RoundCounter = -1;
         sSave.Rounds = rounds;
@@ -82,6 +87,11 @@ public class UndestroyableData : MonoBehaviour
 
     public void IncreaseScore(int PlayerNumber, int HowMuch)
     {
+        if (WinText.text == "")
+            WinText.text = "Player " + (PlayerNumber + 1) + " Wins";
+        else
+            WinText.text += "\ntwice?";
+
         sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
         //print("score increased for " + PlayerNumber + " score: " + save.ScoreKeeper.player[PlayerNumber]);
     }

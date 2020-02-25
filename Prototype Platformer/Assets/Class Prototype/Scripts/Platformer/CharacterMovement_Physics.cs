@@ -59,8 +59,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     private Vector3 _storedVelocity = Vector3.zero;
     private CharacterState _storedState;
     private CapsuleCollider _collider;
-    public PhysicMaterial NoFriction;
-
+    
     //private GameObject _currentItem;
     public Item _currentItem;
     private Item defaultWeapon;
@@ -138,6 +137,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         //NoFriction = Resources.Load<PhysicMaterial>("Assets/Class Prototype/Physics Materials/NoFriction.physicMaterial");
         _collider = transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>();
+        SetupPhysicsMaterial();
         
 
         _controllerStatus = new ControlStruct(ControlStruct.None);
@@ -296,8 +296,9 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (Mathf.Abs(_controllerStatus.moveLeft)<.1)
         {
             //if(PlayerNumber==0)
-              //  print(" force=0");
-            _collider.material = null;
+            //  print(" force=0");
+            //_collider.material = null;
+            BecomeSticky();
             if(!_isGrounded||_rigidbody.velocity.y<0)
                 _rigidbody.velocity = new Vector3(_rigidbody.velocity.x * stopDrag, _rigidbody.velocity.y, _rigidbody.velocity.z * stopDrag);
             else
@@ -305,13 +306,14 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
         else
         {
+            BecomeSlippery();
             if (_isGrounded)
             {
                 if (Mathf.Abs(_rigidbody.velocity.magnitude) < maxSpeed / 2)
                 {
-                   // if (PlayerNumber == 0)
-                        //print(" force!=0");
-                    _collider.material = NoFriction;
+                    // if (PlayerNumber == 0)
+                    //print(" force!=0");
+                    //_collider.material = NoFriction;
                     _rigidbody.AddForce(force, ForceMode.Acceleration);
                 }
                 //if (Mathf.Abs(_rigidbody.velocity.magnitude) > maxSpeed)
@@ -822,7 +824,23 @@ public class CharacterMovement_Physics : MonoBehaviour
             AnimState.updateAnimationState(AnimationStates.Tag.land, true);
     }
 
-    
+    private void SetupPhysicsMaterial()
+    {
+        _collider.material = new PhysicMaterial();
+    }
+
+    private void BecomeSlippery()
+    {
+        _collider.material.dynamicFriction = 0;
+        _collider.material.staticFriction = 0;
+        _collider.material.frictionCombine = PhysicMaterialCombine.Minimum;
+    }
+    private void BecomeSticky()
+    {
+        _collider.material.dynamicFriction = 2;
+        _collider.material.staticFriction = 2;
+        _collider.material.frictionCombine = PhysicMaterialCombine.Multiply;
+    }
 }
 
 
