@@ -53,9 +53,11 @@ public partial class AI : MonoBehaviour
         {
             roomPath[i] = new byte[3];
         }
-        priority = 5;
-        GoalCheckers.Add(new CheckerKillNearestPlayer(this, priority));
-
+        priority =0;
+        GoalCheckers.Add(new CheckerKillNearestPlayer(this, 5));
+        //GoalCheckers.Add(new CheckerIdle(this, 0));
+        GoalCheckers.Add(new CheckerAvoidAsteroids(this, 10));
+        GoalCheckers.Add(new CheckerEscapePod(this, 20));
         //TaskList.Push(TaskAssignGoThroughNorthDoor);
         //currentTask = TaskList.Pop();
 
@@ -92,6 +94,7 @@ public partial class AI : MonoBehaviour
                 else
                 {
                     print(gameObject.name + " end of task list " + TaskList.Count);
+                    priority = 0;
                     break;
                 }
 

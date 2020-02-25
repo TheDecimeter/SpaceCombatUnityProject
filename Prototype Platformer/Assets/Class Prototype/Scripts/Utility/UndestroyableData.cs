@@ -40,6 +40,11 @@ public class UndestroyableData : MonoBehaviour
             sSave.ScoreKeeper.player = new int[4];
             sSave.CamRot.player = new int[4];
             LoadFile(fileName);
+            if (sSave.CamRot.player == null)
+            {
+                Debug.LogWarning("camrot was truned to null");
+                sSave.CamRot.player = new int[4];
+            }
         }
     }
 

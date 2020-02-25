@@ -65,7 +65,8 @@ public class EscapePodLauncher : MonoBehaviour
     {
         AddWarningLight(x, y, z-1);
 
-        GameObject tmp = Instantiate(EscapePod);
+        //GameObject tmp = Instantiate(EscapePod);
+        GameObject tmp = EscapePod;
         tmp.SetActive(true);
         Vector3 target = new Vector3(x, y, z);
         tmp.transform.position = new Vector3(x, y, z - 25);

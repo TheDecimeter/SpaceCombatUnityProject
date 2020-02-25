@@ -98,7 +98,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        //print("going east");
+        print("going east");
         return ret;
     }
 
@@ -126,7 +126,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
 
-        //print("going west");
+        print("going west");
         return ret;
     }
 
@@ -205,6 +205,24 @@ public partial class AI : MonoBehaviour
 
         //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
         return inProgress;
+    }
+
+    private int TaskComplete()
+    {
+        return complete;
+    }
+
+    private int TaskTraverseRoom()
+    {
+        TaskList.Push(TaskGoToWestDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskGoToEastDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskGoToWestDoor);
+        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskGoToEastDoor);
+        TaskList.Push(TaskMapRoom);
+        return complete;
     }
 
 
