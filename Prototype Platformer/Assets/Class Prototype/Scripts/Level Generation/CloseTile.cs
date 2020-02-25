@@ -180,7 +180,8 @@ public class CloseTile
                         candidates.Add(new Node(i, j));
                     }
                 }
-            candidates.Sort((a, b) => Random.Range(-1, 1));
+            //candidates.Sort((a, b) => Random.Range(-1, 1));
+            Shuffle(candidates);
             CloseOrder = new LinkedList<Node>(candidates);
 
             activeCloser = CloseOrder.First.Value;
@@ -210,61 +211,19 @@ public class CloseTile
 
         return;
 
-        if (activeCloser == null)
+        
+    }
+    
+    private static void Shuffle<T>(IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
         {
-            activeCloser = closableList[Random.Range(0, closableListEnd)];
-            while (ClosingSplitsMap(activeCloser))
-                activeCloserIsWorthless();
-        }
-        else
-        {
-            while (closableListEnd > 0)
-            {
-
-                //make a list of neighbors to the active closer to see which one should be closed
-                //List<Node> candidates = new List<Node>();
-                //if (positionContainsOpenTile(activeCloser.j, activeCloser.i - 1))
-                //    candidates.Add(new Node(activeCloser.i - 1, activeCloser.j));
-                //if (positionContainsOpenTile(activeCloser.j, activeCloser.i + 1))
-                //    candidates.Add(new Node(activeCloser.i + 1, activeCloser.j));
-                //if (positionContainsOpenTile(activeCloser.j - 1, activeCloser.i))
-                //    candidates.Add(new Node(activeCloser.i, activeCloser.j - 1));
-                //if (positionContainsOpenTile(activeCloser.j + 1, activeCloser.i))
-                //    candidates.Add(new Node(activeCloser.i, activeCloser.j + 1));
-
-
-                //Get all the open tiles in a list instead of picking from nearby tiles
-                List<Node> candidates = new List<Node>();
-                for(int i=0; i<map.Length; ++i)
-                    for(int j=0; j<map[i].Length; ++j)
-                    {
-                        if(map[i][j]!=null && !map[i][j].isClosed)
-                        {
-                            candidates.Add(new Node(i, j));
-                        }
-                    }
-
-                //Randomize the list
-                candidates.Sort((a, b) => (Random.Range(-1,1)));
-                
-
-                //go through the list and get the first candidate that can
-                //be closed without splitting the level.
-                foreach (Node n in candidates)
-                {
-                    //MonoBehaviour.print("in setNextToClose checking" + n.j + " " + n.i);
-                    if (!ClosingSplitsMap(n))
-                    {
-
-                        //MonoBehaviour.print("in setNextToClose found successful closer");
-                        activeCloser = n;
-                        return;
-                    }
-                }
-
-                //if the active closer can't get the job, try finding a new one.
-                activeCloserIsWorthless();
-            }
+            n--;
+            int k = Random.Range(0, n);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
     }
 
