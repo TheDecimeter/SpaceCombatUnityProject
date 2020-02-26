@@ -1,19 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class RotationManager : MonoBehaviour
 {
     public UndestroyableData SaveData;
-    public Transform ObjectToRotate;
-    public int PlayerNumber;
-    public ControlLayouts [] MobileControlLayouts;
+    public PlayerSetter playerLinks;
+    [Header("Cameras")]
+    public Transform Player1Cam;
+    public Transform Player2Cam, Player3Cam, Player4Cam;
+
+    [Header("Rotation Configurations")]
+    public RotationConfigurations [] configurations;
     
     [System.Serializable]
-    public struct ControlLayouts
+    public struct RotationConfigurations
     {
-        public GameObject Controls;
-        public float Rotation;
+        public GameObject Hud;
+        public float Cam1Rot, Cam2Rot, Cam3Rot, Cam4Rot;
         
 
     }
@@ -22,7 +27,7 @@ public class RotationManager : MonoBehaviour
 
     private void Start()
     {
-        Rotate(SaveData.GetRotation(PlayerNumber));
+        Rotate(SaveData.GetRotation());
     }
 
     public void Rotate()
@@ -32,15 +37,36 @@ public class RotationManager : MonoBehaviour
 
     private void Rotate(int index)
     {
-        MobileControlLayouts[currentRot].Controls.SetActive(false);
+        if(index>=configurations.Length)
+            index%=configurations.Length;
+
+        GameObject oldHud = configurations[currentRot].Hud;
+        GameObject newHud = configurations[index].Hud;
+
+        //Set Links
+        playerLinks.SwitchLinks(newHud);
+
+
+        oldHud.SetActive(false);
+        newHud.SetActive(true);
+
         currentRot=index;
-        if (currentRot == MobileControlLayouts.Length)
-            currentRot = 0;
 
-        SaveData.SetRotation(PlayerNumber,currentRot);
+        SaveData.SetRotation(currentRot);
 
-        MobileControlLayouts[currentRot].Controls.SetActive(true);
+        Player1Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam1Rot);
+        Player2Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam2Rot);
+        Player3Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam3Rot);
+        Player4Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam4Rot);
 
-        ObjectToRotate.rotation = Quaternion.Euler(0, 0, MobileControlLayouts[currentRot].Rotation);
+        SwitchWinMessages(newHud);
+    }
+
+    private void SwitchWinMessages(GameObject newHud)
+    {
+        string txt = SaveData.WinText.text;
+        SaveData.WinText.text = "";
+        SaveData.WinText = newHud.transform.Find("WinMessage").GetComponent<TextMeshProUGUI>();
+        SaveData.WinText.text = txt;
     }
 }

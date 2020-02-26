@@ -65,7 +65,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     private Item defaultWeapon;
     public TextManager info;
     //public Text currentItemHUD;
-    private GameObject HUDmount;
+    public GameObject HUDmount;
 
     private CharacterState _currentState = CharacterState.idle;
 
@@ -125,7 +125,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     void Start()
     {
-        HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/HUD/ItemInfoMountPoint").gameObject;
+        //HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/HUD/ItemInfoMountPoint").gameObject;
         navPoints = new List<HUDPointer>();
 
         GameObject g = Instantiate(FindObjectOfType<CommonPunch>().gameObject);
@@ -216,6 +216,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         GameObject g = Instantiate(newHUD) as GameObject;
         g.transform.SetParent(HUDmount.transform, false);
         g.transform.localPosition = Vector3.zero;
+        g.transform.localRotation = Quaternion.identity;
     }
 
     private void LateUpdate()

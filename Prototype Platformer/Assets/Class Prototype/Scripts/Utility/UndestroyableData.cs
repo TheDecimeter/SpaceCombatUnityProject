@@ -34,9 +34,11 @@ public class UndestroyableData : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+
         WinText.text = "";
         if (sSave.ScoreKeeper.player == null)
         {
+
             sSave.ScoreKeeper.player = new int[4];
             sSave.CamRot.player = new int[4];
             LoadFile(fileName);
@@ -45,7 +47,19 @@ public class UndestroyableData : MonoBehaviour
                 Debug.LogWarning("camrot was truned to null");
                 sSave.CamRot.player = new int[4];
             }
+
+            //TODO make this dynamic
+            sSave.PlayerCount = 4;
         }
+    }
+
+    private int[][] SetCamRotation()
+    {
+        int[][] r;
+        r = new int[4][];
+        for (int i = 0; i < 4; ++i)
+            r[i] = new int[4];
+        return r;
     }
 
     private void OnDestroy()
@@ -202,13 +216,13 @@ public class UndestroyableData : MonoBehaviour
         
     }
 
-    public int GetRotation(int player)
+    public int GetRotation()
     {
-        return sSave.CamRot.player[player];
+        return sSave.CamRot.player[sSave.PlayerCount-1];
     }
-    public void SetRotation(int player, int val)
+    public void SetRotation(int val)
     {
-        sSave.CamRot.player[player]=val;
+        sSave.CamRot.player[sSave.PlayerCount-1] = val;
     }
 
     private static class sSave
