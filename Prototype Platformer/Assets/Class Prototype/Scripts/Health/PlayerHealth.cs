@@ -28,7 +28,8 @@ public class PlayerHealth : MonoBehaviour {
     public RawImage blurLayer;
 
     private PostProcessVolume defaultCamEffects;
-    public Text health;
+    //public Text health;
+    public HUD hud;
     
 
     private int framesDamage = 0, damageRate = 0;
@@ -146,7 +147,7 @@ public class PlayerHealth : MonoBehaviour {
         //print("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
         HealthParticle.Create(transform, -damage);
-        health.text =" "+ _currentHealth;
+        hud.Link.Health[PlayerNumber].text =" "+ _currentHealth;
 
         damageEvent.Invoke();
 
@@ -187,27 +188,27 @@ public class PlayerHealth : MonoBehaviour {
         switch (Random.Range(0, 11))
         {
             case 0:
-                health.text = " : (";
+                hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("Why didn't\nI choose love", -1);
                 break;
             case 1:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("KAAHHHHNN", -1);
                 break;
             case 3:
-                health.text = " : P";
+                hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("REKT??", -1);
                 break;
             case 4:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Momma was right\nabout you", -1);
                 break;
             case 5:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Et tu, Brute?", -1);
                 break;
             default:
-                health.text = "0";
+                hud.Link.Health[PlayerNumber].text = "0";
                 info.say("", -1);
                 break;
         }
@@ -244,27 +245,27 @@ public class PlayerHealth : MonoBehaviour {
         switch (Random.Range(0, 8))
         {
             case 0:
-                health.text = " : (";
+                hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("But paper was\nsupposed to beat rock.", -1);
                 break;
             case 1:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("KAAHHHHNN", -1);
                 break;
             case 3:
-                health.text = " : P";
+                hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("Long Live Rock!", -1);
                 break;
             case 4:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Huh...", -1);
                 break;
             case 5:
-                health.text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Speak of this\nTo no one!", -1);
                 break;
             default:
-                health.text = "0";
+                hud.Link.Health[PlayerNumber].text = "0";
                 info.say("", -1);
                 break;
         }

@@ -6,7 +6,8 @@ using UnityEngine;
 public class RotationManager : MonoBehaviour
 {
     public UndestroyableData SaveData;
-    public PlayerSetter playerLinks;
+    //public PlayerSetter playerLinks;
+    public HUD hud;
     [Header("Cameras")]
     public Transform Player1Cam;
     public Transform Player2Cam, Player3Cam, Player4Cam;
@@ -17,7 +18,7 @@ public class RotationManager : MonoBehaviour
     [System.Serializable]
     public struct RotationConfigurations
     {
-        public GameObject Hud;
+        public HudLinks Hud;
         public float Cam1Rot, Cam2Rot, Cam3Rot, Cam4Rot;
         
 
@@ -40,17 +41,17 @@ public class RotationManager : MonoBehaviour
         if(index>=configurations.Length)
             index%=configurations.Length;
 
-        GameObject oldHud = configurations[currentRot].Hud;
-        GameObject newHud = configurations[index].Hud;
+        HudLinks oldHud = configurations[currentRot].Hud;
+        HudLinks newHud = configurations[index].Hud;
 
         //Set Links
-        playerLinks.SwitchLinks(newHud);
+        //playerLinks.SwitchLinks(newHud);
+        hud.Link = newHud;
+        
+        oldHud.gameObject.SetActive(false);
+        newHud.gameObject.SetActive(true);
 
-
-        oldHud.SetActive(false);
-        newHud.SetActive(true);
-
-        currentRot=index;
+        currentRot =index;
 
         SaveData.SetRotation(currentRot);
 
@@ -59,7 +60,7 @@ public class RotationManager : MonoBehaviour
         Player3Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam3Rot);
         Player4Cam.rotation = Quaternion.Euler(0, 0, configurations[currentRot].Cam4Rot);
 
-        SwitchWinMessages(newHud);
+        SwitchWinMessages(newHud.gameObject);
     }
 
     private void SwitchWinMessages(GameObject newHud)

@@ -65,7 +65,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     private Item defaultWeapon;
     public TextManager info;
     //public Text currentItemHUD;
-    public GameObject HUDmount;
+    //public GameObject HUDmount;
 
     private CharacterState _currentState = CharacterState.idle;
 
@@ -82,8 +82,8 @@ public class CharacterMovement_Physics : MonoBehaviour
     public HUDPointer NavPoint;
 
     private List<HUDPointer> navPoints;
-
-    public GameObject inGameMenu;
+    public HUD hud;
+    //public GameObject inGameMenu;
     [HideInInspector]
     public float damageFactor=1;
 
@@ -211,10 +211,10 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void updateItemHUD(GameObject newHUD)
     {
-        foreach (Transform child in HUDmount.transform)
+        foreach (Transform child in hud.Link.WeaponInfo[PlayerNumber].transform)//HUDmount.transform)
             Destroy(child.gameObject);
         GameObject g = Instantiate(newHUD) as GameObject;
-        g.transform.SetParent(HUDmount.transform, false);
+        g.transform.SetParent(hud.Link.WeaponInfo[PlayerNumber].transform, false);
         g.transform.localPosition = Vector3.zero;
         g.transform.localRotation = Quaternion.identity;
     }
@@ -237,7 +237,8 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             if (_controllerStatus.B)
             {
-                inGameMenu.SetActive(false);
+                //inGameMenu.SetActive(false);
+                hud.Link.Menu[PlayerNumber].SetActive(false);
                 FindObjectOfType<UndestroyableData>().OpenStartMenu();
                 SceneLoader loader=FindObjectOfType<SceneLoader>();
 
@@ -250,7 +251,7 @@ public class CharacterMovement_Physics : MonoBehaviour
             }
             else if (_controllerStatus.jump || _controllerStatus.inGameMenu)
             {
-                inGameMenu.SetActive(false);
+                hud.Link.Menu[PlayerNumber].SetActive(false);
                 gameMenuActive = false;
                 ignoreInput = true;
                 _canJump = false;
@@ -260,7 +261,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (_controllerStatus.inGameMenu)
         {
-            inGameMenu.SetActive(true);
+            hud.Link.Menu[PlayerNumber].SetActive(true);
             gameMenuActive = true;
             ignoreInput = true;
             return;

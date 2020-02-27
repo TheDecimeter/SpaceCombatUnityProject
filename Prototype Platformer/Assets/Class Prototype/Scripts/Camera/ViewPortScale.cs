@@ -6,9 +6,18 @@ public class ViewPortScale : MonoBehaviour
 {
     private Vector2 resolution;
     // Start is called before the first frame update
+    Canvas canvas;
     void Awake()
     {
         resolution = new Vector2(Screen.width, Screen.height);
+        Transform current = transform;
+        while (current)
+        {
+            canvas = current.GetComponent<Canvas>();
+            if (canvas)
+                break;
+            current = current.parent;
+        }
     }
 
     void Start()
@@ -29,7 +38,6 @@ public class ViewPortScale : MonoBehaviour
 
     private void SetScale()
     {
-        Canvas canvas = FindObjectOfType<Canvas>();
 
         float h = canvas.GetComponent<RectTransform>().rect.height;
         float w = canvas.GetComponent<RectTransform>().rect.width;

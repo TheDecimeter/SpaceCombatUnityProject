@@ -287,21 +287,37 @@ public class UndestroyableData : MonoBehaviour
 
     public void LoadFile(string fileName)
     {
-        string destination = Application.persistentDataPath + fileName;
-        FileStream file;
-
-        if (File.Exists(destination)) file = File.OpenRead(destination);
-        else
+        try
         {
-            Debug.LogError("File not found");
-            return;
+            string destination = Application.persistentDataPath + fileName;
+            FileStream file;
+
+            if (File.Exists(destination)) file = File.OpenRead(destination);
+            else
+            {
+                Debug.LogError("File not found");
+                SetDefaults();
+                return;
+            }
+
+            BinaryFormatter bf = new BinaryFormatter();
+            fSave data = (fSave)bf.Deserialize(file);
+            file.Close();
+
+            sSave.PlayerCount = data.PlayerCount;
+            sSave.CamRot.player = data.PlayerRot;
         }
+        catch(System.Exception e)
+        {
+            Debug.LogError("Crashed while trying to load file");
+            SetDefaults();
+        }
+    }
 
-        BinaryFormatter bf = new BinaryFormatter();
-        fSave data = (fSave)bf.Deserialize(file);
-        file.Close();
 
-        sSave.PlayerCount = data.PlayerCount;
-        sSave.CamRot.player = data.PlayerRot;
+    private void SetDefaults()
+    {
+        sSave.PlayerCount = 4;
+        sSave.CamRot.player = new int[4];
     }
 }
