@@ -86,15 +86,22 @@ public class EscapePodBehavior : MonoBehaviour
 
     void checkPlayerDistance()
     {
+        List<GameObject> players = null;
         foreach (Transform child in PlayerArray.transform)
             if (distance(transform.position, child.position) < DistanceToEnter)
             {
                 if (child.gameObject.GetComponent<PlayerHealth>().isDead)
                     continue;
-                player = child.gameObject;
-                player.GetComponent<CharacterMovement_Physics>().Freeze(true);
-                frameCounter = 0;
+
+                if (players == null)
+                    players = new List<GameObject>();
+                players.Add(child.gameObject);
             }
+        if (players!=null){
+            player = players[Random.Range(0, players.Count)];
+            player.GetComponent<CharacterMovement_Physics>().Freeze(true);
+            frameCounter = 0;
+        }
     }
 
     private static float distance(Vector3 from, Vector3 to)
