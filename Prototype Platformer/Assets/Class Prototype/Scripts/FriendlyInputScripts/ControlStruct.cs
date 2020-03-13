@@ -39,7 +39,6 @@ public class ControlStruct
 
     public void combine(ControlStruct other)
     {
-        addSource(other.source);
 
         jump |= other.jump;
         attack |= other.attack;
@@ -48,9 +47,15 @@ public class ControlStruct
         inGameMenu |= other.inGameMenu;
         B |= other.B;
 
-        if (other.moveLeft > .01 || other.moveLeft < -.01)
+        if (Mathf.Abs(moveLeft) < Mathf.Abs(other.moveLeft))
         {
             moveLeft = other.moveLeft;
         }
+        addSource(other.source);
+
+        //if (other.moveLeft > .01 || other.moveLeft < -.01)
+        //{
+        //    moveLeft = other.moveLeft;
+        //}
     }
 }

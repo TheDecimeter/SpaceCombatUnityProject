@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
+using UnityEngine.Events;
 
 /// <summary>
 /// TODO
@@ -29,7 +30,8 @@ public class UndestroyableData : MonoBehaviour
 
     [Header("GUI Stuff")]
     public TextMeshProUGUI WinText;
-    
+
+    static public UnityEvent DataReadyToBeRead=new UnityEvent();
 
     // Start is called before the first frame update
     void Awake()
@@ -52,6 +54,12 @@ public class UndestroyableData : MonoBehaviour
             sSave.PlayerCount = 4;
         }
     }
+    
+
+    public void AddDataReadEvent(UnityAction listener)
+    {
+        DataReadyToBeRead.AddListener(listener);
+    }
 
     private int[][] SetCamRotation()
     {
@@ -64,6 +72,7 @@ public class UndestroyableData : MonoBehaviour
 
     private void OnDestroy()
     {
+        DataReadyToBeRead = new UnityEvent();
         SaveFile(fileName);
     }
 
@@ -104,8 +113,8 @@ public class UndestroyableData : MonoBehaviour
             RecommendedRounds = sSave.Rounds;
             OpenStartMenu = isMenuOpened();
         }
+        SendDataIfReady();
     }
-
 
 
 
@@ -145,6 +154,13 @@ public class UndestroyableData : MonoBehaviour
             sSave.StartMenu.StartMenuOpened = FindObjectOfType<StartMenu>().OpenMenuOnStart;
         sSave.StartMenu.MenuOpenedNotSaved = false;
         return sSave.StartMenu.StartMenuOpened;
+    }
+
+    private void SendDataIfReady()
+    {
+        if (!sSave.StartMenu.MenuNotSaved &&
+            !sSave.StartMenu.LevelNotSaved)
+            DataReadyToBeRead.Invoke();
     }
 
     public void SetUpLevel(ref int xDim, ref int yDim, ref bool FillLevel, ref int maxTiles,
@@ -219,7 +235,7 @@ public class UndestroyableData : MonoBehaviour
             chuckAsteroidFrames = sSave.Play.ChuckAsteroidEvery;
             PlusOrMinus = sSave.Play.ChuckAsteroidPlusOrMinus;
         }
-        
+        SendDataIfReady();
     }
 
     public int GetRotation()

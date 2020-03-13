@@ -2,16 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class ControlEvents : MonoBehaviour
+public class ControlEvents : MonoBehaviour, IPointerClickHandler
 {
-    public GameObject shade;
+    public GameObject HideIfNoFocus;
+    public ControlEvents MenuChild;
     private Vector2 newLoc;
-
+    public bool Active { get; set; }
+    private bool _home;
+    public bool Home
+    {
+        get
+        {
+            return _home;
+        }
+        set
+        {
+            _home = value;
+            if(MenuChild)
+                MenuChild.Home = value;
+        }
+    }
 
     private const float closeEnough = .2f, lerpAt = 16;
 
-    public UnityEvent L,R,S,B;
+    public UnityEvent L,R,S,B,inactiveClick,homeClick,activeClick;
+
+    void Awake()
+    {
+        Active = false;
+        Home = false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,23 +45,6 @@ public class ControlEvents : MonoBehaviour
     {
         return newLoc;
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    //if (move)
-    //    //{
-    //    //    if (Vector2.Distance(transform.position, newLoc) < closeEnough)
-    //    //    {
-    //    //        move = false;
-    //    //        transform.position = newLoc;
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        transform.position = Vector2.Lerp(transform.position,newLoc, Time.deltaTime * lerpAt);
-    //    //    }
-    //    //}
-    //}
 
     IEnumerator Move()
     {
@@ -78,5 +83,18 @@ public class ControlEvents : MonoBehaviour
     public void FireB()
     {
         B.Invoke();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (Active)
+            activeClick.Invoke();
+        else
+        {
+            if (Home)
+                homeClick.Invoke();
+            else
+                inactiveClick.Invoke();
+        }
     }
 }

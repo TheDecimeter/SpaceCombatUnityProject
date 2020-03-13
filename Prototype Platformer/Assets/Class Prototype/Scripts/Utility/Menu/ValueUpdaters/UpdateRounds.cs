@@ -9,9 +9,14 @@ public class UpdateRounds : MonoBehaviour
     private int rounds;
     public TextMeshProUGUI Display;
 
-    private void Start()
+    private void Awake()
+    {
+        Menu.savedData.AddDataReadEvent(UpdateSavedData);
+    }
+    private void UpdateSavedData()
     {
         rounds = Menu.savedData.GetRounds();
+        UpdateDisplay();
     }
 
     public void ChangeBy(int diff)
@@ -23,12 +28,14 @@ public class UpdateRounds : MonoBehaviour
         if (rounds > Menu.MaxRounds)
             rounds = 1;
         UpdateDisplay();
+        Menu.savedData.SetRounds(rounds);
     }
 
     private void OnEnable()
     {
         if (!Display)
             Display = GetComponent<TextMeshProUGUI>();
+        rounds = Menu.savedData.GetRounds();
         UpdateDisplay();
     }
 
@@ -36,9 +43,5 @@ public class UpdateRounds : MonoBehaviour
     {
         Display.text = "" + rounds;
     }
-
-    private void OnDestroy()
-    {
-        Menu.savedData.SetRounds(rounds);
-    }
+    
 }

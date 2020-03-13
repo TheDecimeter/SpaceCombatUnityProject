@@ -6,6 +6,13 @@ public class ControlManager : MonoBehaviour
 {
     private ControlEvents _controls;
     private bool releaseL, releaseR, releaseB, releaseS;
+    private ControlStruct _controllerStatus = new ControlStruct(ControlStruct.None);
+    
+    private void Start()
+    {
+        enabled=(FindObjectOfType<UndestroyableData>().isMenuOpened());
+    }
+
     public ControlEvents controls
     {
         get
@@ -14,11 +21,17 @@ public class ControlManager : MonoBehaviour
         }
         set
         {
-            if(_controls&&_controls.shade)
-                _controls.shade.SetActive(false);
+            if (_controls)
+            {
+                _controls.Active = false;
+                if(_controls.HideIfNoFocus)
+                    _controls.HideIfNoFocus.SetActive(false);
+            }
             _controls = value;
-            if (_controls.shade)
-                _controls.shade.SetActive(true);
+            _controls.Active = true;
+
+            if (_controls.HideIfNoFocus)
+                _controls.HideIfNoFocus.SetActive(true);
         }
     }
 
@@ -27,32 +40,47 @@ public class ControlManager : MonoBehaviour
         controls = to;
     }
     
-    public void ControllerListener(ControlStruct controls)
+    public void ControllerListener(ControlStruct newControls)
     {
-        if (!gameObject.activeInHierarchy)
+
+        if (!gameObject.activeInHierarchy || !enabled)
             return;
-        if (controls.moveLeft < -.2 && releaseL)
+
+        if (_controllerStatus.fromSource(newControls.source))
+        {
+            print("resetting controls " + newControls.source);
+            _controllerStatus = newControls;
+        }
+        else
+            _controllerStatus.combine(newControls);
+
+        if (_controllerStatus.moveLeft < -.2 && releaseL)
         {
             releaseL = false;
             this.controls.FireL();
         }
-        else if(controls.moveLeft > -.1)
+        else if (_controllerStatus.moveLeft > -.1)
+        {
+            print("reset L " + _controllerStatus.moveLeft+" "+_controllerStatus.source);
             releaseL = true;
-        if (controls.moveLeft > .2 && releaseR)
+        }
+        if (_controllerStatus.moveLeft > .2 && releaseR)
         {
             releaseR = false;
             this.controls.FireR();
         }
-        else if (controls.moveLeft < .1)
+        else if (_controllerStatus.moveLeft < .1)
+        {
             releaseR = true;
-        if (controls.jump && releaseS)
+        }
+        if (_controllerStatus.jump && releaseS)
         {
             releaseS = false;
             this.controls.FireS();
         }
         else
             releaseS = true;
-        if (controls.door && releaseB)
+        if (_controllerStatus.door && releaseB)
         {
             releaseB = false;
             this.controls.FireB();

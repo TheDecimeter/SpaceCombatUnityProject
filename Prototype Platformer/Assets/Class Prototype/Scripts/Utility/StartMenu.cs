@@ -82,15 +82,24 @@ public class StartMenu : MonoBehaviour
             //turn off menu
             //reload scene
             savedData.SetRounds(SuggestedRounds);
-            savedData.CloseStartMenu();
-            sceneLoader.sceneLoadDelay = 0;
-            sceneLoader.sceneFadeDuration = 0;
-            sceneLoader.RestartScene();
+            StartGame();
         }
         if (controls.door)
         {
             //exit
-            Application.Quit();
+            QuitProgram();
         }
+    }
+
+    public void StartGame()
+    {
+        savedData.CloseStartMenu();
+        sceneLoader.sceneLoadDelay = 0;
+        sceneLoader.sceneFadeDuration = 0;
+        sceneLoader.RestartScene();
+    }
+    public void QuitProgram()
+    {
+        Application.Quit();
     }
 }

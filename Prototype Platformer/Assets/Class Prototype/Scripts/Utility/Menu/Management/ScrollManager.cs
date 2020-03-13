@@ -7,6 +7,8 @@ public class ScrollManager : MonoBehaviour
     public ControlEvents [] Controls;
     public ControlManager controlManager;
     public int atControl = 2;
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +17,15 @@ public class ScrollManager : MonoBehaviour
         controlManager.controls = Controls[atControl];
     }
 
+    public void ScrollTo(ControlEvents controls)
+    {
+        Vector2 homeLoc = Controls[atControl].transform.position;
+        Vector2 targetLoc = controls.transform.position;
+        if (homeLoc.x > targetLoc.x)
+            ScrollLeft();
+        else
+            ScrollRight();
+    }
 
     public void ScrollLeft()
     {
@@ -23,8 +34,7 @@ public class ScrollManager : MonoBehaviour
             Controls[i].MoveTo(Controls[GetNext(i)].Loc());
         Controls[Controls.Length - 1].MoveTo(loc);
 
-        atControl = GetNext(atControl);
-        controlManager.controls = Controls[atControl];
+        SwitchControl(GetPrev(atControl));
     }
     public void ScrollRight()
     {
@@ -32,9 +42,16 @@ public class ScrollManager : MonoBehaviour
         for (int i = Controls.Length - 1; i > 0; --i)
             Controls[i].MoveTo(Controls[GetPrev(i)].Loc());
         Controls[0].MoveTo(loc);
-        
-        atControl = GetPrev(atControl);
+
+        SwitchControl(GetNext(atControl));
+    }
+
+    private void SwitchControl(int to)
+    {
+        Controls[atControl].Home = false;
+        atControl = to;
         controlManager.controls = Controls[atControl];
+        Controls[atControl].Home = true;
     }
 
     private int GetNext(int i)
