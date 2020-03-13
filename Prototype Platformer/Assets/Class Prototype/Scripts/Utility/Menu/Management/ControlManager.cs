@@ -46,12 +46,12 @@ public class ControlManager : MonoBehaviour
         if (!gameObject.activeInHierarchy || !enabled)
             return;
 
-        if (_controllerStatus.fromSource(newControls.source))
-        {
-            print("resetting controls " + newControls.source);
-            _controllerStatus = newControls;
-        }
-        else
+        //if (_controllerStatus.fromSource(newControls.source))
+        //{
+        //    print("resetting controls " + newControls.source);
+        //    _controllerStatus = newControls;
+        //}
+        //else
             _controllerStatus.combine(newControls);
 
         if (_controllerStatus.moveLeft < -.2 && releaseL)
@@ -61,7 +61,7 @@ public class ControlManager : MonoBehaviour
         }
         else if (_controllerStatus.moveLeft > -.1)
         {
-            print("reset L " + _controllerStatus.moveLeft+" "+_controllerStatus.source);
+            //print("reset L " + _controllerStatus.moveLeft+" "+_controllerStatus.source);
             releaseL = true;
         }
         if (_controllerStatus.moveLeft > .2 && releaseR)

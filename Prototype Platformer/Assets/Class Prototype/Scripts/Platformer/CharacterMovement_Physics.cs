@@ -531,11 +531,12 @@ public class CharacterMovement_Physics : MonoBehaviour
         //if the new controls message comes from AI, don't let input come from another source
         //otherwise, if the input comes from the last source, overwrite the state
         // if the input comes from a different source, combine states (allows keyboard and controller simotaniously
-        if(controls.fromSource(ControlStruct.AI))
-            _controllerStatus = controls;
-        else if (!_controllerStatus.fromSource(ControlStruct.AI) && _controllerStatus.fromSource(controls.source))
-            _controllerStatus = controls;
-        else
+        //if(controls.fromSource(ControlStruct.AI))
+        //    _controllerStatus = controls;
+        //else if (!_controllerStatus.fromSource(ControlStruct.AI) && _controllerStatus.fromSource(controls.source))
+        //    _controllerStatus = controls;
+        //else
+        
             _controllerStatus.combine(controls);
         //if (controls.jump)
         //    print("player " + PlayerNumber + " received the jump instruction");
