@@ -75,6 +75,12 @@ public class UndestroyableData : MonoBehaviour
 
         sSave.ScoreKeeper.player = new int[4];
     }
+
+    public int GetRounds()
+    {
+        return sSave.Rounds;
+    }
+
     public void CloseStartMenu()
     {
         sSave.StartMenu.StartMenuOpened = false;

@@ -8,7 +8,6 @@ public class StartMenu : MonoBehaviour
 
     public GameObject PlayerArray;
     public GameObject Menu;
-    public Text Text;
     public Text ScoreBoard;
     public UndestroyableData savedData;
     public SceneLoader sceneLoader;
@@ -58,7 +57,6 @@ public class StartMenu : MonoBehaviour
 
     private void UpdateText()
     {
-        Text.text = "Rounds: " + SuggestedRounds;
     }
 
     public void ControllerListener(ControlStruct controls)
