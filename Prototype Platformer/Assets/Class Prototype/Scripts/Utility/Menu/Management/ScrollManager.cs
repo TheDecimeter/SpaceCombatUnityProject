@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScrollManager : MonoBehaviour
+public class ScrollManager : ControlFirer
 {
     public ControlEvents [] Controls;
     public ControlManager controlManager;
@@ -10,19 +10,17 @@ public class ScrollManager : MonoBehaviour
 
     private delegate int next(int x);
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (atControl > Controls.Length-1)
-            atControl = 0;
-        controlManager.controls = Controls[atControl];
-    }
-
     public void ScrollTo(ControlEvents controls)
     {
+
+        if(Controls[atControl] == controls)
+        {
+            SwitchControl(atControl);
+            return;
+        }
+
         int r = distToElement(GetNext, controls);
         int l = distToElement(GetPrev, controls);
-
         if (l < r)
             for (int i = 0; i < l; ++i)
                 ScrollLeft();
@@ -82,5 +80,47 @@ public class ScrollManager : MonoBehaviour
         if (i == 0)
             return Controls.Length - 1;
         return i - 1;
+    }
+
+    public override void FireL()
+    {
+        Controls[atControl].FireL();
+    }
+
+    public override void FireR()
+    {
+        Controls[atControl].FireR();
+    }
+
+    public override void FireS()
+    {
+        Controls[atControl].FireS();
+    }
+
+    public override void FireB()
+    {
+        Controls[atControl].FireB();
+    }
+
+    public override ControlFirer Child()
+    {
+        return Controls[atControl].Child();
+    }
+    public override bool HasChild(ControlFirer c)
+    {
+        if (this == c)
+            return true;
+        foreach (ControlFirer f in Controls)
+            if(f.HasChild(c))
+                return true;
+
+        return false;
+    }
+
+
+    public override void SetHide(bool show)
+    {
+        //gameObject.SetActive(show);
+        Controls[atControl].SetHide(show);
     }
 }

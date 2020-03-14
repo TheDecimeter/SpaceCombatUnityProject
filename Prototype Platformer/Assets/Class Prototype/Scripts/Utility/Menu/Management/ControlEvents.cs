@@ -6,49 +6,49 @@ using UnityEngine.EventSystems;
 
 public class ControlEvents : ControlFirer, IPointerClickHandler
 {
-    public GameObject HideIfNoFocus;
-    public ControlEvents MenuChild;
     private Vector2 newLoc;
-    public bool Active { get; set; }
-    private bool _home,moving=false;
+    private bool moving=false;
 
     private Stack<Vector2> moveLocs = new Stack<Vector2>();
 
-    public bool Home
-    {
-        get
-        {
-            return _home;
-        }
-        set
-        {
-            if (_home == value)
-                return;
-            _home = value;
+    //public new bool Home
+    //{
+    //    get
+    //    {
+    //        return _home;
+    //    }
+    //    set
+    //    {
+    //        if (_home == value)
+    //            return;
+    //        _home = value;
 
-            //if (!value)
-            //{
-            //    if (MenuChild)
-            //        MenuChild.Home = value;
-            //}
+    //        //if (!value)
+    //        //{
+    //        //    if (MenuChild)
+    //        //        MenuChild.Home = value;
+    //        //}
 
-            if (!value)
-            {
-                if (HideIfNoFocus)
-                    HideIfNoFocus.SetActive(false);
-                if (MenuChild)
-                {
-                    MenuChild.Home = value;
-                    MenuChild.FireB();
-                }
-            }
-            else
-            {
-                if (MenuChild)
-                    MenuChild.Home = value;
-            }
-        }
-    }
+    //        if (!value)
+    //        {
+    //            if (HideIfNoFocus)
+    //                HideIfNoFocus.SetActive(false);
+    //            if (MenuChild)
+    //            {
+    //                MenuChild.Home = value;
+    //                MenuChild.FireB();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (MenuChild)
+    //                MenuChild.Home = value;
+    //        }
+    //    }
+    //}
+
+    public GameObject HideIfNoFocus;
+    public ControlFirer MenuChild;
 
     private const float closeEnough = .2f, lerpAt = 16f;
 
@@ -119,21 +119,40 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
             StartCoroutine(Move());
     }
 
-    public void FireL()
+    public override void FireL()
     {
         L.Invoke();
     }
-    public void FireR()
+    public override void FireR()
     {
         R.Invoke();
     }
-    public void FireS()
+    public override void FireS()
     {
         S.Invoke();
     }
-    public void FireB()
+    public override void FireB()
     {
         B.Invoke();
+    }
+
+    public override ControlFirer Child()
+    {
+        return MenuChild;
+    }
+    public override bool HasChild(ControlFirer c)
+    {
+        if (this == c)
+            return true;
+        if (!MenuChild)
+            return false;
+
+        return MenuChild.HasChild(c);
+    }
+    public override void SetHide(bool hide)
+    {
+        if (HideIfNoFocus)
+            HideIfNoFocus.SetActive(hide);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -148,4 +167,5 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
                 inactiveClick.Invoke();
         }
     }
+    
 }

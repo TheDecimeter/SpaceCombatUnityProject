@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class ControlFirer : MonoBehaviour
+public abstract class ControlFirer : MonoBehaviour
 {
     private bool _home;
-    public ControlFirer MenuChild;
-    public GameObject HideIfNoFocus;
+    public bool Active { get; set; }
 
     public bool Home
     {
@@ -22,24 +21,26 @@ public partial class ControlFirer : MonoBehaviour
 
             if (!value)
             {
-                if (HideIfNoFocus)
-                    HideIfNoFocus.SetActive(false);
-                if (MenuChild)
+                SetHide(false);
+                if (Child())
                 {
-                    MenuChild.Home = value;
-                    MenuChild.FireB();
+                    Child().Home = value;
+                    Child().FireB();
                 }
             }
             else
             {
-                if (MenuChild)
-                    MenuChild.Home = value;
+                if (Child())
+                    Child().Home = value;
             }
         }
     }
 
-    partial void FireL();
-    partial void FireR();
-    partial void FireS();
-    partial void FireB();
+    public abstract void FireL();
+    public abstract void FireR();
+    public abstract void FireS();
+    public abstract void FireB();
+    public abstract ControlFirer Child();
+    public abstract bool HasChild(ControlFirer c);
+    public abstract void SetHide(bool hide);
 }

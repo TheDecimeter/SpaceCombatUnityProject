@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class ControlManager : MonoBehaviour
 {
-    private ControlEvents _controls;
+    private ControlFirer _controls;
     private bool releaseL, releaseR, releaseB, releaseS;
-    private ControlStruct _controllerStatus = new ControlStruct(ControlStruct.None);
+    public ControlFirer initialMenuItem;
 
     private ControlListener c1, c2, c3, c4;
     
 
-    public ControlEvents controls
+    public ControlFirer controls
     {
         get
         {
@@ -19,17 +19,18 @@ public class ControlManager : MonoBehaviour
         }
         set
         {
-            if (_controls)
+            //print("switching from " + _controls.name + " to " + value.name);
+            _controls.Active = false;
+            if (!_controls.HasChild(value))
             {
-                _controls.Active = false;
-                if(_controls.HideIfNoFocus&&_controls.MenuChild!=value)
-                    _controls.HideIfNoFocus.SetActive(false);
+                //print("not child; " + value.name);
+                _controls.SetHide(false);
             }
+            
             _controls = value;
             _controls.Active = true;
 
-            if (_controls.HideIfNoFocus)
-                _controls.HideIfNoFocus.SetActive(true);
+            _controls.SetHide(true);
         }
     }
 
@@ -40,16 +41,19 @@ public class ControlManager : MonoBehaviour
         c3 = new ControlListener(this);
         c4 = new ControlListener(this);
 
+        _controls = initialMenuItem;
+
         enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
     }
-    public void PassControl(ControlEvents to)
+    public void PassControl(ControlFirer to)
     {
         controls = to;
-    }
-
-    public void PassControl(ScrollManager to)
-    {
-        controls = to.Controls[to.atControl];
+        while(to is ScrollManager)
+        {
+            ScrollManager s = (ScrollManager)to;
+            to = s.Controls[s.atControl];
+            controls = to;
+        }
     }
 
     public void ControllerListener1(ControlStruct newControls)
