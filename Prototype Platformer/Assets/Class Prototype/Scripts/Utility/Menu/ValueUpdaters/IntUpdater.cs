@@ -15,9 +15,11 @@ public class IntUpdater : MonoBehaviour
     [System.Serializable]
     public class SetEvent : UnityEvent<int> { }
     
-    private int rounds;
+    private int value;
     public TextMeshProUGUI Display;
 
+    //partial min/max. If there is a more constraining min/max in the setter function, it will
+    // take control.
     public int Max, Min;
 
     public GetEvent GetValue;
@@ -32,21 +34,80 @@ public class IntUpdater : MonoBehaviour
     private void UpdateSavedData()
     {
         //rounds = Menu.savedData.GetRounds();
-        rounds = GetVal(GetValue);
+        value = GetVal(GetValue);
         UpdateDisplay();
     }
 
     public void ChangeBy(int diff)
     {
-        rounds += diff;
-        if (rounds < 1)
-            rounds = Max;
+        int wrapDir = 0;
+        value += diff;
+        if (value < Min)
+        {
+            value = Max;
+            wrapDir = 1;
+        }
 
-        if (rounds > Max)
-            rounds = Min;
+        if (value > Max)
+        {
+            wrapDir = -1;
+            value = Min;
+        }
+
+        value = ConfirmVal(wrapDir);
+
         UpdateDisplay();
         //Menu.savedData.SetRounds(rounds);
-        SetValue.Invoke(rounds);
+    }
+
+    private int ConfirmVal(int wrapDir)
+    {
+        SetValue.Invoke(value);
+        int newVal = GetVal(GetValue);
+        if (newVal != value)
+        {
+            if (wrapDir == 0)
+            {
+                if (newVal < value)
+                {//if I have gone above a legal value, wrap down
+                    newVal = Min;
+                    value = Min;
+                    SetValue.Invoke(value);
+                    newVal = GetVal(GetValue);
+                }
+
+
+                else
+                {//if I have gone below a legal value, wrap up
+                    newVal = Max;
+                    value = Max;
+                    SetValue.Invoke(value);
+                    newVal = GetVal(GetValue);
+                }
+            }
+            else
+            {
+                if (wrapDir<0)
+                {//if I have gone above a legal value, wrap down
+                    newVal = Min;
+                    value = Min;
+                    SetValue.Invoke(value);
+                    newVal = GetVal(GetValue);
+                }
+
+
+                else
+                {//if I have gone below a legal value, wrap up
+                    newVal = Max;
+                    value = Max;
+                    SetValue.Invoke(value);
+                    newVal = GetVal(GetValue);
+                }
+            }
+
+        }
+
+        return newVal;
     }
 
     private void OnEnable()
@@ -54,7 +115,7 @@ public class IntUpdater : MonoBehaviour
         if (!Display)
             Display = GetComponent<TextMeshProUGUI>();
         //rounds = Menu.savedData.GetRounds();
-        rounds = GetVal(GetValue);
+        value = GetVal(GetValue);
         UpdateDisplay();
     }
 
@@ -67,6 +128,6 @@ public class IntUpdater : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        Display.text = "" + rounds;
+        Display.text = "" + value;
     }
 }

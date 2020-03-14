@@ -33,6 +33,102 @@ public class UndestroyableData : MonoBehaviour
 
     static public UnityEvent DataReadyToBeRead=new UnityEvent();
 
+
+    //Game Rounds   Getter Setter
+    public void SetRounds(int rounds)
+    {
+        sSave.RoundCounter = -1;
+        sSave.Rounds = rounds;
+
+        sSave.ScoreKeeper.player = new int[4];
+    }
+    public int GetRounds()
+    {
+        return sSave.Rounds;
+    }
+    public void GetRoundsE(IntUpdater.Get get)
+    {
+        get(sSave.Rounds);
+    }
+
+
+    //Player Count   Getter Setter
+    public void SetPlayers(int players)
+    {
+        sSave.PlayerCount = players;
+    }
+    public void GetPlayers(IntUpdater.Get get)
+    {
+        get(sSave.PlayerCount);
+    }
+
+
+    //Map Dimensions  Getter Setter
+    public void SetMapWidth(int width)
+    {
+        sSave.Play.MapDemensionX = width;
+        if (sSave.Play.FillLevel)
+            sSave.Play.MaxTiles = sSave.Play.MapDemensionX * sSave.Play.MapDemensionY;
+    }
+    public void GetMapWidth(IntUpdater.Get get)
+    {
+        get(sSave.Play.MapDemensionX);
+    }
+
+    public void SetMapHeight(int height)
+    {
+        sSave.Play.MapDemensionY = height;
+        if(sSave.Play.FillLevel)
+            sSave.Play.MaxTiles = sSave.Play.MapDemensionX * sSave.Play.MapDemensionY;
+    }
+    public void GetMapHeight(IntUpdater.Get get)
+    {
+        get(sSave.Play.MapDemensionY);
+    }
+
+    public void SetMapTileCount(int count)
+    {
+        if (count >= sSave.Play.MapDemensionX * sSave.Play.MapDemensionY)
+        {
+            count = sSave.Play.MapDemensionX * sSave.Play.MapDemensionY;
+            sSave.Play.FillLevel = true;
+        }
+        else
+            sSave.Play.FillLevel = false;
+        sSave.Play.MaxTiles = count;
+    }
+    public void GetMapTileCount(IntUpdater.Get get)
+    {
+        if (sSave.Play.FillLevel||sSave.Play.MaxTiles >= sSave.Play.MapDemensionX * sSave.Play.MapDemensionY)
+        {
+            sSave.Play.MaxTiles = sSave.Play.MapDemensionX * sSave.Play.MapDemensionY;
+            sSave.Play.FillLevel = true;
+        }
+        get(sSave.Play.MaxTiles);
+    }
+
+
+
+
+
+
+    //Fires when data is meaningful (this might be just after Start)
+    public void AddDataReadEvent(UnityAction listener)
+    {
+        DataReadyToBeRead.AddListener(listener);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -56,10 +152,6 @@ public class UndestroyableData : MonoBehaviour
     }
     
 
-    public void AddDataReadEvent(UnityAction listener)
-    {
-        DataReadyToBeRead.AddListener(listener);
-    }
 
     private int[][] SetCamRotation()
     {
@@ -77,22 +169,7 @@ public class UndestroyableData : MonoBehaviour
     }
 
 
-    public void SetRounds(int rounds)
-    {
-        sSave.RoundCounter = -1;
-        sSave.Rounds = rounds;
-
-        sSave.ScoreKeeper.player = new int[4];
-    }
-
-    public int GetRounds()
-    {
-        return sSave.Rounds;
-    }
-    public void GetRoundsE(IntUpdater.Get get)
-    {
-        get(sSave.Rounds);
-    }
+    
 
     public void CloseStartMenu()
     {

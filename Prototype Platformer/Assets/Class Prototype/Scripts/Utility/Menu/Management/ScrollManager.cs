@@ -9,6 +9,13 @@ public class ScrollManager : ControlFirer
     public int atControl = 2;
 
     private delegate int next(int x);
+    private int Ledge,Redge;
+
+    private void Start()
+    {
+        Ledge = 0;
+        Redge = Controls.Length-1;
+    }
 
     public void ScrollTo(ControlEvents controls)
     {
@@ -43,26 +50,37 @@ public class ScrollManager : ControlFirer
 
     public void ScrollLeft()
     {
+        Vector2 EdgeLoc= Controls[GetNext(Redge)].Loc();
         Vector2 loc = Controls[0].Loc();
         for (int i = 0; i < Controls.Length-1; ++i)
             Controls[i].MoveTo(Controls[GetNext(i)].Loc());
         Controls[Controls.Length - 1].MoveTo(loc);
+        
+        Controls[Redge].transform.position = EdgeLoc;
 
+        Ledge = GetPrev(Ledge);
+        Redge = GetPrev(Redge);
         SwitchControl(GetPrev(atControl));
     }
     public void ScrollRight()
     {
+        Vector2 EdgeLoc = Controls[GetPrev(Ledge)].Loc();
         Vector2 loc = Controls[Controls.Length - 1].Loc();
         for (int i = Controls.Length - 1; i > 0; --i)
             Controls[i].MoveTo(Controls[GetPrev(i)].Loc());
         Controls[0].MoveTo(loc);
 
+        Controls[Ledge].transform.position = EdgeLoc;
+
+        Ledge = GetNext(Ledge);
+        Redge = GetNext(Redge);
         SwitchControl(GetNext(atControl));
     }
     
 
     private void SwitchControl(int to)
     {
+
         Controls[atControl].Home = false;
         atControl = to;
         controlManager.controls = Controls[atControl];
