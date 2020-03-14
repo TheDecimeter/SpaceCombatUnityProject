@@ -7,11 +7,9 @@ public class ControlManager : MonoBehaviour
     private ControlEvents _controls;
     private bool releaseL, releaseR, releaseB, releaseS;
     private ControlStruct _controllerStatus = new ControlStruct(ControlStruct.None);
+
+    private ControlListener c1, c2, c3, c4;
     
-    private void Start()
-    {
-        enabled=(FindObjectOfType<UndestroyableData>().isMenuOpened());
-    }
 
     public ControlEvents controls
     {
@@ -35,6 +33,15 @@ public class ControlManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        c1 = new ControlListener(this);
+        c2 = new ControlListener(this);
+        c3 = new ControlListener(this);
+        c4 = new ControlListener(this);
+
+        enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
+    }
     public void PassControl(ControlEvents to)
     {
         controls = to;
@@ -45,65 +52,21 @@ public class ControlManager : MonoBehaviour
         controls = to.Controls[to.atControl];
     }
 
-    public void ControllerListener(ControlStruct newControls)
+    public void ControllerListener1(ControlStruct newControls)
     {
-
-        if (!gameObject.activeInHierarchy || !enabled)
-            return;
-
-        //if (_controllerStatus.fromSource(newControls.source))
-        //{
-        //    print("resetting controls " + newControls.source);
-        //    _controllerStatus = newControls;
-        //}
-        //else
-            _controllerStatus.combine(newControls);
-
-        if (_controllerStatus.moveLeft < -.2)
-        {
-            if (releaseL)
-            {
-                releaseL = false;
-                this.controls.FireL();
-            }
-        }
-        else if (_controllerStatus.moveLeft > -.1)
-        {
-            //print("reset L " + _controllerStatus.moveLeft+" "+_controllerStatus.source);
-            releaseL = true;
-        }
-        if (_controllerStatus.moveLeft > .2)
-        {
-            if (releaseR)
-            {
-                releaseR = false;
-                this.controls.FireR();
-            }
-        }
-        else if (_controllerStatus.moveLeft < .1)
-        {
-            releaseR = true;
-        }
-        if (_controllerStatus.jump)
-        {
-            if (releaseS)
-            {
-                releaseS = false;
-                this.controls.FireS();
-            }
-        }
-        else
-            releaseS = true;
-        if (_controllerStatus.B||_controllerStatus.action)
-        {
-            if (releaseB)
-            {
-                releaseB = false;
-                this.controls.FireB();
-            }
-        }
-        else
-            releaseB = true;
+        c1.ControllerListener(newControls);
+    }
+    public void ControllerListener2(ControlStruct newControls)
+    {
+        c2.ControllerListener(newControls);
+    }
+    public void ControllerListener3(ControlStruct newControls)
+    {
+        c3.ControllerListener(newControls);
+    }
+    public void ControllerListener4(ControlStruct newControls)
+    {
+        c4.ControllerListener(newControls);
     }
 
     public void FireL()
