@@ -45,6 +45,7 @@ public class ScrollManager : MonoBehaviour
 
         SwitchControl(GetNext(atControl));
     }
+    
 
     private void SwitchControl(int to)
     {

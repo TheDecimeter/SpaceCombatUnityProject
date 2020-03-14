@@ -19,9 +19,31 @@ public class ControlEvents : MonoBehaviour, IPointerClickHandler
         }
         set
         {
+            if (_home == value)
+                return;
             _home = value;
-            if(MenuChild)
-                MenuChild.Home = value;
+
+            //if (!value)
+            //{
+            //    if (MenuChild)
+            //        MenuChild.Home = value;
+            //}
+
+            if (!value)
+            {
+                if (HideIfNoFocus)
+                    HideIfNoFocus.SetActive(false);
+                if (MenuChild)
+                {
+                    MenuChild.Home = value;
+                    MenuChild.FireB();
+                }
+            }
+            else
+            {
+                if (MenuChild)
+                    MenuChild.Home = value;
+            }
         }
     }
 

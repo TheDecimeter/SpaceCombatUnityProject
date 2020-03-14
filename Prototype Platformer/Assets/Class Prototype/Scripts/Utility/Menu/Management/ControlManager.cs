@@ -39,7 +39,12 @@ public class ControlManager : MonoBehaviour
     {
         controls = to;
     }
-    
+
+    public void PassControl(ScrollManager to)
+    {
+        controls = to.Controls[to.atControl];
+    }
+
     public void ControllerListener(ControlStruct newControls)
     {
 
