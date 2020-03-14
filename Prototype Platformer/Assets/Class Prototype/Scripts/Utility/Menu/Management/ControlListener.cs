@@ -56,7 +56,7 @@ public class ControlListener
         }
         else
             releaseS = true;
-        if (_controllerStatus.B || _controllerStatus.action||_controllerStatus.inGameMenu)
+        if (_controllerStatus.B || _controllerStatus.action || _controllerStatus.inGameMenu)
         {
             if (releaseB)
             {

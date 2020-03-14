@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class ControlEvents : MonoBehaviour, IPointerClickHandler
+public class ControlEvents : ControlFirer, IPointerClickHandler
 {
     public GameObject HideIfNoFocus;
     public ControlEvents MenuChild;
