@@ -32,7 +32,7 @@ public class IntUpdater : MonoBehaviour
     private void UpdateSavedData()
     {
         //rounds = Menu.savedData.GetRounds();
-        rounds = GetVal();
+        rounds = GetVal(GetValue);
         UpdateDisplay();
     }
 
@@ -54,14 +54,14 @@ public class IntUpdater : MonoBehaviour
         if (!Display)
             Display = GetComponent<TextMeshProUGUI>();
         //rounds = Menu.savedData.GetRounds();
-        rounds = GetVal();
+        rounds = GetVal(GetValue);
         UpdateDisplay();
     }
 
-    private int GetVal()
+    public static int GetVal(GetEvent GetValue)
     {
         int val=0;
-        GetValue.Invoke(x => { val = x; });
+        GetValue.Invoke((x) => { val = x; });
         return val;
     }
 

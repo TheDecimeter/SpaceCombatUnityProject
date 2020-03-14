@@ -94,7 +94,7 @@ public class ControlManager : MonoBehaviour
         }
         else
             releaseS = true;
-        if (_controllerStatus.B)
+        if (_controllerStatus.B||_controllerStatus.action)
         {
             if (releaseB)
             {

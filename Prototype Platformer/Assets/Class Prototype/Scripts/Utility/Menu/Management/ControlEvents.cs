@@ -10,7 +10,10 @@ public class ControlEvents : MonoBehaviour, IPointerClickHandler
     public ControlEvents MenuChild;
     private Vector2 newLoc;
     public bool Active { get; set; }
-    private bool _home;
+    private bool _home,moving=false;
+
+    private Stack<Vector2> moveLocs = new Stack<Vector2>();
+
     public bool Home
     {
         get
@@ -47,7 +50,7 @@ public class ControlEvents : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private const float closeEnough = .2f, lerpAt = 16;
+    private const float closeEnough = .2f, lerpAt = 16f;
 
     public UnityEvent L,R,S,B,inactiveClick,homeClick,activeClick;
 
@@ -65,29 +68,55 @@ public class ControlEvents : MonoBehaviour, IPointerClickHandler
 
     public Vector2 Loc()
     {
-        return newLoc;
+        if(moving)
+            return newLoc;
+        else
+            return transform.position;
     }
 
     IEnumerator Move()
     {
-        while(Vector2.Distance(transform.position, newLoc) > closeEnough)
+        moving = true;
+        while (moveLocs.Count > 0)
         {
-            transform.position = Vector2.Lerp(transform.position, newLoc, Time.deltaTime * lerpAt);
-            yield return null;
-        }
+            Vector2 moveLoc = moveLocs.Pop();
 
+            
+            while (Vector2.Distance(transform.position, moveLoc) > closeEnough)
+            {
+                float dist = Dist(moveLoc);
+                Vector2 dir = moveLoc- (Vector2)transform.position;
+                dir = dir.normalized * Time.deltaTime * dist * lerpAt;
+
+                if (dir.magnitude > Vector2.Distance(transform.position, moveLoc))
+                    transform.position = moveLoc;
+                else
+                    transform.position = (Vector2)transform.position + dir;
+                yield return null;
+            }
+        }
         transform.position = newLoc;
+        moving = false;
     }
+
+    private float Dist(Vector2 first)
+    {
+        float dist = Vector2.Distance(transform.position, first);
+        foreach(Vector2 to in moveLocs)
+        {
+            dist += Vector2.Distance(first, to);
+            first = to;
+        }
+        return dist;
+    }
+    
 
     public void MoveTo(Vector2 newLoc)
     {
         this.newLoc = newLoc;
-        StartCoroutine(Move());
-    }
-    public void MoveDirectlyTo(Vector2 newLoc)
-    {
-        this.newLoc = newLoc;
-        transform.position = newLoc;
+        moveLocs.Push(newLoc);
+        if(!moving)
+            StartCoroutine(Move());
     }
 
     public void FireL()

@@ -73,9 +73,7 @@ public class ControlStruct
             left = other.left;
             bLeft = other.bLeft;
         }
-
-        if (other.fromSource(ControlStruct.Controller))
-            Debug.Log("controller input " + left+" "+other.left);
+        
 
         if (left==0)
         {

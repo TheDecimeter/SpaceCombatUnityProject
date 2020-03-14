@@ -7,7 +7,8 @@ public class ScrollManager : MonoBehaviour
     public ControlEvents [] Controls;
     public ControlManager controlManager;
     public int atControl = 2;
-    
+
+    private delegate int next(int x);
 
     // Start is called before the first frame update
     void Start()
@@ -19,12 +20,27 @@ public class ScrollManager : MonoBehaviour
 
     public void ScrollTo(ControlEvents controls)
     {
-        Vector2 homeLoc = Controls[atControl].transform.position;
-        Vector2 targetLoc = controls.transform.position;
-        if (homeLoc.x > targetLoc.x)
-            ScrollLeft();
+        int r = distToElement(GetNext, controls);
+        int l = distToElement(GetPrev, controls);
+
+        if (l < r)
+            for (int i = 0; i < l; ++i)
+                ScrollLeft();
         else
-            ScrollRight();
+            for (int i = 0; i < r; ++i)
+                ScrollRight();
+
+    }
+    private int distToElement(next Next, ControlEvents target)
+    {
+        int r=0;
+        int at = atControl;
+        while(Controls[at]!=target)
+        {
+            r++;
+            at = Next(at);
+        }
+        return r;
     }
 
     public void ScrollLeft()
