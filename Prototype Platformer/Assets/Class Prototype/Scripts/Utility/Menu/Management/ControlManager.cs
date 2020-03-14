@@ -24,7 +24,7 @@ public class ControlManager : MonoBehaviour
             if (_controls)
             {
                 _controls.Active = false;
-                if(_controls.HideIfNoFocus)
+                if(_controls.HideIfNoFocus&&_controls.MenuChild!=value)
                     _controls.HideIfNoFocus.SetActive(false);
             }
             _controls = value;
@@ -54,36 +54,48 @@ public class ControlManager : MonoBehaviour
         //else
             _controllerStatus.combine(newControls);
 
-        if (_controllerStatus.moveLeft < -.2 && releaseL)
+        if (_controllerStatus.moveLeft < -.2)
         {
-            releaseL = false;
-            this.controls.FireL();
+            if (releaseL)
+            {
+                releaseL = false;
+                this.controls.FireL();
+            }
         }
         else if (_controllerStatus.moveLeft > -.1)
         {
             //print("reset L " + _controllerStatus.moveLeft+" "+_controllerStatus.source);
             releaseL = true;
         }
-        if (_controllerStatus.moveLeft > .2 && releaseR)
+        if (_controllerStatus.moveLeft > .2)
         {
-            releaseR = false;
-            this.controls.FireR();
+            if (releaseR)
+            {
+                releaseR = false;
+                this.controls.FireR();
+            }
         }
         else if (_controllerStatus.moveLeft < .1)
         {
             releaseR = true;
         }
-        if (_controllerStatus.jump && releaseS)
+        if (_controllerStatus.jump)
         {
-            releaseS = false;
-            this.controls.FireS();
+            if (releaseS)
+            {
+                releaseS = false;
+                this.controls.FireS();
+            }
         }
         else
             releaseS = true;
-        if (_controllerStatus.door && releaseB)
+        if (_controllerStatus.B)
         {
-            releaseB = false;
-            this.controls.FireB();
+            if (releaseB)
+            {
+                releaseB = false;
+                this.controls.FireB();
+            }
         }
         else
             releaseB = true;

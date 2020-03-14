@@ -89,6 +89,10 @@ public class UndestroyableData : MonoBehaviour
     {
         return sSave.Rounds;
     }
+    public void GetRoundsE(IntUpdater.Get get)
+    {
+        get(sSave.Rounds);
+    }
 
     public void CloseStartMenu()
     {
