@@ -31,6 +31,10 @@ public class PlayerHealth : MonoBehaviour {
     //public Text health;
     public HUD hud;
     
+    public GameObject KilledBy { get; protected set;}
+    private GameObject alive, poisonedBy;
+    private int healthLoiterCount = 0, healthLoiterChase = 0;
+    private const int ScoldEvery = 5, ChaseEvery = 20;
 
     private int framesDamage = 0, damageRate = 0;
     private int secondsCounter = 0;
@@ -41,7 +45,6 @@ public class PlayerHealth : MonoBehaviour {
 
     public void Start ()
     {
-
 
         //MotionBlur mb;
         //if (camEffects.profile.TryGetSettings(out mb))
@@ -57,6 +60,10 @@ public class PlayerHealth : MonoBehaviour {
         AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
 
         character = GetComponent<CharacterMovement_Physics>();
+
+
+        alive = new GameObject("Alive flag for "+character.name[PlayerNumber]);
+        KilledBy = alive;
     }
 
     void FixedUpdate()
@@ -75,7 +82,7 @@ public class PlayerHealth : MonoBehaviour {
                 secondsCounter = 0;
                 framesDamage--;
                 HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
-                DealDamage(new DamageMessage(damageRate, null));
+                DealDamage(new DamageMessage(damageRate, poisonedBy, true));
             }
         }
     }
@@ -100,8 +107,19 @@ public class PlayerHealth : MonoBehaviour {
             _currentHealth -= message.damage;
             if (_currentHealth > maxHealth)
             {
-                if(!MaxHealthQuip())
-                    HealthParticle.Create(transform, "MAX HP", Color.cyan, true);
+                healthLoiterCount++;
+                healthLoiterChase++;
+                if (healthLoiterCount > ScoldEvery)
+                {
+                    healthLoiterCount = 0;
+                    MaxHealthQuip();
+                }
+                if (healthLoiterChase > ChaseEvery)
+                {
+                    healthLoiterChase = 0;
+                    ChaseAway();
+                }
+                HealthParticle.Create(transform, "MAX HP", Color.cyan, true);
 
                 _currentHealth = maxHealth;
             }
@@ -128,6 +146,7 @@ public class PlayerHealth : MonoBehaviour {
         }
         if (message.effect.Contains("poison"))
         {
+            poisonedBy = message.friend;
             string[] tokens = message.effect.Split(',');
             int.TryParse(tokens[1], out damageRate);
             int.TryParse(tokens[2], out framesDamage);
@@ -153,10 +172,42 @@ public class PlayerHealth : MonoBehaviour {
 
         if (_currentHealth <= 0)
         {
-            KilledQuip();
+            if (KilledByPersonInst(message))
+                KilledByPersonQuip(message.friend);
+            else if (KilledByPersonResidual(message))
+                KilledByPlayerResidual(message.friend);
+            else
+                KilledByEnvironmentQuip(message.friend);
             PlayerDeath();
             _currentHealth = 0;
         }
+    }
+
+    private bool KilledByPersonInst(DamageMessage message)
+    {
+        if (message==null)
+            return false;
+        if (message.residualDamage)
+            return false;
+        KilledBy = message.friend;
+        if (message.friend == null)
+            return false;
+        
+        return message.friend.GetComponent<PlayerHealth>();
+    }
+    private bool KilledByPersonResidual(DamageMessage message)
+    {
+        if (message == null)
+            return false;
+
+        KilledBy = message.friend;
+        if (message.friend == null)
+            return false;
+
+        if (!message.friend.GetComponent<PlayerHealth>())
+            return false;
+        return message.residualDamage;
+            
     }
 
     public int getHealth()
@@ -182,18 +233,67 @@ public class PlayerHealth : MonoBehaviour {
         blurLayer.gameObject.SetActive(false);
     }
 
-    private void KilledQuip()
+    private void KilledByEnvironmentQuip(GameObject killer)
+    {
+        deathQuip = true;
+        switch (Random.Range(0, 3))
+        {
+            case 0:
+                hud.Link.Health[PlayerNumber].text = " : (";
+                info.say("YEAH!\nTook it like a\nBOSS!", -1);
+                break;
+            case 1:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("YEAH!\nHow tough am I!", -1);
+                break;
+            case 2:
+                hud.Link.Health[PlayerNumber].text = " : P";
+                info.say("What doesn't kill you\nmakes you stronger.\nNormally\nit <b>kills</b> you though.", -1);
+                break;
+            default:
+                hud.Link.Health[PlayerNumber].text = "0";
+                info.say("", -1);
+                break;
+        }
+    }
+    private void KilledByPlayerResidual(GameObject killer)
+    {
+        deathQuip = true;
+        switch (Random.Range(0, 6))
+        {
+            case 0:
+                hud.Link.Health[PlayerNumber].text = " : (";
+                info.say("Coward!", -1);
+                break;
+            case 1:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("Where was the body armor?", -1);
+                break;
+            case 2:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("In a fair fight\nI'd kill you!\n \n ", -1);
+                killer.GetComponent<PlayerHealth>().info.say("That’s no incentive for me \nto fight fair, then is it?", 500);
+                break;
+            default:
+                hud.Link.Health[PlayerNumber].text = "0";
+                info.say("", -1);
+                break;
+        }
+    }
+
+
+    private void KilledByPersonQuip(GameObject killer)
     {
         deathQuip = true;
         switch (Random.Range(0, 11))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
-                info.say("Why didn't\nI choose love", -1);
+                info.say("Why didn't\nI choose peace", -1);
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("KAAHHHHNN", -1);
+                info.say("<b><size=110%>KAA<size=100%>HN<size=90%>NN<size=80%>N<size=70%>N<size=60%>N</b>", -1);
                 break;
             case 3:
                 hud.Link.Health[PlayerNumber].text = " : P";
@@ -201,11 +301,24 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 4:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("Momma was right\nabout you", -1);
+                info.say("You killed my father\n<b>Prepare to</b>...", -1);
                 break;
             case 5:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Et tu, Brute?", -1);
+                break;
+            case 6:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("denial\nanger\nbargaining\ndepression\n<size=120%><b>REVENGE</b></size>", -1);
+                break;
+            case 7:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("Avenge ME!\n ", -1);
+                killer.GetComponent<PlayerHealth>().info.say("No Thanks", 120);
+                break;
+            case 8:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("You have died\nof dysentery", -1);
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -216,19 +329,21 @@ public class PlayerHealth : MonoBehaviour {
 
     public void PlayerDeath ()
     {
-        if (!deathQuip)
-            AsteroidQuip();
 
-        if (AnimState == null)
-            AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
-        AnimState.startDie();
-        GetComponent<Rigidbody>().useGravity = false;
+        if (KilledBy == alive)
+            InitiateAsteroidDeath();
+        else
+        {
+            if (AnimState == null)
+                AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
+            AnimState.startDie();
+        }
+        
+
 
         framesDamage = 0;
 
-        //transform.Find("Collision/Foot Collider").gameObject.GetComponent<SphereCollider>().enabled = false;
-        transform.Find("Collision/Body Collider").gameObject.GetComponent<CapsuleCollider>().enabled = false;
-
+        transform.Find("Collision/Body Collider").gameObject.AddComponent<DontCollideWithPlayer>();
 
         isDead = true;
         //death sounds can go here
@@ -240,9 +355,28 @@ public class PlayerHealth : MonoBehaviour {
         _canTakeDamage = false;
     }
 
+    private void InitiateAsteroidDeath()
+    {
+        AsteroidQuip();
+        if (AnimState == null)
+            AnimState = character.AnimState;
+        AnimState.stopAnimating();
+
+        gameObject.GetComponent<CameraLocator>().CameraLocation.parent.gameObject.GetComponent<PlatformerCameraFollow>().lookAhead = false;
+
+        float rot=30f;
+        float xythrust = 1f;
+        float zthrust = 10f;
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.constraints = 0;
+        rb.AddForce(new Vector3(Random.Range(-xythrust, xythrust), Random.Range(-xythrust, xythrust),zthrust));
+        rb.AddTorque(new Vector3(Random.Range(-rot, rot), Random.Range(-rot, rot), Random.Range(-rot, rot)));
+    }
+
     private void AsteroidQuip()
     {
-        switch (Random.Range(0, 8))
+        switch (Random.Range(0, 11))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
@@ -250,7 +384,7 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("KAAHHHHNN", -1);
+                info.say("How was I\nsupposed to know\nasteroids were bad?", -1);
                 break;
             case 3:
                 hud.Link.Health[PlayerNumber].text = " : P";
@@ -258,11 +392,15 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 4:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("Huh...", -1);
+                info.say("So...\nthat\nhappened...", -1);
                 break;
             case 5:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("Speak of this\nTo no one!", -1);
+                info.say("Well, of all the\nways to go...\nCould be worse", -1);
+                break;
+            case 6:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("You promised me\nI wouldn't die\nlike this!", -1);
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -273,7 +411,7 @@ public class PlayerHealth : MonoBehaviour {
 
     private bool MaxHealthQuip()
     {
-        switch (Random.Range(0, 20))
+        switch (Random.Range(0, 4))
         {
             case 0:
                 HealthParticle.Create(transform, "No loitering!", Color.yellow, true);
@@ -281,13 +419,47 @@ public class PlayerHealth : MonoBehaviour {
             case 1:
                 HealthParticle.Create(transform, "Kill something!", Color.yellow, true);
                 return true;
-            case 3:
+            case 2:
                 HealthParticle.Create(transform, "Healed!\nIn the name of\nCthulhu", Color.yellow, true);
                 return true;
-            case 4:
+            default:
                 HealthParticle.Create(transform, "Seek Rehab", Color.yellow, true);
                 return true;
         }
-        return false;
     }
+
+    private void ChaseAway()
+    {
+        string msg = "They're camping\nover here";
+        switch (Random.Range(0, 3))
+        {
+            case 0:
+                msg = "They're camping\nover here";
+                break;
+            case 1:
+                msg = "Hope no one\nfinds me here";
+                break;
+            case 2:
+                Item w = character._currentItem;
+                if(w.Rank()>5)
+                    msg = "I've got \n"+ w.Aweapon() + "\nwith your name on it";
+                else
+                    msg= "They're over here\nThey've only got a\n" + w.Aweapon() + "";
+                break;
+            default:
+                msg = "Come At Me Bro";
+                break;
+        }
+        float scale = 5;
+        HealthParticle.Create(transform, Vector3.up * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, Vector3.down * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, Vector3.left * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, Vector3.right * scale, 5, msg, Color.yellow, true);
+
+        HealthParticle.Create(transform, (Vector3.up + Vector3.left).normalized * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, (Vector3.up + Vector3.right).normalized * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, (Vector3.down + Vector3.left).normalized * scale, 5, msg, Color.yellow, true);
+        HealthParticle.Create(transform, (Vector3.down + Vector3.right).normalized * scale, 5, msg, Color.yellow, true);
+    }
+    
 }

@@ -113,6 +113,10 @@ public class DoorController : MonoBehaviour
         {
             DoorType orientation = DoorLocation;
             CharacterMovement_Physics player = other.transform.parent.transform.parent.gameObject.GetComponent<CharacterMovement_Physics>();
+            if (player.GetComponent<PlayerHealth>().isDead)
+            {
+                return;
+            }
             int count = player.AddDoor(this, out orientation);
 
             if (count == 1) add(DoorType.Other, player.PlayerNumber);

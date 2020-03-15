@@ -98,7 +98,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        print("going east");
+        //print("going east");
         return ret;
     }
 
@@ -126,7 +126,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
 
-        print("going west");
+        //print("going west");
         return ret;
     }
 
@@ -388,7 +388,7 @@ public partial class AI : MonoBehaviour
 
     private void ErrorCorrect()
     {
-        print("error correct");
+        //print("error correct");
         Move(0, 0);//perform a "nothing" move so that if the player is really stuck they will try to free themselves
         TaskMapRoom();
     }

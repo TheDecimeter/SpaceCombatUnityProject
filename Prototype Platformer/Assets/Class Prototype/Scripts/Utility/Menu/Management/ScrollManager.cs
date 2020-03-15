@@ -15,6 +15,7 @@ public class ScrollManager : ControlFirer
     {
         Ledge = 0;
         Redge = Controls.Length-1;
+        Controls[atControl].Home = true;
     }
 
     public void ScrollTo(ControlEvents controls)

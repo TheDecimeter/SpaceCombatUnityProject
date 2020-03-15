@@ -26,7 +26,7 @@ public class HealthParticle : MonoBehaviour
     {
         if (health == 0)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         //TextMeshPro text = gameObject.AddComponent<TextMeshPro>();
@@ -102,5 +102,21 @@ public class HealthParticle : MonoBehaviour
             gravity = Physics.gravity;
 
         h.Fire(LaunchVel.normalized * Physics.gravity.magnitude / 4, gravity , message,color, timeout);
+    }
+
+    public static void Create(Transform loc, Vector3 dir, float life, string message, Color color, bool rise)
+    {
+        GameObject g = new GameObject("HealthParticle");
+        HealthParticle h = g.AddComponent<HealthParticle>();
+
+        g.transform.position = new Vector3(loc.position.x, loc.position.y + 3, loc.position.z);
+
+        Vector3 gravity;
+        if (rise)
+            gravity = Vector3.zero;
+        else
+            gravity = Physics.gravity;
+
+        h.Fire(dir, gravity, message, color, life);
     }
 }

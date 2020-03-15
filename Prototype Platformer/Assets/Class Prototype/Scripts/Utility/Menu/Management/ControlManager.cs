@@ -42,6 +42,7 @@ public class ControlManager : MonoBehaviour
         c4 = new ControlListener(this);
 
         _controls = initialMenuItem;
+        controls = initialMenuItem;
 
         enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
     }

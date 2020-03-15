@@ -269,7 +269,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (!_canMove)
         {
-            _rigidbody.velocity = Vector3.zero;
+            //_rigidbody.velocity = Vector3.zero;
             return;
         }
 
@@ -503,7 +503,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
             _storedVelocity = _rigidbody.velocity;
             _storedState = _currentState;
-            _rigidbody.velocity = Vector3.zero;
+            //_rigidbody.velocity = new Vector3(0, 0, 3);
 
         }
         else
@@ -612,12 +612,12 @@ public class CharacterMovement_Physics : MonoBehaviour
             ///anim.SetBool(_currentItem.getAnimationFlag(), true);
             if (_currentItem == null) print("current item is null "+name[PlayerNumber]);
 
-            Transform atkPt = new GameObject().transform;
-            atkPt.position = new Vector3(
-                mountingBone.transform.position.x,
-                mountingBone.transform.position.y,
-                transform.position.z);
-            atkPt.rotation = transform.rotation;
+            //Transform atkPt = new GameObject("tmp transform CharacterMovement_Physics.SetAttacking").transform;
+            //atkPt.position = new Vector3(
+            //    mountingBone.transform.position.x,
+            //    mountingBone.transform.position.y,
+            //    transform.position.z);
+            //atkPt.rotation = transform.rotation;
             _currentItem.use(attackPoint, this.transform);
 
             if (_currentItem.effect.Contains("useonce"))
@@ -629,10 +629,10 @@ public class CharacterMovement_Physics : MonoBehaviour
                 AnimState.updateAnimationState(_currentItem.getAnimationFlag(), false);
                 GameObject oldItem = _currentItem.transform.parent.gameObject;
                 releaseItem();
-                print("        OLD ITEM"+oldItem.name);
+                //print("        OLD ITEM"+oldItem.name);
                 Destroy(oldItem);
                 _currentItem = Instantiate(defaultWeapon);
-                print("use once");
+                //print("use once");
             }
             if (defaultWeapon == null) print("default item is null " + name[PlayerNumber]);
 

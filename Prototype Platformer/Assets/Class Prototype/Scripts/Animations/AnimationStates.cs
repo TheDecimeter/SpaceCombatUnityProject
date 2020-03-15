@@ -19,6 +19,11 @@ public class AnimationStates
         this.anim = anim;
     }
 
+    public void stopAnimating()
+    {
+        anim.enabled = false;
+    }
+
     public void updateAnimationState(string state, bool OnOrOff)
     {
         switch (state)

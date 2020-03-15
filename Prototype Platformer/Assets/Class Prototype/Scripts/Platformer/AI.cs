@@ -217,7 +217,7 @@ public partial class AI : MonoBehaviour
 
         
 
-        print(roomGridString());
+        //print(roomGridString());
         return complete;
     }
 
@@ -544,7 +544,7 @@ public partial class AI : MonoBehaviour
     {
         if (stagnate())
         {
-            print("    FREEDOM");
+            //print("    FREEDOM");
             return freeYourself(x, y);
         }
         //print("Move (" + x + "," + y + ")\n"+roomGridString());
