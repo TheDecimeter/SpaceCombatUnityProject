@@ -9,7 +9,7 @@ public class ScoreBoardUpdater : MonoBehaviour
     public TextMeshProUGUI[] AIScore;
 
 
-    private string human = "  Player {0}   <pos=42%> :   <pos=53.5%>{1}",bot= "*Player_{0}*<pos=50%>*{1}*";
+    private string human = "  Player {0}<pos=42%>:<pos=53.5%>{1}",bot= "*Player_{0}*<pos=50%>*{1}*";
 
     void Start()
     {

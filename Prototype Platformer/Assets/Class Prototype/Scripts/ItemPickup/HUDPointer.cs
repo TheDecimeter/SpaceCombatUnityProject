@@ -19,7 +19,6 @@ public class HUDPointer : MonoBehaviour
         this.offset = offset;
         gameObject.SetActive(true);
         this.cam = camera;
-        print("init pointer");
     }
 
     // Start is called before the first frame update

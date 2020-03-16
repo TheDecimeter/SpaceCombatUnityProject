@@ -91,9 +91,17 @@ public class StartMenu : MonoBehaviour
             QuitProgram();
         }
     }
+    private int GetRounds(UndestroyableData data)
+    {
+        int r = 0;
+        data.GetRoundsE((x) => { r = x; });
+        return r;
+    }
 
     public void StartGame()
     {
+        savedData.SetRounds(GetRounds(savedData));
+
         savedData.CloseStartMenu();
         sceneLoader.sceneLoadDelay = 0;
         sceneLoader.sceneFadeDuration = 0;

@@ -37,6 +37,7 @@ public class UndestroyableData : MonoBehaviour
     //Game Rounds   Getter Setter
     public void SetRounds(int rounds)
     {
+        Debug.LogWarning("   Data - Set rounds " + rounds);
         sSave.RoundCounter = -1;
         sSave.Rounds = rounds;
 
@@ -147,7 +148,7 @@ public class UndestroyableData : MonoBehaviour
             }
 
             //TODO make this dynamic
-            sSave.PlayerCount = 4;
+            //sSave.PlayerCount = 4;
         }
     }
     
@@ -227,6 +228,7 @@ public class UndestroyableData : MonoBehaviour
         sSave.RoundCounter++;
         if (sSave.Rounds == sSave.RoundCounter)
             sSave.StartMenu.StartMenuOpened = true;
+        Debug.LogWarning("   Data - end round " + sSave.Rounds+" "+sSave.RoundCounter);
     }
 
     public bool isMenuOpened()
@@ -409,6 +411,7 @@ public class UndestroyableData : MonoBehaviour
 
             sSave.PlayerCount = data.PlayerCount;
             sSave.CamRot.player = data.PlayerRot;
+            print("read saved data");
         }
         catch(System.Exception e)
         {

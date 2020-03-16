@@ -61,6 +61,8 @@ public partial class AI : MonoBehaviour
         //TaskList.Push(TaskAssignGoThroughNorthDoor);
         //currentTask = TaskList.Pop();
 
+        if (player.PlayerNumber + 1 <= GetPlayers())
+            enabled = false;
     }
 
     // Update is called once per frame
@@ -93,7 +95,7 @@ public partial class AI : MonoBehaviour
                     currentTask = TaskList.Pop();
                 else
                 {
-                    print(gameObject.name + " end of task list " + TaskList.Count);
+                    //print(gameObject.name + " end of task list " + TaskList.Count);
                     priority = 0;
                     break;
                 }
@@ -674,6 +676,11 @@ public partial class AI : MonoBehaviour
 
     }
 
+    private int GetPlayers()
+    {
+        int r = 0;
+        FindObjectOfType<UndestroyableData>().GetPlayers((x) => { r = x; });
+        return r;
+    }
 
-    
 }

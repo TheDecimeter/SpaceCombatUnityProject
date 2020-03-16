@@ -207,7 +207,7 @@ public class LevelRandomizer : MonoBehaviour
             }
         LeaveLoop:
 
-        print("x" + x +" y "+y);
+        //print("x" + x +" y "+y);
 
         GetComponent<EscapePodLauncher>().Launch(startX + x * xTileSize + xOffset, startY + y * yTileSize + yOffset, startZ);
 

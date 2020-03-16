@@ -43,9 +43,11 @@ public class PlayerHealth : MonoBehaviour {
     private bool deathQuip = true;
     public bool isDead{get; protected set;}
 
+    private bool isHuman = false;
+
     public void Start ()
     {
-
+        
         //MotionBlur mb;
         //if (camEffects.profile.TryGetSettings(out mb))
         //    mb.enabled.value = false;
@@ -61,6 +63,7 @@ public class PlayerHealth : MonoBehaviour {
 
         character = GetComponent<CharacterMovement_Physics>();
 
+        isHuman = (character.PlayerNumber + 1 < GetPlayers());
 
         alive = new GameObject("Alive flag for "+character.name[PlayerNumber]);
         KilledBy = alive;
@@ -68,21 +71,24 @@ public class PlayerHealth : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (frameCounter < blurFrames)
+        if (isHuman)
         {
-            frameCounter++;
-            if (frameCounter == blurFrames)
-                endBlur();
-        }
-        if (framesDamage > 0)
-        {
-            secondsCounter++;
-            if (secondsCounter == 50)
+            if (frameCounter < blurFrames)
             {
-                secondsCounter = 0;
-                framesDamage--;
-                HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
-                DealDamage(new DamageMessage(damageRate, poisonedBy, true));
+                frameCounter++;
+                if (frameCounter == blurFrames)
+                    endBlur();
+            }
+            if (framesDamage > 0)
+            {
+                secondsCounter++;
+                if (secondsCounter == 50)
+                {
+                    secondsCounter = 0;
+                    framesDamage--;
+                    HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
+                    DealDamage(new DamageMessage(damageRate, poisonedBy, true));
+                }
             }
         }
     }
@@ -217,6 +223,8 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
+        if (!isHuman)
+            return;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.targetTexture = blurScreen;
         //blurComponent.depthTextureMode = DepthTextureMode.None;
@@ -235,6 +243,8 @@ public class PlayerHealth : MonoBehaviour {
 
     private void KilledByEnvironmentQuip(GameObject killer)
     {
+        if (!isHuman)
+            return;
         deathQuip = true;
         switch (Random.Range(0, 3))
         {
@@ -258,6 +268,8 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void KilledByPlayerResidual(GameObject killer)
     {
+        if (!isHuman)
+            return;
         deathQuip = true;
         switch (Random.Range(0, 6))
         {
@@ -284,6 +296,8 @@ public class PlayerHealth : MonoBehaviour {
 
     private void KilledByPersonDirectQuip(GameObject killer)
     {
+        if (!isHuman)
+            return;
         deathQuip = true;
         switch (Random.Range(0, 12))
         {
@@ -380,6 +394,8 @@ public class PlayerHealth : MonoBehaviour {
 
     private void AsteroidQuip()
     {
+        if (!isHuman)
+            return;
         switch (Random.Range(0, 11))
         {
             case 0:
@@ -465,5 +481,12 @@ public class PlayerHealth : MonoBehaviour {
         HealthParticle.Create(transform, (Vector3.down + Vector3.left).normalized * scale, 5, msg, Color.yellow, true);
         HealthParticle.Create(transform, (Vector3.down + Vector3.right).normalized * scale, 5, msg, Color.yellow, true);
     }
-    
+
+
+    private int GetPlayers()
+    {
+        int r = 0;
+        FindObjectOfType<UndestroyableData>().GetPlayers((x) => { r = x; });
+        return r;
+    }
 }

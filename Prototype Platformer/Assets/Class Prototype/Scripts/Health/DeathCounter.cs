@@ -24,7 +24,10 @@ public class DeathCounter : MonoBehaviour
         Debug.LogWarning("Player died " + playerID);
         deaths++;
         if (deaths == DeathsToEvent)
+        {
+            Debug.LogWarning("Invoking launch pod");
             DeathEvent.Invoke();
+        }
         if (deaths == 3)
         {
             foreach (Transform child in PlayerArray.transform)
@@ -32,6 +35,8 @@ public class DeathCounter : MonoBehaviour
                     FindObjectOfType<UndestroyableData>().
                         IncreaseScore(child.gameObject.GetComponent<CharacterMovement_Physics>().
                         PlayerNumber, 1);
+
+            Debug.LogWarning("Invoking one player remaining event");
             OnePlayerLeftEvent.Invoke();
         }
     }
