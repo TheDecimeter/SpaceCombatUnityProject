@@ -8,10 +8,10 @@ public class CameraRectSetter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        setRect(GetPlayers());
+        setRect(GetPlayers(),true);
     }
     
-    private void setRect(int playerAmmount)
+    private void setRect(int playerAmmount, bool vertical)
     {
         switch (playerAmmount)
         {
@@ -19,7 +19,7 @@ public class CameraRectSetter : MonoBehaviour
                 set1();
                 break;
             case 2:
-                set2();
+                set2(vertical);
                 break;
             case 3:
                 set4();
@@ -41,12 +41,31 @@ public class CameraRectSetter : MonoBehaviour
         Camera cam = GetComponent<Camera>();
         cam.rect = new Rect(x, y, .5f, .5f);
     }
-    private void set2()
+    private void set2(bool vertical)
     {
+        Camera cam = GetComponent<Camera>();
+
+        if (vertical)
+        {
+            if(playerNum==2)
+            {
+                cam = GetComponent<Camera>();
+                cam.rect = new Rect(0, 0, 1f, .5f);
+                return;
+            }
+            if (playerNum == 1)
+            {
+                cam = GetComponent<Camera>();
+                cam.rect = new Rect(0, .5f, 1f, .5f);
+                return;
+            }
+            cam.enabled = false;
+            return;
+        }
+
         float x = 0;
         if (playerNum == 2)
             x = .5f;
-        Camera cam = GetComponent<Camera>();
         if (playerNum > 2)
             cam.enabled = false;
         cam.rect = new Rect(x, 0, .5f, 1f);

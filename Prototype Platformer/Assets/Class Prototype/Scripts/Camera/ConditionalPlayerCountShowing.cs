@@ -9,7 +9,7 @@ public class ConditionalPlayerCountShowing : MonoBehaviour
     void Start()
     {
         int players = GetPlayers();
-        print("players shower" + players);
+        //print("players shower" + players);
         if (players == 0)
             return;
         if (playerNum > GetPlayers())

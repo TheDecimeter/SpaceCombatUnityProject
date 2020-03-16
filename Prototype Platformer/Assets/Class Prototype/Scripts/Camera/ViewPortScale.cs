@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ViewPortScale : MonoBehaviour
 {
+    public Transform horizontalParent;
     private Vector2 resolution;
     // Start is called before the first frame update
     Canvas canvas;
@@ -35,7 +36,7 @@ public class ViewPortScale : MonoBehaviour
                 break;
 
             case 2:
-                SetScale2();
+                SetScale2(false);
                 break;
 
             case 3:
@@ -91,7 +92,7 @@ public class ViewPortScale : MonoBehaviour
         tr.sizeDelta = new Vector2(w / 2, h / 2);
     }
 
-    private void SetScale2()
+    private void SetScale2(bool vertical)
     {
 
         float h = canvas.GetComponent<RectTransform>().rect.height;
@@ -99,10 +100,32 @@ public class ViewPortScale : MonoBehaviour
 
         RectTransform tr = GetComponent<RectTransform>();
 
-        float hUnit = h / -2;
-        float wUnit = w / 4;
-        tr.localPosition = new Vector3(wUnit, hUnit, 1);
-        tr.sizeDelta = new Vector2(w / 2, h);
+
+        if (vertical)
+        {
+            print("setting vert viewPortFuzzy for " + transform.parent.gameObject.name);
+            float hUnit = h / -2;
+            float wUnit = w / 4;
+
+            tr.localPosition = new Vector3(wUnit, hUnit, 1);
+            tr.sizeDelta = new Vector2(w / 2, h);
+        }
+        else
+        {
+            print("setting horiz viewPortFuzzy for " + transform.parent.gameObject.name);
+            if (horizontalParent!=null)
+            {
+                print("setting parent for " + transform.parent.gameObject.name);
+                transform.SetParent(horizontalParent);
+            }
+
+            float hUnit = h / -4;
+            float wUnit = w / 2;
+
+            tr.localPosition = new Vector3(wUnit, hUnit, 1);
+            tr.sizeDelta = new Vector2(w, h/2);
+            
+        }
     }
     private void SetScale1()
     {

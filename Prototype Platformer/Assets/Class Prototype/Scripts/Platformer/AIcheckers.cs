@@ -34,6 +34,71 @@ public partial class AI : MonoBehaviour
         }
     }
 
+
+    private class CheckerKillPlayers : IChecker
+    {
+        AI outer;
+        int priority;
+        float timer = 0;
+        const float updateTime = 1;
+        List<PlayerHealth> players;
+
+        public CheckerKillPlayers(AI outer, int priority)
+        {
+            this.outer = outer;
+            this.priority = priority;
+            players = new List<PlayerHealth>();
+            
+            foreach (Transform child in outer.levelStats.PlayerArray.transform)
+                if(child!=outer.transform)
+                    players.Add(child.GetComponent<PlayerHealth>());
+        }
+
+        public int Do(int priority, bool failed = false)
+        {
+            if (priority > this.priority)
+                return priority;
+
+            timer += Time.deltaTime;
+            if (timer > updateTime)
+            {
+                timer = 0;
+                return Reset(priority);
+            }
+
+            return this.priority;
+        }
+
+        private int Reset(int inCommingPriority)
+        {
+            for(int i=players.Count-1;i>=0; --i)
+            {
+
+                if (players[i].isDead)
+                {
+                    players.RemoveAt(i);
+                    continue;
+                }
+
+                PlayerHealth p = players[i];
+
+                int px, py,mx,my;
+                outer.GetMapGridPos(p.transform.position, out px, out py);
+                outer.GetMapGridPos(outer.transform.position, out mx, out my);
+
+                if (mx != px || my != py)
+                    continue;
+
+                outer.TaskList.Clear();
+                outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
+                return priority;
+            }
+            if(inCommingPriority==priority)
+                return 0;
+            return inCommingPriority;
+        }
+    }
+
     private class CheckerEscapePod : IChecker
     {
         AI outer;
@@ -262,7 +327,7 @@ public partial class AI : MonoBehaviour
                                     minDist = distToPlayer;
                                     closestPlayer = p;
                                     //TODO XXX remove this break which seaks first player
-                                    break;
+                                    //break;
                                 }
                             }
                         }

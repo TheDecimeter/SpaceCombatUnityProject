@@ -30,6 +30,7 @@ public class UndestroyableData : MonoBehaviour
 
     [Header("GUI Stuff")]
     public TextMeshProUGUI WinText;
+    public bool VerticalSplit = true;
 
     static public UnityEvent DataReadyToBeRead=new UnityEvent();
 
@@ -108,6 +109,16 @@ public class UndestroyableData : MonoBehaviour
         get(sSave.Play.MaxTiles);
     }
 
+
+    //camera settings
+    public void SetVerticalScreenSplit(bool vertical)
+    {
+        sSave.CamRot.verticalSplit = vertical;
+    }
+    public void GetVerticalScreenSplit(IntUpdater.Get get)
+    {
+        get(sSave.PlayerCount);
+    }
 
 
 
@@ -323,11 +334,16 @@ public class UndestroyableData : MonoBehaviour
 
     public int GetRotation()
     {
+        if(sSave.PlayerCount==0)
+            return sSave.CamRot.player[3];
         return sSave.CamRot.player[sSave.PlayerCount-1];
     }
     public void SetRotation(int val)
     {
-        sSave.CamRot.player[sSave.PlayerCount-1] = val;
+        if (sSave.PlayerCount == 0)
+            sSave.CamRot.player[3] = val;
+        else
+            sSave.CamRot.player[sSave.PlayerCount-1] = val;
     }
 
     private static class sSave
@@ -359,6 +375,7 @@ public class UndestroyableData : MonoBehaviour
 
         public static class CamRot
         {
+            public static bool verticalSplit;
             public static int [] player;
         }
     }
@@ -368,12 +385,8 @@ public class UndestroyableData : MonoBehaviour
     {
         public int[] PlayerRot;
         public int PlayerCount;
-
-        public fSave(int [] playerRot, int playerCount)
-        {
-            this.PlayerCount = playerCount;
-            this.PlayerRot = playerRot;
-        }
+        public bool ScreenSplitVertical = true;
+        
     }
 
     public void SaveFile(string fileName)
@@ -384,7 +397,12 @@ public class UndestroyableData : MonoBehaviour
         if (File.Exists(destination)) file = File.OpenWrite(destination);
         else file = File.Create(destination);
 
-        fSave data = new fSave(sSave.CamRot.player,sSave.PlayerCount);
+        fSave data = new fSave();
+        data.PlayerCount = sSave.PlayerCount;
+        data.PlayerRot = sSave.CamRot.player;
+        data.ScreenSplitVertical = sSave.CamRot.verticalSplit;
+
+
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, data);
         file.Close();
@@ -397,11 +415,11 @@ public class UndestroyableData : MonoBehaviour
             string destination = Application.persistentDataPath + fileName;
             FileStream file;
 
+            SetDefaults();
             if (File.Exists(destination)) file = File.OpenRead(destination);
             else
             {
                 Debug.LogError("File not found");
-                SetDefaults();
                 return;
             }
 
@@ -411,6 +429,8 @@ public class UndestroyableData : MonoBehaviour
 
             sSave.PlayerCount = data.PlayerCount;
             sSave.CamRot.player = data.PlayerRot;
+            sSave.CamRot.verticalSplit = data.ScreenSplitVertical;
+
             print("read saved data");
         }
         catch(System.Exception e)
@@ -425,5 +445,8 @@ public class UndestroyableData : MonoBehaviour
     {
         sSave.PlayerCount = 4;
         sSave.CamRot.player = new int[4];
+
+
+        sSave.CamRot.verticalSplit = true;
     }
 }

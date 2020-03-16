@@ -55,6 +55,7 @@ public partial class AI : MonoBehaviour
         }
         priority =0;
         GoalCheckers.Add(new CheckerKillNearestPlayer(this, 5));
+        GoalCheckers.Add(new CheckerKillPlayers(this, 6));
         //GoalCheckers.Add(new CheckerIdle(this, 0));
         GoalCheckers.Add(new CheckerAvoidAsteroids(this, 10));
         GoalCheckers.Add(new CheckerEscapePod(this, 20));

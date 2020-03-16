@@ -63,7 +63,9 @@ public class PlayerHealth : MonoBehaviour {
 
         character = GetComponent<CharacterMovement_Physics>();
 
-        isHuman = (character.PlayerNumber + 1 < GetPlayers());
+        int players = GetPlayers();
+
+        isHuman = (character.PlayerNumber + 1 <= players)||players==0;
 
         alive = new GameObject("Alive flag for "+character.name[PlayerNumber]);
         KilledBy = alive;

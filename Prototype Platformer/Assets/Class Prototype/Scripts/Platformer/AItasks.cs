@@ -204,7 +204,55 @@ public partial class AI : MonoBehaviour
     {
 
         //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
+        if (player.isDead)
+            return complete;
+        
+
+
+        int pX, pY, mX, mY;
+
+        GetMapGridPos(player.transform.position, out pX, out pY);
+        GetMapGridPos(transform.position, out mX, out mY);
+        if (mX != pX || mY != pY)//if you aren't in the room as the target
+            return impossible;
+
+        GetRoomGrid(player.transform.position, out pX, out pY);
+        GetRoomGrid(transform.position, out mX, out mY);
+
+        if (canAttackTarget(player))
+        {
+            print(gameObject.name + " attacking " + player.gameObject);
+            controls.attack = true;
+        }
+        else
+            print(gameObject.name + " not attacking " + player.gameObject);
+        //else
+        //    controls.attack = false;
+
+        if (mX != pX || mY != pY)//if you aren't at the target
+            GoToTarget(mX, mY, pX, pY);
+
+        float ox = XtoTarget(player.transform.position);
+        float pow = .25f;
+        if (ox > 0)
+            controls.moveLeft = pow;
+        else
+            controls.moveLeft = -pow;
+
         return inProgress;
+    }
+
+    private bool canAttackTarget(PlayerHealth p)
+    {
+        return Vector2.Distance(p.transform.position,transform.position)<2;
+    }
+
+
+    private int TaskAssignAttackPlayerInRoom(PlayerHealth p)
+    {
+        TaskList.Push(() => TaskAttackPlayerInRoom(p));
+        TaskList.Push(TaskMapRoom);
+        return complete;
     }
 
     private int TaskComplete()
@@ -397,6 +445,11 @@ public partial class AI : MonoBehaviour
     {
         Vector3 center = GetCenterOfRoomGrid(transform.position);
         return Mathf.Clamp(center.x - transform.position.x, -clamp, clamp);
+    }
+
+    private float XtoTarget(Vector2 t)
+    {
+        return (t-(Vector2)transform.position).x;
     }
 
     private int path(int x, int y)
