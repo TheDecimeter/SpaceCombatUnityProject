@@ -6,46 +6,12 @@ using UnityEngine.EventSystems;
 
 public class ControlEvents : ControlFirer, IPointerClickHandler
 {
-    private Vector2 newLoc;
+    //private Vector2 newLoc;
+    private GameObject newLoc;
     private bool moving=false;
 
     private Stack<Vector2> moveLocs = new Stack<Vector2>();
-
-    //public new bool Home
-    //{
-    //    get
-    //    {
-    //        return _home;
-    //    }
-    //    set
-    //    {
-    //        if (_home == value)
-    //            return;
-    //        _home = value;
-
-    //        //if (!value)
-    //        //{
-    //        //    if (MenuChild)
-    //        //        MenuChild.Home = value;
-    //        //}
-
-    //        if (!value)
-    //        {
-    //            if (HideIfNoFocus)
-    //                HideIfNoFocus.SetActive(false);
-    //            if (MenuChild)
-    //            {
-    //                MenuChild.Home = value;
-    //                MenuChild.FireB();
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (MenuChild)
-    //                MenuChild.Home = value;
-    //        }
-    //    }
-    //}
+    
 
     public GameObject HideIfNoFocus;
     public ControlFirer MenuChild;
@@ -63,15 +29,15 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
     // Start is called before the first frame update
     void Start()
     {
-        newLoc = transform.position;
+        //newLoc = transform.position;
+        newLoc = new GameObject("location anchor for "+name);
+        newLoc.transform.position = transform.position;
+        newLoc.transform.SetParent(transform.parent);
     }
 
     public Vector2 Loc()
     {
-        if(moving)
-            return newLoc;
-        else
-            return transform.position;
+        return newLoc.transform.position;
     }
 
     IEnumerator Move()
@@ -95,7 +61,8 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
                 yield return null;
             }
         }
-        transform.position = newLoc;
+        //transform.position = newLoc;
+        transform.position = newLoc.transform.position;
         moving = false;
     }
 
@@ -113,10 +80,22 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
 
     public void MoveTo(Vector2 newLoc)
     {
-        this.newLoc = newLoc;
+        //this.newLoc = newLoc;
+        this.newLoc.transform.position = newLoc;
         moveLocs.Push(newLoc);
-        if(!moving)
-            StartCoroutine(Move());
+        if (!moving)
+        {
+            if (gameObject.activeInHierarchy)
+                StartCoroutine(Move());
+            else MoveDirectlyTo(newLoc);
+        }
+    }
+    public void MoveDirectlyTo(Vector2 newLoc)
+    {
+        this.newLoc.transform.position = newLoc;
+        moving = false;
+        moveLocs.Clear();
+        transform.position = newLoc;
     }
 
     public override void FireL()
@@ -154,6 +133,8 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
         if (HideIfNoFocus)
             HideIfNoFocus.SetActive(hide);
     }
+
+    
 
     public void OnPointerClick(PointerEventData eventData)
     {

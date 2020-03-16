@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: LibreBarcode39 wtihSpace
   m_EditorClassIdentifier: 
-  hashCode: -2139760575
+  hashCode: -1209670400
   material: {fileID: 21910989235271424}
   materialHashCode: 1991728170
   fontAssetType: 2
@@ -789,7 +789,7 @@ Material:
     - _VertexOffsetY: 0
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FaceColor: {r: 0, g: 0.062464207, b: 0.1792453, a: 1}
 --- !u!28 &28317813077672606
 Texture2D:
   m_ObjectHideFlags: 0

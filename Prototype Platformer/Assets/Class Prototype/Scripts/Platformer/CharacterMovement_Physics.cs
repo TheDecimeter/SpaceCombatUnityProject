@@ -95,6 +95,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     private float groundTimer = 0;
     private const float groundTime = .2f;
 
+    
     private HashSet<DoorController> currentDoors = new HashSet<DoorController>();
 
     public int AddDoor(DoorController cont, out DoorController.DoorType newOrientation)
@@ -121,6 +122,13 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         if (currentDoors.Contains(cont))
             currentDoors.Remove(cont);
+    }
+    public bool TouchingDoor(DoorController.DoorType dir)
+    {
+        foreach (DoorController c in currentDoors)
+            if (c.DoorLocation == DoorController.DoorType.East)
+                return true;
+        return false;
     }
 
     void Start()
@@ -705,8 +713,7 @@ public class CharacterMovement_Physics : MonoBehaviour
                     openADoor();
                     return;
                 }
-
-                        int preference=South;
+                
 
                 if (!_isGrounded) {
                     //print("       NOT GROUNDED door");
@@ -740,24 +747,6 @@ public class CharacterMovement_Physics : MonoBehaviour
                 //lastly, any door will do
                 openADoor();
                 return;
-
-                if (_controllerStatus.moveLeft < -.1)
-                    foreach (DoorController d in currentDoors)
-                    {
-                        if(d.DoorLocation==DoorController.DoorType.East||
-                            d.DoorLocation==DoorController.DoorType.West)
-                            if (d.transform.position.x - transform.position.x < 0)
-                            {
-
-                            }
-
-                    }//preference = East;
-                else if (_controllerStatus.moveLeft > .1) preference = West;
-                if (Environment.openNearestDoors(transform.position, doorNearnessThreshold, ref pullDirection, preference))
-                { 
-                    pullDirection.Normalize();
-                    pullDirection *= doorPullSpeed;
-                }
             }
 
         }

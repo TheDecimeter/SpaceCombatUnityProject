@@ -173,7 +173,7 @@ public class PlayerHealth : MonoBehaviour {
         if (_currentHealth <= 0)
         {
             if (KilledByPersonInst(message))
-                KilledByPersonQuip(message.friend);
+                KilledByPersonDirectQuip(message.friend);
             else if (KilledByPersonResidual(message))
                 KilledByPlayerResidual(message.friend);
             else
@@ -282,10 +282,10 @@ public class PlayerHealth : MonoBehaviour {
     }
 
 
-    private void KilledByPersonQuip(GameObject killer)
+    private void KilledByPersonDirectQuip(GameObject killer)
     {
         deathQuip = true;
-        switch (Random.Range(0, 11))
+        switch (Random.Range(0, 12))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
@@ -293,32 +293,36 @@ public class PlayerHealth : MonoBehaviour {
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("<b><size=110%>KAA<size=100%>HN<size=90%>NN<size=80%>N<size=70%>N<size=60%>N</b>", -1);
+                info.say("<b><size=110%>KAA<size=100%>HN<size=90%>NN<size=80%>N<size=70%>N<size=60%>N</b>!", -1);
                 break;
             case 3:
                 hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("REKT??", -1);
                 break;
             case 4:
-                hud.Link.Health[PlayerNumber].text = " :'{";
-                info.say("You killed my father\n<b>Prepare to</b>...", -1);
+                hud.Link.Health[PlayerNumber].text = " :{";
+                info.say("Hello\nMy name is "+name[character.PlayerNumber]+"\nYou killed my father\n<b>Prepare to</b>...", -1);
                 break;
             case 5:
-                hud.Link.Health[PlayerNumber].text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " : {";
                 info.say("Et tu, Brute?", -1);
                 break;
             case 6:
-                hud.Link.Health[PlayerNumber].text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " =[";
                 info.say("denial\nanger\nbargaining\ndepression\n<size=120%><b>REVENGE</b></size>", -1);
                 break;
             case 7:
-                hud.Link.Health[PlayerNumber].text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " =(";
                 info.say("Avenge ME!\n ", -1);
                 killer.GetComponent<PlayerHealth>().info.say("No Thanks", 120);
                 break;
             case 8:
-                hud.Link.Health[PlayerNumber].text = " :'{";
+                hud.Link.Health[PlayerNumber].text = " :'(";
                 info.say("You have died\nof dysentery", -1);
+                break;
+            case 9:
+                hud.Link.Health[PlayerNumber].text = " ={";
+                info.say("Where is the love?", -1);
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
