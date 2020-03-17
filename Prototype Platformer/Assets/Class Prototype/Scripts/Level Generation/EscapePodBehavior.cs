@@ -118,7 +118,7 @@ public class EscapePodBehavior : MonoBehaviour
         c.Freeze(true);
         c.BecomeSticky();
         Rigidbody rb = player.GetComponent<Rigidbody>();
-        rb.isKinematic = true;
+        rb.useGravity = false;
         rb.velocity = Vector3.zero;
     }
 }

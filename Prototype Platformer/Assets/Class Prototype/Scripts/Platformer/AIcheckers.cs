@@ -194,7 +194,7 @@ public partial class AI : MonoBehaviour
 
         private void FleeRoom()
         {
-            print("     flee room");
+            //print("     flee room");
 
             List<DoorBehavior> doors = new List<DoorBehavior>();
             DoorBehavior door;
@@ -306,7 +306,7 @@ public partial class AI : MonoBehaviour
 
         private void Reset()
         {
-            print("" + outer.gameObject.name + "RESETING route");
+            //print("" + outer.gameObject.name + "RESETING route");
             float minDist = float.MaxValue;
             PlayerHealth closestPlayer=null;
 

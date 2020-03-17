@@ -86,7 +86,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        print(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
+        //print(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
         return ret;
     }
 
@@ -198,7 +198,7 @@ public partial class AI : MonoBehaviour
         Move(ox, 1);
 
         controls.door = ButtonPresser();
-        print(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
+        //print(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
         ////print(gameObject.name + " move throgh north door (" + controls.door + ")");
         return ErrorChecking();
     }

@@ -19,6 +19,8 @@ public class Input_via_GamePad : MonoBehaviour
 
     public int maxPlayers = 4;
 
+    private static GamepadDevice [] devices;
+
 #if !UNITY_ANDROID
     private List<ControlStruct> previousControls;
     //Axis 4=lefttrig, 5=righttrig, 0=leftAnalogH
@@ -46,9 +48,52 @@ public class Input_via_GamePad : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
+        if (devices == null)
+        {
+            Debug.LogWarning("Recreating devices");
+            devices = new GamepadDevice[4];
+        }
+
         previousControls = new List<ControlStruct>(maxPlayers);
         for (int i = 0; i < maxPlayers; ++i)
             previousControls.Add(new ControlStruct(ControlStruct.Controller));
+    }
+    
+    private int DeviceIndex(GamepadDevice d)
+    {
+        if (IsDeviceAt(d.deviceId, d))
+            return d.deviceId;
+        for (int i = 0; i < 4; ++i)
+            if (IsDeviceAt(i,d))
+                return i;
+        return -1;
+    }
+
+    private bool IsDeviceAt(int index, GamepadDevice d)
+    {
+        if (devices[index] == null)
+            return false;
+        if (devices[index] == d)
+            return true;
+        if (d.deviceId == devices[index].deviceId)
+        {
+            devices[index] = d;
+            return true;
+        }
+        return false;
+    }
+
+    private void RemoveDeviceAt(int index)
+    {
+        devices[index] = null;
+    }
+    private void FireDevice(int index,ControlStruct playerControls)
+    {
+        if (index == 0) controller1.Invoke(playerControls);
+        if (index == 1) controller2.Invoke(playerControls);
+        if (index == 2) controller3.Invoke(playerControls);
+        if (index == 3) controller4.Invoke(playerControls);
     }
     
     
@@ -68,8 +113,10 @@ public class Input_via_GamePad : MonoBehaviour
             //    print("no gamepads connected");
             //}
 
-            int playerNum = 1;
-            
+            int playerNum = 0;
+
+            List<ControlStruct> Cs = new List<ControlStruct>(4);
+            List<GamepadDevice> Ds = new List<GamepadDevice>(4);
 
             foreach (GamepadDevice gamepad in input.gamepads)
             {
@@ -109,20 +156,77 @@ public class Input_via_GamePad : MonoBehaviour
                 //keep track of gamepads by ID, rather than player number
                 //so that if a controller becomes unplugged, it doesn't shift
                 //all controllers down an index.
-                if (gamepad.deviceId == 0) controller1.Invoke(playerControls);
-                if (gamepad.deviceId == 1) controller2.Invoke(playerControls);
-                if (gamepad.deviceId == 2) controller3.Invoke(playerControls);
-                if (gamepad.deviceId == 3) controller4.Invoke(playerControls);
+
+                Ds.Add(gamepad);
+                Cs.Add(playerControls);
+
+                //if (gamepad.deviceId == 0) controller1.Invoke(playerControls);
+                //if (gamepad.deviceId == 1) controller2.Invoke(playerControls);
+                //if (gamepad.deviceId == 2) controller3.Invoke(playerControls);
+                //if (gamepad.deviceId == 3) controller4.Invoke(playerControls);
                 playerNum++;
+
+                //if (printOnce)
+                    //print("gamePad " + gamepad.deviceId + " " + gamepad.displayName + " -sys: " + gamepad.systemName);
             }
             if (printOnce)
             {
-                print("controllers found: " + (playerNum - 1));
+                print("controllers found: " + (playerNum));
                 printOnce = false;
             }
+
+            bool[] changed = new bool[4];
+
+            //Invoke known devices
+            for(int i=0; i<Ds.Count; ++i)
+            {
+                int index = DeviceIndex(Ds[i]);
+                if (index == -1)
+                    continue;
+                changed[index] = true;
+                FireDevice(index, Cs[i]);
+            }
+
+            //Assign and invoke uknown devices
+            for (int i = 0; i < Ds.Count; ++i)
+            {
+                int index = DeviceIndex(Ds[i]);
+                if (index != -1)
+                    continue;
+
+                int freeSpot=GetFirstUnchanged(changed);
+                devices[freeSpot] = Ds[i];
+                FireDevice(freeSpot, Cs[i]);
+            }
+
+            //remove old devices
+            PurgeUnchangedDevices(changed);
             
         }
 
+    }
+
+    private int GetFirstUnchanged(bool [] changed)
+    {
+        for(int i=0; i<changed.Length; ++i)
+        {
+            if(!changed[i])
+            {
+                changed[i] = true;
+                return i;
+            }
+        }
+        return -1;
+    }
+    private void PurgeUnchangedDevices(bool [] changed)
+    {
+        for (int i = 0; i < changed.Length; ++i)
+        {
+            if (!changed[i])
+            {
+                devices[i] = null;
+            }
+        }
     }
 
     private bool isControlUpdated(int currentControl, ControlStruct previous, bool state)

@@ -544,7 +544,6 @@ public class CharacterMovement_Physics : MonoBehaviour
         //else if (!_controllerStatus.fromSource(ControlStruct.AI) && _controllerStatus.fromSource(controls.source))
         //    _controllerStatus = controls;
         //else
-        
             _controllerStatus.combine(controls);
         //if (controls.jump)
         //    print("player " + PlayerNumber + " received the jump instruction");
