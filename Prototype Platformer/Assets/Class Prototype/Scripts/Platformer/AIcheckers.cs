@@ -34,6 +34,41 @@ public partial class AI : MonoBehaviour
         }
     }
 
+    private class CheckerGrabItem : IChecker
+    {
+        AI outer;
+        int priority;
+        CharacterMovement_Physics player;
+        int itemRank,topRank;
+        string itemName;
+        
+
+        public CheckerGrabItem(AI outer, int priority, int topRank)
+        {
+            this.topRank = topRank;
+            this.outer = outer;
+            this.priority = priority;
+            itemName = "";
+            player = outer.GetComponent<CharacterMovement_Physics>();
+        }
+        public int Do(int priority, bool failed = false)
+        {
+            if (itemRank < topRank)
+            {
+
+            }
+                
+
+            if (priority > this.priority)
+                return priority;
+
+            if (outer.currentTask == null)
+                outer.currentTask = outer.TaskComplete;
+
+            return this.priority;
+        }
+    }
+
 
     private class CheckerKillPlayers : IChecker
     {

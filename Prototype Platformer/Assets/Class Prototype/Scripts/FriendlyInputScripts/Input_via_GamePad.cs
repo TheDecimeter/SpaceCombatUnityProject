@@ -51,7 +51,7 @@ public class Input_via_GamePad : MonoBehaviour
 
         if (devices == null)
         {
-            Debug.LogWarning("Recreating devices");
+            print("Creating/initializing device map");
             devices = new GamepadDevice[4];
         }
 
@@ -172,6 +172,8 @@ public class Input_via_GamePad : MonoBehaviour
             if (printOnce)
             {
                 print("controllers found: " + (playerNum));
+                foreach (GamepadDevice d in Ds)
+                    print("  " + d.deviceId + ", " + d.systemName + ", " + d.displayName);
                 printOnce = false;
             }
 
