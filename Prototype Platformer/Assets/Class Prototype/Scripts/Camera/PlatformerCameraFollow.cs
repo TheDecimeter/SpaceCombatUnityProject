@@ -29,6 +29,8 @@ public class PlatformerCameraFollow : MonoBehaviour {
 
     private Vector3 _lookOffset;
 
+    private PlayerHealth player;
+
     void Start () 
     {
         _zOffset.z = this.transform.position.z - followTransform.position.z;     
@@ -42,11 +44,43 @@ public class PlatformerCameraFollow : MonoBehaviour {
             _canFollow = true;
         }
 
+        player = followTransform.gameObject.GetComponent<PlayerHealth>();
+
         followTransform.gameObject.GetComponent<CameraLocator>().CameraLocation = this.transform.GetChild(0);
   	}
 	
     void Update()
     {
+        //if the player dies zoom out and follow the player with the most health
+        if (player != null && player.isDead)
+        {
+            if (player.GetComponent<Rigidbody>().useGravity)
+            {
+                PlayerHealth p=null;
+                int h = 0;
+                foreach(Transform child in FindObjectOfType<LevelRandomizer>().PlayerArray.transform)
+                {
+                    PlayerHealth pPlayer = child.GetComponent<PlayerHealth>();
+                    int health = pPlayer.getHealth();
+                    if (health > h)
+                    {
+                        h = health;
+                        p = pPlayer;
+                    }
+                }
+                if (p != null)
+                {
+                    info.transform.SetParent(null);
+                    player = p;
+                    followTransform = p.transform;
+                    //_zOffset.z = this.transform.position.z - followTransform.position.z;
+                }
+                else
+                    player = null;
+                _zOffset.z *= 4;
+                _zOffset.z = Mathf.Clamp(_zOffset.z, -32, 0);
+            }
+        }
         _target = followTransform.position;
         info.transform.position = new Vector3(_target.x, _target.y+infoOffset, info.transform.position.z);
 

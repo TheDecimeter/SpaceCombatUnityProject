@@ -35,6 +35,7 @@ public partial class AI : MonoBehaviour
     private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
     private bool specialDirections = false, up, down, left, right, failed=false;
+    
 
     private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
 
@@ -55,8 +56,9 @@ public partial class AI : MonoBehaviour
             roomPath[i] = new byte[3];
         }
         priority =0;
-        GoalCheckers.Add(new CheckerKillNearestPlayer(this, 5));
+        GoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
         GoalCheckers.Add(new CheckerKillPlayers(this, 6));
+        GoalCheckers.Add(new CheckerGrabItem(this,10));
         //GoalCheckers.Add(new CheckerIdle(this, 0));
         GoalCheckers.Add(new CheckerAvoidAsteroids(this, 10));
         GoalCheckers.Add(new CheckerEscapePod(this, 20));
@@ -70,17 +72,19 @@ public partial class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.GetComponent<PlayerHealth>().isDead)
+        if (!player._canMove)//player.GetComponent<PlayerHealth>().isDead)
         {
             enabled = false;
             return;
         }
+
+        controls.reset();
+
         foreach (IChecker checker in GoalCheckers)
             priority = checker.Do(priority, failed);
         failed = false;
 
         int count = 100;
-        controls.reset();
         int status = complete;
         while (status == complete)
         {

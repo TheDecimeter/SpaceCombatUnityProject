@@ -36,7 +36,8 @@ public class PlayerHealth : MonoBehaviour {
     private int healthLoiterCount = 0, healthLoiterChase = 0;
     private const int ScoldEvery = 5, ChaseEvery = 20;
 
-    private int framesDamage = 0, damageRate = 0;
+    public int framesDamage { get; protected set; }
+    private int damageRate = 0;
     private int secondsCounter = 0;
 
     private CharacterMovement_Physics character;
@@ -47,7 +48,7 @@ public class PlayerHealth : MonoBehaviour {
 
     public void Start ()
     {
-        
+        framesDamage = 0;
         //MotionBlur mb;
         //if (camEffects.profile.TryGetSettings(out mb))
         //    mb.enabled.value = false;
@@ -157,7 +158,9 @@ public class PlayerHealth : MonoBehaviour {
             poisonedBy = message.friend;
             string[] tokens = message.effect.Split(',');
             int.TryParse(tokens[1], out damageRate);
-            int.TryParse(tokens[2], out framesDamage);
+            int tmpFramesDamage;
+            if(int.TryParse(tokens[2], out tmpFramesDamage))
+                framesDamage = tmpFramesDamage;
         }
 
         int damage;

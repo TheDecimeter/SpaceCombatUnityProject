@@ -69,7 +69,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
         //print(gameObject.name + " going south " + Tx);
-        return ret;
+        return ErrorChecking(ret);
     }
     private int TaskGoToNorthDoor()
     {
@@ -87,7 +87,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
         //print(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
-        return ret;
+        return ErrorChecking(ret);
     }
 
     private int TaskGoToEastDoor()
@@ -99,7 +99,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
         //print("going east");
-        return ret;
+        return ErrorChecking(ret);
     }
 
     private int TaskGoThroughEastDoor()
@@ -114,7 +114,7 @@ public partial class AI : MonoBehaviour
 
         controls.door = ButtonPresser();
         ////print(gameObject.name + " move (" + controls.door + ")");
-        return inProgress;
+        return ErrorChecking();
     }
 
     private int TaskGoToWestDoor()
@@ -127,7 +127,7 @@ public partial class AI : MonoBehaviour
         int ret = GoToTarget(x, y, Tx, Ty);
 
         //print("going west");
-        return ret;
+        return ErrorChecking(ret);
     }
 
     private int TaskGoThroughWestDoor()
@@ -142,7 +142,7 @@ public partial class AI : MonoBehaviour
 
         controls.door = ButtonPresser();
         ////print(gameObject.name + " move (" + controls.door + ")");
-        return inProgress;
+        return ErrorChecking();
     }
     private int TaskGoThroughSouthDoor()
     {
@@ -166,7 +166,7 @@ public partial class AI : MonoBehaviour
             Move(ox, -1);
         }
         ////print(gameObject.name + " move throgh south door (" + controls.door + ")");
-        return inProgress;
+        return ErrorChecking();
     }
     private int TaskGoThroughNorthDoor()
     {
@@ -203,17 +203,17 @@ public partial class AI : MonoBehaviour
         return ErrorChecking();
     }
 
-    private int ErrorChecking()
+    private int ErrorChecking(int passThroughStatus=inProgress)
     {
-        roomStagnateTimer += Time.deltaTime;
-        if (roomStagnateTimer > roomStagnateTime)
+        roomStagnateTimer -= Time.deltaTime;
+        if (roomStagnateTimer < 0)
             return impossible;
-        return inProgress;
+        return passThroughStatus;
     }
 
     private int TaskSetMapXY()
     {
-        roomStagnateTimer = 0;
+        roomStagnateTimer = roomStagnateTime;
         GetMapGridPos(transform.position, out currentMapX, out currentMapY);
         ////print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;

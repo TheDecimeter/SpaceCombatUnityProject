@@ -46,7 +46,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     //Private Memeber Variables
     private Rigidbody _rigidbody;
 
-    private bool _canMove = true;
+    public bool _canMove { get; protected set; }
     private bool _canAttack = true;
     private bool _canJump = true;
     private bool _inJump = false;
@@ -63,6 +63,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     //private GameObject _currentItem;
     public Item _currentItem;
     private Item defaultWeapon;
+    public Item offeredItem { get; set; }
     public TextManager info;
     //public Text currentItemHUD;
     //public GameObject HUDmount;
@@ -133,6 +134,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     void Start()
     {
+        _canMove = true;
         //HUDmount = FindObjectOfType<HUDScoreSetter>().transform.Find("HUD_" + name[PlayerNumber] + "/HUD/ItemInfoMountPoint").gameObject;
         navPoints = new List<HUDPointer>();
 
@@ -209,6 +211,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (_canAttack) Attack();
         if (clearText == 0)
         {
+            offeredItem = null;
             //currentItemHUD.text = _currentItem.getName();
             updateItemHUD(_currentItem.getInUseHUD());
             clearText = -1;
@@ -362,6 +365,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (!_canMove)
             return;
 
+        offeredItem = item;
         info.say(item.getName(), 2);
         //currentItemHUD.text="GRAB:  "+item.getName();
         updateItemHUD(item.getPickUpHUD());

@@ -37,35 +37,25 @@ public partial class AI : MonoBehaviour
     private class CheckerGrabItem : IChecker
     {
         AI outer;
-        int priority;
         CharacterMovement_Physics player;
-        int itemRank,topRank;
-        string itemName;
+        int topRank;
         
 
-        public CheckerGrabItem(AI outer, int priority, int topRank)
+        public CheckerGrabItem(AI outer, int topRank)
         {
             this.topRank = topRank;
             this.outer = outer;
-            this.priority = priority;
-            itemName = "";
             player = outer.GetComponent<CharacterMovement_Physics>();
         }
         public int Do(int priority, bool failed = false)
         {
-            if (itemRank < topRank)
+            if (player._currentItem.Rank() < topRank)
             {
-
+                Item i = player.offeredItem;
+                if (i != null && i.Rank() > player._currentItem.Rank())
+                    outer.controls.action = true;
             }
-                
-
-            if (priority > this.priority)
-                return priority;
-
-            if (outer.currentTask == null)
-                outer.currentTask = outer.TaskComplete;
-
-            return this.priority;
+            return priority;
         }
     }
 
@@ -114,6 +104,8 @@ public partial class AI : MonoBehaviour
                     players.RemoveAt(i);
                     continue;
                 }
+                if (players[i].framesDamage > 0)
+                    continue;
 
                 PlayerHealth p = players[i];
 
@@ -127,6 +119,9 @@ public partial class AI : MonoBehaviour
                 float distP = Vector2.Distance(outer.transform.position, p.transform.position);
                 foreach(PlayerHealth pp in players)
                 {
+                    if (pp.framesDamage > 0)
+                        continue;
+
                     float dist = Vector2.Distance(outer.transform.position, pp.transform.position);
                     if (dist < distP)
                     {
@@ -307,7 +302,7 @@ public partial class AI : MonoBehaviour
         }
     }
 
-    private class CheckerKillNearestPlayer :IChecker
+    private class CheckerGoToNearestPlayer :IChecker
     {
         AI outer;
         PlayerHealth TargetPlayer;
@@ -315,7 +310,7 @@ public partial class AI : MonoBehaviour
         float timer = 0;
         float updateTime = 1;
 
-        public CheckerKillNearestPlayer(AI outer, int priority)
+        public CheckerGoToNearestPlayer(AI outer, int priority)
         {
             this.outer = outer;
             this.priority = priority;
