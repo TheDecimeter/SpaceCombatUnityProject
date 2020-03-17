@@ -23,9 +23,10 @@ public partial class AI : MonoBehaviour
     private HashSet<GameObject> EastObstructions = new HashSet<GameObject>();
     private HashSet<GameObject> WestObstructions = new HashSet<GameObject>();
 
+    //Stuck checking
     private Vector3 lastPosition;
-    private float stagnateTimer = 0, freedomTimer=0;
-    private const float stagnateTime = .5f, freedomTime=stagnateTime/2;
+    private float stagnateTimer = 0, freedomTimer=0,roomStagnateTimer=0;
+    private const float stagnateTime = .5f, freedomTime=stagnateTime/2,roomStagnateTime=2;
 
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();

@@ -827,7 +827,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         _collider.material.staticFriction = 0;
         _collider.material.frictionCombine = PhysicMaterialCombine.Minimum;
     }
-    private void BecomeSticky()
+    public void BecomeSticky()
     {
         _collider.material.dynamicFriction = 2;
         _collider.material.staticFriction = 2;

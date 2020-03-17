@@ -349,11 +349,16 @@ public class PlayerHealth : MonoBehaviour {
 
     public void PlayerDeath ()
     {
+        if (isDead)
+            return;
 
         if (KilledBy == alive)
             InitiateAsteroidDeath();
         else
         {
+            character.BecomeSticky();
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.velocity = Vector3.zero;
             if (AnimState == null)
                 AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
             AnimState.startDie();

@@ -79,14 +79,14 @@ public partial class AI : MonoBehaviour
 
         int doorX, doorY;
         GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
-        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center);
+        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.white);
         int Tx = doorX;
         int Ty = 1;
 
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        //print(gameObject.name + " going north " + Tx);
+        print(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
         return ret;
     }
 
@@ -176,7 +176,7 @@ public partial class AI : MonoBehaviour
 
         int doorX, doorY;
         GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
-        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center);
+        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.yellow);
 
 
         int x; int y;
@@ -185,16 +185,35 @@ public partial class AI : MonoBehaviour
         //print("  go through north door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
+
+        //GetRoomGrid(transform.position, out x, out y);
+
+        //if (x != doorX || y != doorY)
+        //{
+        //    print(gameObject.name + " redirect " + new Vector2(x, y) + new Vector2(doorX, doorY));
+        //    return TaskGoToNorthDoor();
+        //}
+
         float ox = XoffsetToCenter(.2f);
         Move(ox, 1);
 
         controls.door = ButtonPresser();
+        print(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
         ////print(gameObject.name + " move throgh north door (" + controls.door + ")");
+        return ErrorChecking();
+    }
+
+    private int ErrorChecking()
+    {
+        roomStagnateTimer += Time.deltaTime;
+        if (roomStagnateTimer > roomStagnateTime)
+            return impossible;
         return inProgress;
     }
 
     private int TaskSetMapXY()
     {
+        roomStagnateTimer = 0;
         GetMapGridPos(transform.position, out currentMapX, out currentMapY);
         ////print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;
@@ -221,11 +240,11 @@ public partial class AI : MonoBehaviour
 
         if (canAttackTarget(player))
         {
-            print(gameObject.name + " attacking " + player.gameObject);
+            //print(gameObject.name + " attacking " + player.gameObject);
             controls.attack = true;
         }
-        else
-            print(gameObject.name + " not attacking " + player.gameObject);
+        //else
+        //    print(gameObject.name + " not attacking " + player.gameObject);
         //else
         //    controls.attack = false;
 
@@ -285,27 +304,39 @@ public partial class AI : MonoBehaviour
         {
             int response = MoveEast(x, y);
             if (response != impossible)
+            {
+                Debug.DrawRay(transform.position, new Vector2(Tx-x,Ty-y)*3, Color.green);
                 return response;
+            }
         }
         //if you are to the right of the target
         if (x > Tx)
         {
             int response = MoveWest(x, y);
             if (response != impossible)
+            {
+                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.red);
                 return response;
+            }
         }
         //if you are below the target
         if (y < Ty)
         {
             int response = MoveNorth(x, y, Tx, Ty);
             if (response != impossible)
+            {
+                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.white);
                 return response;
+            }
         }
         else
         {
             int response = MoveSouth(x, y, Tx, Ty);
             if (response != impossible)
+            {
+                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.black);
                 return response;
+            }
         }
         return impossible;
     }

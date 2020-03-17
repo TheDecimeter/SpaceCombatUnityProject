@@ -89,6 +89,17 @@ public partial class AI : MonoBehaviour
                 if (mx != px || my != py)
                     continue;
 
+                float distP = Vector2.Distance(outer.transform.position, p.transform.position);
+                foreach(PlayerHealth pp in players)
+                {
+                    float dist = Vector2.Distance(outer.transform.position, pp.transform.position);
+                    if (dist < distP)
+                    {
+                        distP = dist;
+                        p = pp;
+                    }
+                }
+
                 outer.TaskList.Clear();
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
@@ -295,6 +306,7 @@ public partial class AI : MonoBehaviour
 
         private void Reset()
         {
+            print("" + outer.gameObject.name + "RESETING route");
             float minDist = float.MaxValue;
             PlayerHealth closestPlayer=null;
 

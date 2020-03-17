@@ -150,12 +150,12 @@ public class UndestroyableData : MonoBehaviour
         {
 
             sSave.ScoreKeeper.player = new int[4];
-            sSave.CamRot.player = new int[4];
+            sSave.CamRot.player = new int[5];
             LoadFile(fileName);
             if (sSave.CamRot.player == null)
             {
                 Debug.LogWarning("camrot was truned to null");
-                sSave.CamRot.player = new int[4];
+                sSave.CamRot.player = new int[5];
             }
 
             //TODO make this dynamic
@@ -334,16 +334,11 @@ public class UndestroyableData : MonoBehaviour
 
     public int GetRotation()
     {
-        if(sSave.PlayerCount==0)
-            return sSave.CamRot.player[3];
-        return sSave.CamRot.player[sSave.PlayerCount-1];
+        return sSave.CamRot.player[sSave.PlayerCount];
     }
     public void SetRotation(int val)
     {
-        if (sSave.PlayerCount == 0)
-            sSave.CamRot.player[3] = val;
-        else
-            sSave.CamRot.player[sSave.PlayerCount-1] = val;
+        sSave.CamRot.player[sSave.PlayerCount] = val;
     }
 
     private static class sSave
@@ -444,7 +439,7 @@ public class UndestroyableData : MonoBehaviour
     private void SetDefaults()
     {
         sSave.PlayerCount = 4;
-        sSave.CamRot.player = new int[4];
+        sSave.CamRot.player = new int[5];
 
 
         sSave.CamRot.verticalSplit = true;

@@ -60,6 +60,7 @@ public class GunPrototype : Item
     // Start is called before the first frame update
     void Start()
     {
+        Attack = Instantiate(Attack);
         ItemName = ItemName.Replace("\\n","\n");
         Attack.effect = effect;
         if (audio == null)

@@ -70,9 +70,12 @@ public class EscapePodBehavior : MonoBehaviour
             {
                 return;
             }
-            player = collision.gameObject;
-            player.GetComponent<CharacterMovement_Physics>().Freeze(true);
-            frameCounter = 0;
+            if (player == null)
+            {
+                player = collision.gameObject;
+                FreezePlayer(player);
+                frameCounter = 0;
+            }
         }
     }
 
@@ -99,7 +102,7 @@ public class EscapePodBehavior : MonoBehaviour
             }
         if (players!=null){
             player = players[Random.Range(0, players.Count)];
-            player.GetComponent<CharacterMovement_Physics>().Freeze(true);
+            FreezePlayer(player);
             frameCounter = 0;
         }
     }
@@ -107,5 +110,15 @@ public class EscapePodBehavior : MonoBehaviour
     private static float distance(Vector3 from, Vector3 to)
     {
         return Mathf.Sqrt(Mathf.Pow(from.x - to.x, 2) + Mathf.Pow(from.y - to.y, 2));
+    }
+
+    private void FreezePlayer(GameObject player)
+    {
+        CharacterMovement_Physics c = player.GetComponent<CharacterMovement_Physics>();
+        c.Freeze(true);
+        c.BecomeSticky();
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.velocity = Vector3.zero;
     }
 }
