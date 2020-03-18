@@ -40,6 +40,22 @@ public class TileInformation : MonoBehaviour
     public bool isClosed=false;
 
 
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncPosition = transform.position;
+        foreach (DoorBehavior d in WestDoors)
+            d.Init();
+        foreach (DoorBehavior d in EastDoors)
+            d.Init();
+        foreach (DoorBehavior d in SouthDoors)
+            d.Init();
+        foreach (DoorBehavior d in NorthDoors)
+            d.Init();
+        foreach (DoorBehavior d in OtherOpenableDoors)
+            d.Init();
+    }
+
     public void openNorth()
     {
         if (OpenNorth != null) OpenNorth.Invoke();

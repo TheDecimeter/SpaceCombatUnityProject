@@ -31,9 +31,13 @@ public class WarningLightManager : MonoBehaviour
     private Light ActiveWarningLight;
     private int warnFramesCount, frameCounter = 0;
 
+    public Vector3 AsyncPosition { get; protected set; }
+    public bool AsyncIncomming { get; protected set; }
+
     // Start is called before the first frame update
     void Start()
     {
+        AsyncIncomming = false;
         WarningLight.SetActive(false);
         DisabledRoomLight.SetActive(false);
         ActiveDisabledLights = new List<DisabledLightNode>();
@@ -42,6 +46,13 @@ public class WarningLightManager : MonoBehaviour
         LevelRandomizer tmp = GetComponent<LevelRandomizer>();
         warnFramesCount = tmp.WarnForXManyFrames;
         if (warnFramesCount == 0) warnFramesCount++;
+    }
+
+    private void SetAsync(bool incomming)
+    {
+        if(incomming)
+            AsyncPosition = WarningLight.transform.position;
+        AsyncIncomming = incomming;
     }
 
     // Update is called once per frame
@@ -63,6 +74,7 @@ public class WarningLightManager : MonoBehaviour
         if (currentFrame > endFrame)
         {
             gActiveWarningLight.SetActive(false);
+            SetAsync(false);
             Vector3 t = gActiveWarningLight.transform.position;
             AddDisabledRoom(t.x, t.y, t.z);
             return;
@@ -79,8 +91,9 @@ public class WarningLightManager : MonoBehaviour
         ActiveWarningLight = gActiveWarningLight.GetComponent<Light>();
 
         gActiveWarningLight.transform.position = new Vector3(x, y, z);
+        SetAsync(true);
         ActiveWarningLight.intensity = wMin;
-        gActiveWarningLight.SetActive(true);
+        //gActiveWarningLight.SetActive(true);
         frameCounter = 0;
     }
 
@@ -95,8 +108,11 @@ public class WarningLightManager : MonoBehaviour
             n.Destroy();
         ActiveDisabledLights = new List<DisabledLightNode>();
 
-        if(gActiveWarningLight!=null)
+        if (gActiveWarningLight != null)
+        {
             gActiveWarningLight.SetActive(false); //Destroy(gActiveWarningLight);
+            SetAsync(false);
+        }
     }
 
     public void PhaseDisabledRoomLights()

@@ -223,7 +223,12 @@ public class CharacterMovement_Physics : MonoBehaviour
     private void updateItemHUD(GameObject newHUD)
     {
         foreach (Transform child in hud.Link.WeaponInfo[PlayerNumber].transform)//HUDmount.transform)
-            Destroy(child.gameObject);
+            if (child.gameObject != newHUD)
+                Destroy(child.gameObject);
+            else
+                print("            newHud=oldHud?");
+        if (newHUD == null)
+            print("newHud is null for "+name[PlayerNumber]);
         GameObject g = Instantiate(newHUD) as GameObject;
         g.transform.SetParent(hud.Link.WeaponInfo[PlayerNumber].transform, false);
         g.transform.localPosition = Vector3.zero;
@@ -641,7 +646,9 @@ public class CharacterMovement_Physics : MonoBehaviour
                 GameObject oldItem = _currentItem.transform.parent.gameObject;
                 releaseItem();
                 //print("        OLD ITEM"+oldItem.name);
-                Destroy(oldItem);
+                if(_currentItem!=defaultWeapon)
+                    Destroy(oldItem);
+                else print("trying to destroy default item " + name[PlayerNumber]);
                 _currentItem = Instantiate(defaultWeapon);
                 //print("use once");
             }

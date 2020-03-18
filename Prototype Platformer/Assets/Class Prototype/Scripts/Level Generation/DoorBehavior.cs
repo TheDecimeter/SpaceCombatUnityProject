@@ -15,7 +15,7 @@ public class DoorBehavior : MonoBehaviour
 
     public int FramesToStayOpen=8;
     // Start is called before the first frame update
-    public bool isOpenable = true;
+    public bool isOpenable = false;
     private Color LockedColor = new Color(.3f,0,0,.655f);
     private Color unLockedColor=new Color(0.5019608f, 1,1, 0.5882353f);//new Color(0, 0, 0);
 
@@ -25,14 +25,28 @@ public class DoorBehavior : MonoBehaviour
     private const string element = "_Color";//"_TintColor";
 
     private static AudioManager audio;
+
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncPosition = transform.position;
+    }
+    
+
     void Start()
     {
+        isOpenable = true;
         //getCurrentTint();
         //unLockedColor = GetComponent<Renderer>().material.GetColor(emission);
         if (audio == null)
             audio = FindObjectOfType<AudioManager>();
         //if(isOpenable)
         //    this.transform.localScale = new Vector3(0, 0, 0);
+    }
+
+    void OnDisable()
+    {
+        isOpenable = false;
     }
 
     //private void getCurrentTint()

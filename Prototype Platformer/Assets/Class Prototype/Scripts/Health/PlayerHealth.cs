@@ -46,6 +46,17 @@ public class PlayerHealth : MonoBehaviour {
 
     private bool isHuman = false;
 
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncPosition = transform.position;
+    }
+
+    void Awake()
+    {
+        Init();
+    }
+
     public void Start ()
     {
         framesDamage = 0;
@@ -74,6 +85,7 @@ public class PlayerHealth : MonoBehaviour {
 
     void FixedUpdate()
     {
+        AsyncPosition = transform.position;
         if (isHuman)
         {
             if (frameCounter < blurFrames)
@@ -99,9 +111,11 @@ public class PlayerHealth : MonoBehaviour {
     public void DealDamage(DamageMessage message)
     {
         //if (message.friend==gameObject||message.friend == colliders)
-            //return;
+        //return;
 
-        if (!_canTakeDamage) return;
+        if (!_canTakeDamage) { print(name[character.PlayerNumber] + "can't take damage"); return; }
+
+        int healthCheck = _currentHealth;
 
         if (message.damage < 0)
         {
@@ -192,6 +206,9 @@ public class PlayerHealth : MonoBehaviour {
             PlayerDeath();
             _currentHealth = 0;
         }
+
+        if (healthCheck == _currentHealth)
+            print("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
     }
 
     private bool KilledByPersonInst(DamageMessage message)

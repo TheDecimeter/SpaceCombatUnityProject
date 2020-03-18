@@ -16,6 +16,20 @@ public class EscapePodLauncher : MonoBehaviour
     private Light ActiveWarningLight;
     private int warnFramesCount, frameCounter = 0;
 
+    public bool AsyncIncomming { get; protected set; }
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncIncomming = false;
+        AsyncPosition = transform.position;
+    }
+
+
+    void Awake()
+    {
+        Init();
+    }
+
     void Start()
     {
         LevelRandomizer tmp = GetComponent<LevelRandomizer>();
@@ -63,7 +77,9 @@ public class EscapePodLauncher : MonoBehaviour
 
     public void Launch(float x, float y, float z)
     {
+        AsyncIncomming = true;
         AddWarningLight(x, y, z-1);
+        AsyncPosition = new Vector3(x,y,z);
 
         //GameObject tmp = Instantiate(EscapePod);
         GameObject tmp = EscapePod;

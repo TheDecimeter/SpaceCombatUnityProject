@@ -16,6 +16,12 @@ public class EscapePodBehavior : MonoBehaviour
     private GameObject PlayerArray;
     public float DistanceToEnter = 3;
     
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncPosition = transform.position;
+    }
+
 
     public void ShowNavPoints()
     {
@@ -27,7 +33,7 @@ public class EscapePodBehavior : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        AsyncPosition = transform.position;
         if (player != null)
         {
             if (frameCounter++ == AnimationFrames)

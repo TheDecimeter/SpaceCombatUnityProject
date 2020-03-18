@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public partial class AI : MonoBehaviour
@@ -27,6 +28,7 @@ public partial class AI : MonoBehaviour
     private Vector3 lastPosition;
     private float stagnateTimer = 0, freedomTimer=0,roomStagnateTimer=0;
     private const float stagnateTime = .5f, freedomTime=stagnateTime/2,roomStagnateTime=2;
+    private bool PickUpItem = false;
 
     //Tasks and planning
     private Stack<Task> TaskList = new Stack<Task>();
@@ -38,6 +40,28 @@ public partial class AI : MonoBehaviour
     
 
     private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
+
+
+    //thread stuff
+    private static Thread RunThread;
+    private static bool KeepRunning;
+    private delegate bool Runner(float deltaTime);
+    private static List<Runner> Runners;
+    private static int AIcount;
+
+
+    public Vector3 AsyncPosition { get; protected set; }
+    public void Init()
+    {
+        AsyncPosition = transform.position;
+    }
+    
+    void Awake()
+    {
+        if (AIcount == 4)
+            AIcount = 0;
+    }
+
 
     void Start()
     {
@@ -57,21 +81,96 @@ public partial class AI : MonoBehaviour
         }
         priority =0;
         GoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
+
         GoalCheckers.Add(new CheckerKillPlayers(this, 6));
+
         GoalCheckers.Add(new CheckerGrabItem(this,10));
-        //GoalCheckers.Add(new CheckerIdle(this, 0));
+
         GoalCheckers.Add(new CheckerAvoidAsteroids(this, 10));
+
         GoalCheckers.Add(new CheckerEscapePod(this, 20));
-        //TaskList.Push(TaskAssignGoThroughNorthDoor);
-        //currentTask = TaskList.Pop();
+
+        currentTask = TaskComplete;
 
         if (player.PlayerNumber + 1 <= GetPlayers())
             enabled = false;
+
+        AIcount++;
+        if (AIcount == 4) StartThread();
     }
+
+    private void StartThread()
+    {
+        if (RunThread == null)
+        {
+            RunThread = new Thread(AsyncRun);
+            Runners = new List<Runner>();
+            KeepRunning = true;
+
+            foreach(Transform child in levelStats.PlayerArray.transform)
+            {
+                AI ai = child.GetComponent<AI>();
+                if (ai && ai.enabled)
+                    Runners.Add(ai.AsyncUpdate);
+            }
+
+
+            RunThread.Start();
+        }
+    }
+
+    private void StopThread()
+    {
+        if (RunThread != null)
+        {
+            KeepRunning = false;
+            Runners = null;
+            RunThread = null;
+        }
+    }
+
+    private void AsyncRun()
+    {
+        float deltaTime = 0.1f;
+        while (KeepRunning&&Runners.Count>0)
+        {
+            for (int i = Runners.Count-1; i >= 0; --i)
+            {
+                if (Runners[i](deltaTime))
+                    Runners.RemoveAt(i);
+            }
+            Thread.Sleep(100);
+        }
+    }
+
+    bool AsyncUpdate(float deltaTime)
+    {
+        if (!player._canMove)//player.GetComponent<PlayerHealth>().isDead)
+        {
+            return true;
+        }
+
+        foreach (IChecker checker in GoalCheckers)
+            priority = checker.Do(priority, deltaTime, failed);
+        failed = false;
+
+        return false;
+    }
+
+    void OnDestroy()
+    {
+        StopThread();
+    }
+
+    //void FixedUpdate()
+    //{
+    //    AsyncUpdate(Time.fixedDeltaTime);
+    //}
 
     // Update is called once per frame
     void Update()
     {
+        AsyncPosition = transform.position;
         if (!player._canMove)//player.GetComponent<PlayerHealth>().isDead)
         {
             enabled = false;
@@ -80,9 +179,9 @@ public partial class AI : MonoBehaviour
 
         controls.reset();
 
-        foreach (IChecker checker in GoalCheckers)
-            priority = checker.Do(priority, failed);
-        failed = false;
+        //foreach (IChecker checker in GoalCheckers)
+        //    priority = checker.Do(priority, Time.deltaTime, failed);
+        //failed = false;
 
         int count = 100;
         int status = complete;
@@ -306,7 +405,7 @@ public partial class AI : MonoBehaviour
     {
         int x, y;
 
-        GetMapGridPos(transform.position, out x, out y);
+        GetMapGridPos(AsyncPosition, out x, out y);
 
         TileInformation inRoom = levelStats.Map[y][x];
         DoorBehavior South = inRoom.SouthDoors[1];
@@ -323,7 +422,7 @@ public partial class AI : MonoBehaviour
     private bool TryFindWestDoor(out DoorBehavior door)
     {
         int x, y;
-        GetMapGridPos(transform.position, out x, out y);
+        GetMapGridPos(AsyncPosition, out x, out y);
 
         TileInformation inRoom = levelStats.Map[y][x];
         DoorBehavior West = inRoom.WestDoors[1];
@@ -341,7 +440,7 @@ public partial class AI : MonoBehaviour
     private bool TryFindEastDoor(out DoorBehavior door)
     {
         int x, y;
-        GetMapGridPos(transform.position, out x, out y);
+        GetMapGridPos(AsyncPosition, out x, out y);
         
         if (x < levelStats.MapDemensionsX - 1)
         {
@@ -363,7 +462,7 @@ public partial class AI : MonoBehaviour
     private bool TryFindNorthDoor(out DoorBehavior door)
     {
         int x, y;
-        GetMapGridPos(transform.position, out x, out y);
+        GetMapGridPos(AsyncPosition, out x, out y);
 
         if (y < levelStats.MapDemensionsY - 1)
         {
@@ -383,7 +482,7 @@ public partial class AI : MonoBehaviour
         return false;
     }
 
-    private int FindNearestExit()
+    private int FindNeare33stExit()
     {
         //DoorBehavior d = null;
         int exitDir = 0;
@@ -453,7 +552,7 @@ public partial class AI : MonoBehaviour
 
     private bool IsValid(DoorBehavior door)
     {
-        return door.gameObject.activeInHierarchy&&door.isOpenable;
+        return door.isOpenable;
     }
 
     private void FindPlayer()
@@ -564,6 +663,8 @@ public partial class AI : MonoBehaviour
         else
             controls.jump = false;
 
+        controls.action = PickUpItem;
+
         if (x != 0)
         {
             x = Mathf.Clamp(x, -1, 1);
@@ -589,6 +690,10 @@ public partial class AI : MonoBehaviour
         return inProgress;
     }
 
+    private void TriggerPickup(bool press)
+    {
+        PickUpItem = press;
+    }
 
     private bool ButtonPresser()
     {

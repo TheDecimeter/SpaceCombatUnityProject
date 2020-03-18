@@ -386,6 +386,7 @@ public class LevelRandomizer : MonoBehaviour
     {
         GameObject tmp = Instantiate(tile);
         tmp.transform.position = new Vector3(startX + x * xTileSize, startY + y * yTileSize, startZ);
+        tmp.GetComponent<TileInformation>().Init();
         //print(tmp.transform.position);
         PlacedTileList.Add(tmp);
         Map[y][x] = tmp.GetComponent<TileInformation>();
