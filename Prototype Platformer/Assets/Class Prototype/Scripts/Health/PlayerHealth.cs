@@ -240,6 +240,7 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void endBlur()
     {
+        frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
         //blurComponent.depthTextureMode = DepthTextureMode.Depth;
         blurComponent.targetTexture = null;
@@ -349,11 +350,16 @@ public class PlayerHealth : MonoBehaviour {
                 break;
         }
     }
+    
+    
 
     public void PlayerDeath ()
     {
         if (isDead)
             return;
+
+        endBlur();
+        _canTakeDamage = false;
 
         if (KilledBy == alive)
             InitiateAsteroidDeath();
@@ -380,7 +386,6 @@ public class PlayerHealth : MonoBehaviour {
 
         
         deathEvent.Invoke();
-        _canTakeDamage = false;
     }
 
     private void InitiateAsteroidDeath()

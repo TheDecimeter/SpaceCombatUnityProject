@@ -54,6 +54,7 @@ public class PlatformerCameraFollow : MonoBehaviour {
         //if the player dies zoom out and follow the player with the most health
         if (player != null && player.isDead)
         {
+            info.transform.SetParent(null);
             if (player.GetComponent<Rigidbody>().useGravity)
             {
                 PlayerHealth p=null;
@@ -70,7 +71,6 @@ public class PlatformerCameraFollow : MonoBehaviour {
                 }
                 if (p != null)
                 {
-                    info.transform.SetParent(null);
                     player = p;
                     followTransform = p.transform;
                     //_zOffset.z = this.transform.position.z - followTransform.position.z;
@@ -82,7 +82,8 @@ public class PlatformerCameraFollow : MonoBehaviour {
             }
         }
         _target = followTransform.position;
-        info.transform.position = new Vector3(_target.x, _target.y+infoOffset, info.transform.position.z);
+        if(info.transform.parent!=null)
+            info.transform.position = new Vector3(_target.x, _target.y+infoOffset, info.transform.position.z);
 
         if (lookAhead)
         {
