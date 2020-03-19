@@ -49,7 +49,7 @@ public partial class AI : MonoBehaviour
         }
         public int Do(int priority, float deltaTie, bool failed = false)
         {
-            if (player._currentItem.Rank() < topRank)
+            if (player._currentItem!=null&&player._currentItem.Rank() < topRank)
             {
                 Item i = player.offeredItem;
                 if (i != null && i.Rank() > player._currentItem.Rank())

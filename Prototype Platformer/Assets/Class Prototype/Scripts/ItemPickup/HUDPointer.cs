@@ -48,7 +48,7 @@ public class HUDPointer : MonoBehaviour
     private Vector3 center()
     {
         Vector3 ret = cam.position-reference.position;
-        Debug.DrawLine(cam.position, reference.position);
+        //Debug.DrawLine(cam.position, reference.position);
         return reference.position + (ret.normalized * offset);
     }
 }

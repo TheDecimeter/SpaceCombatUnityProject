@@ -79,7 +79,7 @@ public partial class AI : MonoBehaviour
 
         int doorX, doorY;
         GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
-        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.white);
+        //Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.white);
         int Tx = doorX;
         int Ty = 1;
 
@@ -196,7 +196,7 @@ public partial class AI : MonoBehaviour
 
         int doorX, doorY;
         GetRoomGrid(N.GetComponent<Collider>().bounds.center, out doorX, out doorY);
-        Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.yellow);
+        //Debug.DrawLine(transform.position, N.GetComponent<Collider>().bounds.center,Color.yellow);
 
 
         int x; int y;
@@ -274,7 +274,7 @@ public partial class AI : MonoBehaviour
 
         if (canAttackTarget(player))
         {
-            roomStagnateTimer = roomStagnateTime;
+            roomStagnateTimer = .5f;
             //print(gameObject.name + " attacking " + player.gameObject);
             controls.attack = true;
         }
@@ -352,7 +352,7 @@ public partial class AI : MonoBehaviour
             int response = MoveEast(x, y);
             if (response != impossible)
             {
-                Debug.DrawRay(transform.position, new Vector2(Tx-x,Ty-y)*3, Color.green);
+                //Debug.DrawRay(transform.position, new Vector2(Tx-x,Ty-y)*3, Color.green);
                 return response;
             }
         }
@@ -362,7 +362,7 @@ public partial class AI : MonoBehaviour
             int response = MoveWest(x, y);
             if (response != impossible)
             {
-                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.red);
+                //Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.red);
                 return response;
             }
         }
@@ -372,7 +372,7 @@ public partial class AI : MonoBehaviour
             int response = MoveNorth(x, y, Tx, Ty);
             if (response != impossible)
             {
-                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.white);
+                //Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.white);
                 return response;
             }
         }
@@ -381,7 +381,7 @@ public partial class AI : MonoBehaviour
             int response = MoveSouth(x, y, Tx, Ty);
             if (response != impossible)
             {
-                Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.black);
+                //Debug.DrawRay(transform.position, new Vector2(Tx - x, Ty - y) * 3, Color.black);
                 return response;
             }
         }

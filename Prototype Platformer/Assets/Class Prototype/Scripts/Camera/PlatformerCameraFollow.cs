@@ -31,8 +31,12 @@ public class PlatformerCameraFollow : MonoBehaviour {
 
     private PlayerHealth player;
 
+    private float SwitchTimer = 0;
+    private const float SwitchTime = 3;
+
     void Start () 
     {
+        SwitchTimer = SwitchTime;
         _zOffset.z = this.transform.position.z - followTransform.position.z;     
 
         if (startDelay != 0f) 
@@ -52,14 +56,14 @@ public class PlatformerCameraFollow : MonoBehaviour {
     void Update()
     {
         //if the player dies zoom out and follow the player with the most health
-        if (player != null && player.isDead)
+        if (SwitchTimer == 0)
         {
             info.transform.SetParent(null);
             if (player.GetComponent<Rigidbody>().useGravity)
             {
-                PlayerHealth p=null;
+                PlayerHealth p = null;
                 int h = 0;
-                foreach(Transform child in FindObjectOfType<PlayerArray>().transform)
+                foreach (Transform child in FindObjectOfType<PlayerArray>().transform)
                 {
                     if (child == followTransform)//ignore your own health if you got killed by an asteroid
                         continue;
@@ -82,9 +86,24 @@ public class PlatformerCameraFollow : MonoBehaviour {
                 _zOffset.z *= 4;
                 _zOffset.z = Mathf.Clamp(_zOffset.z, -32, 0);
             }
+            SwitchTimer = SwitchTime;
+        }
+        else
+        {
+            if (player != null && player.isDead)
+            {
+                SwitchTimer -= Time.deltaTime;
+                if (SwitchTimer < 0)
+                {
+                    SwitchTimer = 0;
+                }
+            }
         }
         _target = followTransform.position;
-        if(info.transform.parent!=null)
+
+        
+
+        if(info.transform.parent!=null) //move info to stay over player
             info.transform.position = new Vector3(_target.x, _target.y+infoOffset, info.transform.position.z);
 
         if (lookAhead)

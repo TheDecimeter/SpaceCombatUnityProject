@@ -293,10 +293,10 @@ public partial class AI : MonoBehaviour
             //print("at " + c.x + "," + c.y);
             roomPath[c.y][c.x] = c.cost;
 
-            Debug.DrawRay(c.loc, Vector3.left * roomCell * .9f);
-            Debug.DrawRay(c.loc, Vector3.right * roomCell * .9f, Color.red);
-            Debug.DrawRay(c.loc, Vector3.up * roomCell * .9f, Color.gray);
-            Debug.DrawRay(c.loc, Vector3.down * roomCell * .9f, Color.blue);
+            //Debug.DrawRay(c.loc, Vector3.left * roomCell * .9f);
+            //Debug.DrawRay(c.loc, Vector3.right * roomCell * .9f, Color.red);
+            //Debug.DrawRay(c.loc, Vector3.up * roomCell * .9f, Color.gray);
+            //Debug.DrawRay(c.loc, Vector3.down * roomCell * .9f, Color.blue);
 
 
             //check left
@@ -559,7 +559,7 @@ public partial class AI : MonoBehaviour
             }
         }
 
-        //Debug.DrawLine(transform.position, d.transform.position);
+        ////Debug.DrawLine(transform.position, d.transform.position);
 
         return exitDir;
     }
