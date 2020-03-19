@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 public partial class AI : MonoBehaviour
@@ -43,11 +42,12 @@ public partial class AI : MonoBehaviour
 
 
     //thread stuff
-    private static Thread RunThread;
-    private static bool KeepRunning;
-    private delegate bool Runner(float deltaTime);
-    private static List<Runner> Runners;
+    //private static Thread RunThread;
+    //private bool KeepRunning;
+    //private delegate bool Runner(float deltaTime);
+    //private static List<Runner> Runners;
     private static int AIcount;
+    private Doer doer;
 
 
     public Vector3 AsyncPosition { get; protected set; }
@@ -101,47 +101,61 @@ public partial class AI : MonoBehaviour
 
     private void StartThread()
     {
-        if (RunThread == null)
+        if (doer == null)
         {
-            RunThread = new Thread(AsyncRun);
-            Runners = new List<Runner>();
-            KeepRunning = true;
-
-            foreach(Transform child in levelStats.PlayerArray.transform)
+            doer = new Doer();
+            foreach (Transform child in levelStats.PlayerArray.transform)
             {
                 AI ai = child.GetComponent<AI>();
                 if (ai && ai.enabled)
-                    Runners.Add(ai.AsyncUpdate);
+                    doer.AddRunner(ai.AsyncUpdate);
             }
+            doer.Start();
 
-
-            RunThread.Start();
         }
+        //if (RunThread == null)
+        //{
+        //    RunThread = new Thread(AsyncRun);
+        //    Runners = new List<Runner>();
+        //    KeepRunning = true;
+
+        //    foreach(Transform child in levelStats.PlayerArray.transform)
+        //    {
+        //        AI ai = child.GetComponent<AI>();
+        //        if (ai && ai.enabled)
+        //            Runners.Add(ai.AsyncUpdate);
+        //    }
+
+
+        //    RunThread.Start();
+        //}
     }
 
     private void StopThread()
     {
-        if (RunThread != null)
-        {
-            KeepRunning = false;
-            Runners = null;
-            RunThread = null;
-        }
+        if (doer != null)
+            doer.Stop();
+        //if (RunThread != null)
+        //{
+        //    KeepRunning = false;
+        //    Runners = null;
+        //    RunThread = null;
+        //}
     }
 
-    private void AsyncRun()
-    {
-        float deltaTime = 0.1f;
-        while (KeepRunning&&Runners.Count>0)
-        {
-            for (int i = Runners.Count-1; i >= 0; --i)
-            {
-                if (Runners[i](deltaTime))
-                    Runners.RemoveAt(i);
-            }
-            Thread.Sleep(100);
-        }
-    }
+    //private void AsyncRun()
+    //{
+    //    float deltaTime = 0.1f;
+    //    while (KeepRunning&&Runners.Count>0)
+    //    {
+    //        for (int i = Runners.Count-1; i >= 0; --i)
+    //        {
+    //            if (Runners[i](deltaTime))
+    //                Runners.RemoveAt(i);
+    //        }
+    //        Thread.Sleep(100);
+    //    }
+    //}
 
     bool AsyncUpdate(float deltaTime)
     {
