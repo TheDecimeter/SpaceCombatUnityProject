@@ -15,7 +15,7 @@ public class DoorBehavior : MonoBehaviour
 
     public int FramesToStayOpen=8;
     // Start is called before the first frame update
-    public bool isOpenable = false;
+    public bool isOpenable = true;
     private Color LockedColor = new Color(.3f,0,0,.655f);
     private Color unLockedColor=new Color(0.5019608f, 1,1, 0.5882353f);//new Color(0, 0, 0);
 
@@ -35,7 +35,7 @@ public class DoorBehavior : MonoBehaviour
 
     void Start()
     {
-        isOpenable = true;
+        //isOpenable = true;
         //getCurrentTint();
         //unLockedColor = GetComponent<Renderer>().material.GetColor(emission);
         if (audio == null)

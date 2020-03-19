@@ -247,6 +247,7 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        blurComponent.GetComponent<CameraRectSetter>().SetFull();
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.targetTexture = blurScreen;
         //blurComponent.depthTextureMode = DepthTextureMode.None;
@@ -257,6 +258,7 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void endBlur()
     {
+        blurComponent.GetComponent<CameraRectSetter>().SetShared();
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
         //blurComponent.depthTextureMode = DepthTextureMode.Depth;

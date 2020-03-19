@@ -19,11 +19,11 @@ PlayerSettings:
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
-  m_SplashScreenOverlayOpacity: 1
+  m_SplashScreenOverlayOpacity: 0.794
   m_SplashScreenAnimation: 1
   m_SplashScreenLogoStyle: 1
   m_SplashScreenDrawMode: 0
-  m_SplashScreenBackgroundAnimationZoom: 1
+  m_SplashScreenBackgroundAnimationZoom: 0
   m_SplashScreenLogoAnimationZoom: 1
   m_SplashScreenBackgroundLandscapeAspect: 1
   m_SplashScreenBackgroundPortraitAspect: 1
@@ -39,8 +39,11 @@ PlayerSettings:
     y: 0
     width: 1
     height: 1
-  m_SplashScreenLogos: []
-  m_VirtualRealitySplashScreen: {fileID: 0}
+  m_SplashScreenLogos:
+  - logo: {fileID: 21300000, guid: b37164fd5a5c2fe49a8f73ce4e311008, type: 3}
+    duration: 2
+  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: b37164fd5a5c2fe49a8f73ce4e311008,
+    type: 3}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
@@ -49,7 +52,7 @@ PlayerSettings:
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 0
   m_MTRendering: 1
-  m_StackTraceTypes: 010000000100000001000000010000000100000001000000
+  m_StackTraceTypes: 000000000000000000000000000000000200000001000000
   iosShowActivityIndicatorOnLoading: -1
   androidShowActivityIndicatorOnLoading: 2
   iosAppInBackgroundBehavior: 0
@@ -114,7 +117,18 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 1.0
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 100000, guid: 90f095e695425a64988116e569b8e189, type: 3}
+  - {fileID: 100002, guid: 4df2069680630d5428cde27a1a72d983, type: 3}
+  - {fileID: 100002, guid: 0af5d261d46270145b5b8378bb48bb0c, type: 3}
+  - {fileID: 100002, guid: 280dff0b890dcd64eb178e7b293a6b95, type: 3}
+  - {fileID: 1970654216634722, guid: 8f369028f66c36c4b86dab6de39d6dac, type: 3}
+  - {fileID: 1208621162027886, guid: 25683bb136f32e444a68f72c6f9d6072, type: 3}
+  - {fileID: 1585696041401260, guid: c12230b76dbd2b444b8a7dc0ae52d644, type: 3}
+  - {fileID: 100004, guid: 448a950233fe9424a925105fd410f5d7, type: 3}
+  - {fileID: 2100000, guid: 45a42f247660e504f8643583e53a6818, type: 2}
+  - {fileID: 21650719038787408, guid: 2232ca37884d7574d857cfcb76208c7b, type: 2}
+  - {fileID: 100000, guid: 9415cac6b430d0446a65fdcd9751bc15, type: 3}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -252,7 +266,14 @@ PlayerSettings:
     banner: {fileID: 2800000, guid: 678b4375235425545829b7612c6a9f64, type: 3}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: bee72922bc14b8a4582312ed9bb3ef1b, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
@@ -601,8 +622,9 @@ PlayerSettings:
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
   additionalIl2CppArgs: 
-  scriptingRuntimeVersion: 0
-  apiCompatibilityLevelPerPlatform: {}
+  scriptingRuntimeVersion: 1
+  apiCompatibilityLevelPerPlatform:
+    Android: 6
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Prototype Gameplay
@@ -683,7 +705,7 @@ PlayerSettings:
   facebookStatus: 1
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 6
   cloudProjectId: 887f815e-86e4-469c-8cd4-1a328985c157
   framebufferDepthMemorylessMode: 0
   projectName: Prototype Gameplay

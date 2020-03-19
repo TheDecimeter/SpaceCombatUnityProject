@@ -5,13 +5,24 @@ using UnityEngine;
 public class CameraRectSetter : MonoBehaviour
 {
     public int playerNum = 1;
+    public bool vertical=true;
+    private int playerAmmount;
     // Start is called before the first frame update
     void Start()
     {
-        setRect(GetPlayers(),true);
+        playerAmmount = GetPlayers();
+        SetShared();
     }
     
-    private void setRect(int playerAmmount, bool vertical)
+    public void SetFull()
+    {
+        Camera cam = GetComponent<Camera>();
+        if (!cam.enabled)
+            return;
+        cam.rect = new Rect(0, 0, 1, 1);
+    }
+
+    public void SetShared()
     {
         switch (playerAmmount)
         {

@@ -214,6 +214,8 @@ public class CharacterMovement_Physics : MonoBehaviour
             offeredItem = null;
             //currentItemHUD.text = _currentItem.getName();
             print("updating hud, clearing offered item");
+            if (_currentItem == null)
+                _currentItem = defaultWeapon;
             updateItemHUD(_currentItem.getInUseHUD());
             clearText = -1;
         }

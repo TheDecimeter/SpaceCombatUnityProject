@@ -33,6 +33,8 @@ public class Weapon_Projectile : Weapon {
         projectile.GetComponent<DealDamage>().friend = friendly;
         projectile.GetComponent<DealDamage>().effect=effect;
 
+        projectile.GetComponent<Rigidbody>().AddForce(new Vector3(100, 0, 0));
+
         //projectile.transform.parent = null;
 
         _canFire = false;

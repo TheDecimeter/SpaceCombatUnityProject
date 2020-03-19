@@ -25,7 +25,7 @@ public class ScoreBoardUpdater : MonoBehaviour
             if (score < 10)
                 scoreStr = "  " + score;
             else if (score < 100)
-                scoreStr += " " + score;
+                scoreStr = " " + score;
 
             HumanScore[index].text = string.Format(this.human, index + 1, scoreStr);
             AIScore[index].text = "";
@@ -36,7 +36,7 @@ public class ScoreBoardUpdater : MonoBehaviour
             if (score < 10)
                 scoreStr = "_"+score+"_";
             else if (score < 100)
-                scoreStr += "_" + score;
+                scoreStr = "_" + score;
 
             AIScore[index].text = string.Format(bot, index + 1, scoreStr);
             HumanScore[index].text = "";
