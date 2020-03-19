@@ -389,8 +389,8 @@ public class PlayerHealth : MonoBehaviour {
                 AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
             AnimState.startDie();
         }
-        
 
+        _currentHealth = 0;
 
         framesDamage = 0;
 

@@ -59,8 +59,10 @@ public class PlatformerCameraFollow : MonoBehaviour {
             {
                 PlayerHealth p=null;
                 int h = 0;
-                foreach(Transform child in FindObjectOfType<LevelRandomizer>().PlayerArray.transform)
+                foreach(Transform child in FindObjectOfType<PlayerArray>().transform)
                 {
+                    if (child == followTransform)//ignore your own health if you got killed by an asteroid
+                        continue;
                     PlayerHealth pPlayer = child.GetComponent<PlayerHealth>();
                     int health = pPlayer.getHealth();
                     if (health > h)

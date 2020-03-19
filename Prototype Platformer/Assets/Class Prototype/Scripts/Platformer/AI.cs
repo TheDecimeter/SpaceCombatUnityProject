@@ -211,7 +211,7 @@ public partial class AI : MonoBehaviour
         if (status == impossible)
         {
             failed = true;
-            print(gameObject.name + "      IMPOSSIBLE !");
+            //print(gameObject.name + "      IMPOSSIBLE !");
         }
 
         player.ControllerListener(controls);

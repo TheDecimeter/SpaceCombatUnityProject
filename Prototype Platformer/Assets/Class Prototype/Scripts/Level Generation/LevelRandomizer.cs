@@ -21,19 +21,16 @@ public class LevelRandomizer : MonoBehaviour
     public GameObject ItemArray;
     public string itemType = "All";
     public int itemQuantity = 4;
-
-    [Header("Map Size")]
-    public int MapDemensionsX = 3;
-    public int MapDemensionsY = 4;
+    
+    public int MapDemensionsX { get; protected set; }
+    public int MapDemensionsY { get; protected set; }
 
     [Header("Random Seed, -1 is random")]
     public int Seed = -1;
-
-    [Header("Snake or Fill")]
-    public bool FillMap = true;
-
-    [Header("If Snake, how many tiles?")]
-    public int TileQuantity = 16;
+    
+    private bool FillMap = true;
+    
+    private int TileQuantity = 16;
 
     [Header("What are the demensions of individual tiles")]
     public float xTileSize = 12.741084f;
@@ -87,9 +84,14 @@ public class LevelRandomizer : MonoBehaviour
 
 
         daRocks = GetComponent<AsteroidGenerator>();
-        FindObjectOfType<UndestroyableData>().SetUpLevel(ref MapDemensionsX, ref MapDemensionsY, ref FillMap,
+        int tmpX=3, tmpY=4;
+
+        FindObjectOfType<UndestroyableData>().SetUpLevel(ref tmpX, ref tmpY, ref FillMap,
             ref TileQuantity, ref WarnForXManyFrames, ref CloseRoomXManyFrames,
             ref daRocks.AsteroidSpeed, ref daRocks.chuckEvery, ref daRocks.plusOrMinus);
+
+        MapDemensionsX = tmpX;
+        MapDemensionsY = tmpY;
 
         foreach (Transform child in PlayerArray.transform)
         {

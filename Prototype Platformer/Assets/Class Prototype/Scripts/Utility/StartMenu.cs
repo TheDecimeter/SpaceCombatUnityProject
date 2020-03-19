@@ -14,14 +14,12 @@ public class StartMenu : MonoBehaviour
     public SceneLoader sceneLoader;
 
     public bool OpenMenuOnStart = true;
-    public int SuggestedRounds = 10;
-    public int MaxRounds = 50;
     //private ControlStruct _controllerStatus;
 
     // Start is called before the first frame update
     void Start()
     {
-        savedData.SetupStartMenu(ref SuggestedRounds, ref OpenMenuOnStart);
+        savedData.SetupStartMenu( ref OpenMenuOnStart);
         Menu.SetActive(OpenMenuOnStart);
         if (OpenMenuOnStart)
             SetupMenu();
@@ -60,37 +58,7 @@ public class StartMenu : MonoBehaviour
     {
     }
 
-    public void ControllerListener(ControlStruct controls)
-    {
-        if (!OpenMenuOnStart)
-            return;
-        if (controls.moveLeft < -.1)
-        {
-            SuggestedRounds--;
-            if (SuggestedRounds < 1)
-                SuggestedRounds = MaxRounds;
-            UpdateText();
-        }
-        if (controls.moveLeft > .1)
-        {
-            SuggestedRounds++;
-            if (SuggestedRounds >MaxRounds)
-                SuggestedRounds = 1;
-            UpdateText();
-        }
-        if (controls.jump)
-        {
-            //turn off menu
-            //reload scene
-            savedData.SetRounds(SuggestedRounds);
-            StartGame();
-        }
-        if (controls.door)
-        {
-            //exit
-            QuitProgram();
-        }
-    }
+    
     private int GetRounds(UndestroyableData data)
     {
         int r = 0;

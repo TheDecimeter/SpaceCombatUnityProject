@@ -46,10 +46,12 @@ public class UndestroyableData : MonoBehaviour
     }
     public int GetRounds()
     {
+        
         return sSave.Rounds;
     }
     public void GetRoundsE(IntUpdater.Get get)
     {
+        Debug.Log("   Data - Get rounds " + sSave.Rounds);
         get(sSave.Rounds);
     }
 
@@ -191,19 +193,16 @@ public class UndestroyableData : MonoBehaviour
     {
         sSave.StartMenu.StartMenuOpened = true;
     }
-    public void SetupStartMenu(ref int RecommendedRounds, ref bool OpenStartMenu)
+    public void SetupStartMenu(ref bool OpenStartMenu)
     {
         //print("menuNotSaved" + save.StartMenu.MenuNotSaved);
         if (sSave.StartMenu.MenuNotSaved)
         {
             sSave.StartMenu.MenuNotSaved = false;
-            sSave.Rounds = RecommendedRounds;
             isMenuOpened();
         }
         else
         {
-            //print("menuSaved, should it be opened?" + save.StartMenu.MenuNotSaved);
-            RecommendedRounds = sSave.Rounds;
             OpenStartMenu = isMenuOpened();
         }
         SendDataIfReady();
@@ -267,12 +266,14 @@ public class UndestroyableData : MonoBehaviour
             isMenuOpened();
             sSave.StartMenu.LevelNotSaved = false;
 
-            //save play settings
-            sSave.Play.MapDemensionX = xDim;
-            sSave.Play.MapDemensionY = yDim;
+            //pass back saved values
+            xDim = sSave.StartMenu.MapDemensionX;
+            yDim = sSave.StartMenu.MapDemensionY;
 
-            sSave.Play.MaxTiles = maxTiles;
-            sSave.Play.FillLevel = FillLevel;
+            maxTiles = sSave.StartMenu.MaxTiles;
+            FillLevel = sSave.StartMenu.FillLevel;
+
+            //save play settings
 
             sSave.Play.WarnRoomFrames = WarnFrames;
             sSave.Play.CloseRoomFrames = closeFrames;
@@ -381,6 +382,7 @@ public class UndestroyableData : MonoBehaviour
         public int[] PlayerRot;
         public int PlayerCount;
         public bool ScreenSplitVertical = true;
+        public int rounds,mapx,mapy,tileQuant;
         
     }
 
@@ -396,6 +398,12 @@ public class UndestroyableData : MonoBehaviour
         data.PlayerCount = sSave.PlayerCount;
         data.PlayerRot = sSave.CamRot.player;
         data.ScreenSplitVertical = sSave.CamRot.verticalSplit;
+
+        data.rounds = sSave.Rounds;
+
+        data.mapx=sSave.Play.MapDemensionX;
+        data.mapy=sSave.Play.MapDemensionY;
+        data.tileQuant=sSave.Play.MaxTiles;
 
 
         BinaryFormatter bf = new BinaryFormatter();
@@ -426,7 +434,16 @@ public class UndestroyableData : MonoBehaviour
             sSave.CamRot.player = data.PlayerRot;
             sSave.CamRot.verticalSplit = data.ScreenSplitVertical;
 
-            print("read saved data");
+            sSave.Rounds = data.rounds;
+
+            sSave.Play.MapDemensionX = data.mapx;
+            sSave.Play.MapDemensionY = data.mapy;
+            sSave.Play.MaxTiles = data.tileQuant;
+
+
+            sSave.Play.FillLevel = (sSave.Play.MaxTiles == sSave.Play.MapDemensionY * sSave.Play.MapDemensionX);
+
+            print("read saved data "+data.rounds);
         }
         catch(System.Exception e)
         {
@@ -441,7 +458,13 @@ public class UndestroyableData : MonoBehaviour
         sSave.PlayerCount = 4;
         sSave.CamRot.player = new int[5];
 
-
         sSave.CamRot.verticalSplit = true;
+
+        sSave.Rounds = 10;
+
+        sSave.Play.FillLevel = true;
+        sSave.Play.MapDemensionX = 3;
+        sSave.Play.MapDemensionY = 4;
+        sSave.Play.MaxTiles = 12;
     }
 }

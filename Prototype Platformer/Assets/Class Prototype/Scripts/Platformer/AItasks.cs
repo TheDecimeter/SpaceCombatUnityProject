@@ -110,9 +110,17 @@ public partial class AI : MonoBehaviour
         //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
-        Move(1, 0);
 
-        controls.door = ButtonPresser();
+        if (rb.velocity.x < .1)//don't press the door button too soon or you might get sucked back up
+        {
+            controls.door = ButtonPresser();
+            Move(1, 0);
+
+        }
+        else
+        {
+            Move(1, 0);
+        }
         ////print(gameObject.name + " move (" + controls.door + ")");
         return ErrorChecking();
     }
@@ -138,9 +146,21 @@ public partial class AI : MonoBehaviour
         //print("  go through West door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
-        Move(-1, 0);
 
-        controls.door = ButtonPresser();
+
+
+        if (rb.velocity.x > -.1)//don't press the door button too soon or you might get sucked back up
+        {
+            controls.door = ButtonPresser();
+            Move(-1, 0);
+
+        }
+        else
+        {
+            Move(-1, 0);
+        }
+
+        
         ////print(gameObject.name + " move (" + controls.door + ")");
         return ErrorChecking();
     }
@@ -195,9 +215,23 @@ public partial class AI : MonoBehaviour
         //}
 
         float ox = XoffsetToCenter(.2f);
-        Move(ox, 1);
+        //Move(ox, 1);
 
-        controls.door = ButtonPresser();
+
+        if (rb.velocity.y < .01)//don't press the door button too soon or you might get sucked back up
+        {
+            controls.door = ButtonPresser();
+            if (!controls.door)
+                Move(ox, 1);
+
+        }
+        else
+        {
+            Move(ox, 1);
+        }
+
+
+        //controls.door = ButtonPresser();
         //print(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
         ////print(gameObject.name + " move throgh north door (" + controls.door + ")");
         return ErrorChecking();
@@ -221,7 +255,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskAttackPlayerInRoom(PlayerHealth player)
     {
-
+        print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
         //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
         if (player.isDead)
             return complete;
@@ -240,6 +274,7 @@ public partial class AI : MonoBehaviour
 
         if (canAttackTarget(player))
         {
+            roomStagnateTimer = roomStagnateTime;
             //print(gameObject.name + " attacking " + player.gameObject);
             controls.attack = true;
         }
@@ -248,17 +283,27 @@ public partial class AI : MonoBehaviour
         //else
         //    controls.attack = false;
 
-        if (mX != pX || mY != pY)//if you aren't at the target
-            GoToTarget(mX, mY, pX, pY);
+
+        int ret = 0;
+        if (mX != pX || mY != pY)
+        {
+            ret= GoToTarget(mX, mY, pX, pY);
+            return ErrorChecking(ret);
+        }
 
         float ox = XtoTarget(player.transform.position);
-        float pow = .25f;
+        float pow = Random.Range(.25f,.5f);
         if (ox > 0)
             controls.moveLeft = pow;
         else
             controls.moveLeft = -pow;
 
-        return inProgress;
+        ret= ErrorChecking();
+        if (ret != impossible)
+            return ret;
+
+        Move(controls.moveLeft, 1);
+        return impossible;
     }
 
     private bool canAttackTarget(PlayerHealth p)
@@ -271,11 +316,13 @@ public partial class AI : MonoBehaviour
     {
         TaskList.Push(() => TaskAttackPlayerInRoom(p));
         TaskList.Push(TaskMapRoom);
+        roomStagnateTimer = roomStagnateTime;
         return complete;
     }
 
     private int TaskComplete()
     {
+        print("task complete " + player.gameObject.name);
         return complete;
     }
 

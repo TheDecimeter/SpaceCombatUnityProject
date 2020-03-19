@@ -213,6 +213,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             offeredItem = null;
             //currentItemHUD.text = _currentItem.getName();
+            print("updating hud, clearing offered item");
             updateItemHUD(_currentItem.getInUseHUD());
             clearText = -1;
         }
@@ -229,6 +230,8 @@ public class CharacterMovement_Physics : MonoBehaviour
                 print("            newHud=oldHud?");
         if (newHUD == null)
             print("newHud is null for "+name[PlayerNumber]);
+        if(!_canMove)
+            print("updating when can't move " + name[PlayerNumber]);
         GameObject g = Instantiate(newHUD) as GameObject;
         g.transform.SetParent(hud.Link.WeaponInfo[PlayerNumber].transform, false);
         g.transform.localPosition = Vector3.zero;
@@ -373,6 +376,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         offeredItem = item;
         info.say(item.getName(), 2);
         //currentItemHUD.text="GRAB:  "+item.getName();
+        print("updating hut for newly encountered item");
         updateItemHUD(item.getPickUpHUD());
         clearText = 2;
         if (actionPressed)
@@ -626,7 +630,11 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
             ///anim.SetBool(_currentItem.getAnimationFlag(), true);
-            if (_currentItem == null) print("current item is null "+name[PlayerNumber]);
+            if (_currentItem == null)
+            {
+                _currentItem = Instantiate(defaultWeapon);
+                print("current item is null " + name[PlayerNumber]);
+            }
 
             //Transform atkPt = new GameObject("tmp transform CharacterMovement_Physics.SetAttacking").transform;
             //atkPt.position = new Vector3(
@@ -816,7 +824,12 @@ public class CharacterMovement_Physics : MonoBehaviour
         _currentItem.itemExterior.SendMessageUpwards("feedback", false, SendMessageOptions.DontRequireReceiver);
 
         if (_currentItem.getType() == Item.Punch)
-            Destroy(_currentItem);
+        {
+            if (_currentItem == defaultWeapon)
+                print("about to destroy the default weapon " + name[PlayerNumber]);
+            else
+                Destroy(_currentItem);
+        }
         _currentItem = null;
     }
 
