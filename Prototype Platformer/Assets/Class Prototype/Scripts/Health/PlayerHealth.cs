@@ -25,7 +25,7 @@ public class PlayerHealth : MonoBehaviour {
     private AnimationStates AnimState;
     public Camera blurComponent;
     public RenderTexture blurScreen;
-    public RawImage blurLayer;
+    public GameObject blurLayer;
 
     private PostProcessVolume defaultCamEffects;
     //public Text health;
@@ -246,6 +246,8 @@ public class PlayerHealth : MonoBehaviour {
     private void startBlur()
     {
         if (!isHuman)
+            return;
+        if (blurLayer.activeInHierarchy)
             return;
         blurComponent.GetComponent<CameraRectSetter>().SetFull();
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
