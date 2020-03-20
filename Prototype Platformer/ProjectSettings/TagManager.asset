@@ -26,11 +26,11 @@ TagManager:
   - Player4Hobbs
   - Item
   - Health
-  - 
-  - 
-  - 
-  - 
-  - 
+  - SheildParticle
+  - CorrosiveParticle
+  - ExplosionParticle
+  - Water Particle
+  - Poo Particle
   - 
   - 
   - 

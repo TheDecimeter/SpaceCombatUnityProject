@@ -758,7 +758,7 @@ GameObject:
   - component: {fileID: 445372}
   - component: {fileID: 19816230}
   - component: {fileID: 19953252}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5532,7 +5532,7 @@ GameObject:
   - component: {fileID: 436272}
   - component: {fileID: 19825390}
   - component: {fileID: 19930300}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}

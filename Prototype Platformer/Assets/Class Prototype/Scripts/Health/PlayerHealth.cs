@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour {
 
     private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
+    private const int CullingMask = ~(1 << 24 | 1 << 23 | 1 << 22 | 1 << 21 | 1 << 20);
+
     private AudioManager audio;
     private int PlayerNumber;
 
@@ -249,6 +251,9 @@ public class PlayerHealth : MonoBehaviour {
             return;
         if (blurLayer.activeInHierarchy)
             return;
+
+
+        blurComponent.cullingMask = CullingMask;
         blurComponent.GetComponent<CameraRectSetter>().SetFull();
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.targetTexture = blurScreen;
@@ -260,6 +265,7 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void endBlur()
     {
+        blurComponent.cullingMask = ~0;
         blurComponent.GetComponent<CameraRectSetter>().SetShared();
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
