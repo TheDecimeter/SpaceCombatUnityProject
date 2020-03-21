@@ -1,7 +1,7 @@
 ﻿Shader "Blend 2 Textures" { 
  
 Properties {
-	_Blend ("Blend", Range (0, 1) ) = 0.5 
+	_Blend ("Blend", Range (0, 1) ) = 0.01 
 	_MainTex ("Texture 1", 2D) = "" 
 	_Texture2 ("Texture 2", 2D) = ""
 }
