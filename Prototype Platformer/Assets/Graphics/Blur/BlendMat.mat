@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BlendMat
-  m_Shader: {fileID: 4800000, guid: 5ff093f7f05379c488d97d6006a3a911, type: 3}
+  m_Shader: {fileID: 4800000, guid: 35994729f44337541b80f5cadb143f03, type: 3}
   m_ShaderKeywords: GAUSS _SAMPLES_HIGH
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

@@ -197,17 +197,17 @@ public partial class AI : MonoBehaviour
         //    priority = checker.Do(priority, Time.deltaTime, failed);
         //failed = false;
 
-        int count = 100;
-        int status = complete;
-        while (status == complete)
-        {
-            count -= 1;
-            if (count < 0)
-            {
-                Debug.LogError("Had to use loop counter task update");
-                break;
-            }
-            status = currentTask();
+        //int count = 100;
+        //int status = complete;
+        //while (status == complete)
+        //{
+        //    count -= 1;
+        //    if (count < 0)
+        //    {
+        //        Debug.LogError("Had to use loop counter task update");
+        //        break;
+        //    }
+            int status = currentTask();
             if (status == complete)
             {
                 if (TaskList.Count > 0)
@@ -216,11 +216,11 @@ public partial class AI : MonoBehaviour
                 {
                     //print(gameObject.name + " end of task list " + TaskList.Count);
                     priority = 0;
-                    break;
+                    //break;
                 }
 
             }
-        }
+        //}
 
         if (status == impossible)
         {

@@ -253,7 +253,7 @@ public class PlayerHealth : MonoBehaviour {
             return;
 
 
-        blurComponent.cullingMask = CullingMask;
+        //blurComponent.cullingMask = CullingMask;
         blurComponent.GetComponent<CameraRectSetter>().SetFull();
         blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.targetTexture = blurScreen;
@@ -265,7 +265,7 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void endBlur()
     {
-        blurComponent.cullingMask = ~0;
+        //blurComponent.cullingMask = ~0;
         blurComponent.GetComponent<CameraRectSetter>().SetShared();
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;

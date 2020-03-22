@@ -56,15 +56,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture1:
-        m_Texture: {fileID: 8400000, guid: 0d899bf45d7084042b972f726ed61d2a, type: 2}
+        m_Texture: {fileID: 8400000, guid: cb24bfefe810f8844810677681ba8e55, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2:
-        m_Texture: {fileID: 8400000, guid: 310f1938d93540d469206f67498a42f2, type: 2}
+        m_Texture: {fileID: 8400000, guid: d93546e105e5e8b4d9ca5c00506cd814, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Blend: 0.9
+    - _Blend: 0.1
     - _BlurSize: 0.459
     - _BumpScale: 1
     - _Cutoff: 0.5
