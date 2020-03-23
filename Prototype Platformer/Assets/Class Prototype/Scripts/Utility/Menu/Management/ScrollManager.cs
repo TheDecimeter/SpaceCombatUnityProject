@@ -18,6 +18,10 @@ public class ScrollManager : ControlFirer
         Redge = Controls.Length-1;
         Controls[atControl].Home = true;
 
+    }
+
+    private void OnEnable()
+    {
         SetEndLocs();
     }
 
@@ -28,28 +32,28 @@ public class ScrollManager : ControlFirer
     private void SetEndLocs()
     {
         GameObject l = new GameObject("Left Edge loc for " + name);
-        GameObject r = new GameObject("Left Edge loc for " + name);
+        GameObject r = new GameObject("Right Edge loc for " + name);
         if (Controls.Length < 2)
         {
-            Vector2 home = transform.position;
+            Vector2 home = transform.localPosition;
             if (Controls.Length > 0)
-                home = Controls[0].transform.position;
+                home = Controls[0].transform.localPosition;
 
-            l.transform.position = home + new Vector2(-500, 0);
-            r.transform.position = home + new Vector2(500, 0);
             l.transform.SetParent(transform.parent);
             r.transform.SetParent(transform.parent);
+            l.transform.localPosition = home + new Vector2(-500, 0);
+            r.transform.localPosition = home + new Vector2(500, 0);
             Lloc = l;
             Rloc = r;
             return;
         }
 
-        Vector2 Rdir = Controls[Controls.Length - 1].transform.position - Controls[Controls.Length - 2].transform.position;
-        Vector2 Ldir = Controls[0].transform.position - Controls[1].transform.position;
-        l.transform.position = (Vector2)Controls[0].transform.position +Ldir;
-        r.transform.position = (Vector2)Controls[Controls.Length - 1].transform.position + Rdir;
-        l.transform.SetParent(transform.parent);
-        r.transform.SetParent(transform.parent);
+        l.transform.SetParent(Controls[0].transform.parent);
+        r.transform.SetParent(Controls[Controls.Length - 1].transform.parent);
+        Vector2 Rdir = Controls[Controls.Length - 1].transform.localPosition - Controls[Controls.Length - 2].transform.localPosition;
+        Vector2 Ldir = Controls[0].transform.localPosition - Controls[1].transform.localPosition;
+        l.transform.localPosition = (Vector2)Controls[0].transform.localPosition + Ldir;
+        r.transform.localPosition = (Vector2)Controls[Controls.Length - 1].transform.localPosition + Rdir;
         Lloc = l;
         Rloc = r;
 

@@ -7,5 +7,6 @@ public class HudLinks : MonoBehaviour
 {
     public GameObject [] WeaponInfo;
     public Text [] Health;
-    public GameObject[] Menu;
+    public InGameMenuManager[] Menu;
+    public ControlManager MenuControls;
 }

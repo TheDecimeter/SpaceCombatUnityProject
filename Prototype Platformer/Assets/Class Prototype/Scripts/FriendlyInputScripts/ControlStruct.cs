@@ -19,6 +19,7 @@ public class ControlStruct
     private float left = 0;
 
     public int source { get; protected set; }
+    public int menuSource { get { return bMenu; } protected set { } }
 
     public ControlStruct(int source)
     {

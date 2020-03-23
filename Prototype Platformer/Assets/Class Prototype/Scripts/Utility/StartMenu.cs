@@ -68,7 +68,16 @@ public class StartMenu : MonoBehaviour
 
     public void StartGame()
     {
-        savedData.SetRounds(GetRounds(savedData));
+        //savedData.SetRounds(GetRounds(savedData));
+
+        savedData.SetRounds(ValidateVal(savedData.GetRoundsE, savedData.SetRounds, 1, 50));
+
+        savedData.SetRounds(ValidateVal(savedData.GetPlayers, savedData.SetPlayers, 0, 4));
+
+        savedData.SetRounds(ValidateVal(savedData.GetMapTileCount, savedData.SetMapTileCount, 6, 100));
+        savedData.SetRounds(ValidateVal(savedData.GetMapHeight, savedData.SetMapHeight, 3, 10));
+        savedData.SetRounds(ValidateVal(savedData.GetMapWidth, savedData.SetMapWidth, 3, 10));
+
 
         savedData.CloseStartMenu();
         sceneLoader.sceneLoadDelay = 0;
@@ -79,5 +88,19 @@ public class StartMenu : MonoBehaviour
     {
         print("application quit");
         Application.Quit();
+    }
+
+    delegate void Get(IntUpdater.Get get);
+    delegate void Set(int val);
+    private int ValidateVal(Get GetValue, Set SetValue, int min, int max)
+    {
+        int val = 0;
+        GetValue((x) => { val = x; });
+
+        val = Mathf.Clamp(val, min, max);
+
+        SetValue(val);
+        GetValue((x) => { val = x; });
+        return val;
     }
 }

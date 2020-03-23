@@ -17,7 +17,7 @@ public class ControlListener
     public void ControllerListener(ControlStruct newControls)
     {
 
-        if (!manager.gameObject.activeInHierarchy || !manager.enabled)
+        if (newControls.fromSource(ControlStruct.AI))
             return;
 
         _controllerStatus.combine(newControls);

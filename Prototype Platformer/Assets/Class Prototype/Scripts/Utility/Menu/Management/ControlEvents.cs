@@ -30,13 +30,22 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
     void Start()
     {
         //newLoc = transform.position;
-        newLoc = new GameObject("location anchor for "+name);
-        newLoc.transform.position = transform.position;
+        //newLoc = new GameObject("location anchor for "+name);
+        //newLoc.transform.position = transform.position;
+        //newLoc.transform.SetParent(transform.parent);
+    }
+    void OnEnable()
+    {
+        newLoc = new GameObject("location anchor for " + name);
         newLoc.transform.SetParent(transform.parent);
+        newLoc.transform.localPosition = transform.localPosition;
+        //Debug.LogWarning("Creating anchor for " + gameObject.name + " t.p " + transform.localPosition + " n.p " + newLoc.transform.localPosition);
+        //Debug.LogWarning("Created anchor for " + gameObject.name + " t.p " + transform.position + " n.p " + newLoc.transform.position);
     }
 
     public Vector2 Loc()
     {
+        //Debug.LogWarning("Returning anchor for " + gameObject.name + " t.p " + transform.position + " n.p " + newLoc.transform.position);
         return newLoc.transform.position;
     }
 
@@ -144,16 +153,19 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
         }
         if (Active)
         {
+            print("active click");
             activeClick.Invoke();
         }
         else
         {
             if (Home)
             {
+                print("home click");
                 homeClick.Invoke();
             }
             else
             {
+                print("inactive click");
                 inactiveClick.Invoke();
             }
         }

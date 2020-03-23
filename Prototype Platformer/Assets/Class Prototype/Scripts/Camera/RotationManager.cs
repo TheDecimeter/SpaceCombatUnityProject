@@ -20,8 +20,7 @@ public class RotationManager : MonoBehaviour
     {
         public HudLinks Hud;
         public float Cam1Rot, Cam2Rot, Cam3Rot, Cam4Rot;
-        
-
+        public bool VerticalSplit;
     }
 
     private int currentRot = 0;
@@ -29,6 +28,7 @@ public class RotationManager : MonoBehaviour
     private void Start()
     {
         Rotate(SaveData.GetRotation());
+        hud.Link.MenuControls.gameObject.SetActive(false);
     }
 
     public void Rotate()
@@ -36,9 +36,22 @@ public class RotationManager : MonoBehaviour
         Rotate(currentRot + 1);
     }
 
+    public void SetRotate(int index)
+    {
+        if (index == currentRot)
+            return;
+        Rotate(index);
+    }
+    public void GetRotate(IntUpdater.Get ret)
+    {
+        ret(currentRot);
+    }
+
     private void Rotate(int index)
     {
-        if(index>=configurations.Length)
+        if (index < 0)
+            index = configurations.Length - 1;
+        else if(index>=configurations.Length)
             index%=configurations.Length;
 
         HudLinks oldHud = configurations[currentRot].Hud;

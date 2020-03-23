@@ -247,6 +247,11 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (hud.Link.Menu[PlayerNumber].IsGlobalMenuActive())
+        {
+            gameMenuActive = false;
+            return;
+        }
         if (ignoreInput)
         {
             if (_controllerStatus.B) return;
@@ -256,23 +261,14 @@ public class CharacterMovement_Physics : MonoBehaviour
         }
         if (gameMenuActive)
         {
-            if (_controllerStatus.B)
+            gameMenuActive=hud.Link.Menu[PlayerNumber].IsMenuActive();
+            if (_controllerStatus.jump)
             {
-                //inGameMenu.SetActive(false);
-                hud.Link.Menu[PlayerNumber].SetActive(false);
-                FindObjectOfType<UndestroyableData>().OpenStartMenu();
-                SceneLoader loader=FindObjectOfType<SceneLoader>();
-
-                ignoreInput = true;
-
-                loader.sceneLoadDelay = 0;
-                loader.sceneFadeDuration = 0;
-                loader.RestartScene();
-                
+                hud.Link.Menu[PlayerNumber].SetGlobalMenuActive(true);
             }
-            else if (_controllerStatus.jump || _controllerStatus.inGameMenu)
+            else if (_controllerStatus.B || _controllerStatus.inGameMenu ) //If the menu is closed elsewhere, return control to player movement
             {
-                hud.Link.Menu[PlayerNumber].SetActive(false);
+                hud.Link.Menu[PlayerNumber].SetMenuActive(0,false);
                 gameMenuActive = false;
                 ignoreInput = true;
                 _canJump = false;
@@ -282,7 +278,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
         if (_controllerStatus.inGameMenu)
         {
-            hud.Link.Menu[PlayerNumber].SetActive(true);
+            hud.Link.Menu[PlayerNumber].SetMenuActive(_controllerStatus.menuSource,true);
             gameMenuActive = true;
             ignoreInput = true;
             return;

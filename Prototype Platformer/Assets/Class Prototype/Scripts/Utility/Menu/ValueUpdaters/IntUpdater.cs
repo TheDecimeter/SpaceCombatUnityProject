@@ -54,16 +54,18 @@ public class IntUpdater : MonoBehaviour
             value = Min;
         }
 
+        print("change val " + value);
         value = ConfirmVal(wrapDir);
-
+        print("constrained val " + value);
         UpdateDisplay();
         //Menu.savedData.SetRounds(rounds);
     }
 
     private int ConfirmVal(int wrapDir)
     {
-        SetValue.Invoke(value);
-        int newVal = GetVal(GetValue);
+        int newVal = BoundValue(value);
+        //SetValue.Invoke(value);
+        //int newVal = GetVal(GetValue);
         if (newVal != value)
         {
             if (wrapDir == 0)
@@ -116,6 +118,7 @@ public class IntUpdater : MonoBehaviour
             Display = GetComponent<TextMeshProUGUI>();
         //rounds = Menu.savedData.GetRounds();
         value = GetVal(GetValue);
+        value=BoundValue(value);
         UpdateDisplay();
     }
 
@@ -129,5 +132,13 @@ public class IntUpdater : MonoBehaviour
     private void UpdateDisplay()
     {
         Display.text = "" + value;
+    }
+
+    private int BoundValue(int value)
+    {
+        value = Mathf.Clamp(value, Min, Max);
+        SetValue.Invoke(value);
+        value = GetVal(GetValue);
+        return value;
     }
 }

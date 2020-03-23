@@ -36,12 +36,11 @@ public class HUD : MonoBehaviour
     }
 
     private HudLinks links;
-
     
 
-    private void CarryOverMenuSettings(GameObject oldm, GameObject newm)
+    private void CarryOverMenuSettings(InGameMenuManager oldm, InGameMenuManager newm)
     {
-        newm.SetActive(oldm.activeInHierarchy);
+        newm.SetState(oldm);
     }
     
     private void CarryOverHealth(Text oldh, Text newh)
@@ -57,10 +56,53 @@ public class HUD : MonoBehaviour
     
     private void TransferWeaponInfo(Transform item, Transform parent)
     {
-        print("Transfered weapon info for " + item.gameObject + " to " + parent.gameObject);
+        //print("Transfered weapon info for " + item.gameObject + " to " + parent.gameObject);
         item.SetParent(parent,false);
         //item.parent = parent;
         //item.localPosition = Vector3.zero;
         //item.localRotation = Quaternion.identity;
+    }
+
+    public void ControllerListener1(ControlStruct newControls)
+    {
+        if (Link == null)
+        {
+            print("Link is null");
+            return;
+        }
+        else if (Link.MenuControls == null)
+            print("MenuControls is null");
+
+        //print("hud control listener 1");
+
+        Link.MenuControls.ControllerListener1(newControls);
+    }
+    public void ControllerListener2(ControlStruct newControls)
+    {
+        Link.MenuControls.ControllerListener2(newControls);
+    }
+    public void ControllerListener3(ControlStruct newControls)
+    {
+        Link.MenuControls.ControllerListener3(newControls);
+    }
+    public void ControllerListener4(ControlStruct newControls)
+    {
+        Link.MenuControls.ControllerListener4(newControls);
+    }
+
+    public void ReturnToTitleMenu()
+    {
+        FindObjectOfType<UndestroyableData>().OpenStartMenu();
+        SceneLoader loader = FindObjectOfType<SceneLoader>();
+
+        loader.sceneLoadDelay = 0;
+        loader.sceneFadeDuration = 0;
+        loader.RestartScene();
+    }
+
+    public void CloseMenus()
+    {
+        foreach (InGameMenuManager m in Link.Menu)
+            m.SetMenuActive(0, false);
     }
 }

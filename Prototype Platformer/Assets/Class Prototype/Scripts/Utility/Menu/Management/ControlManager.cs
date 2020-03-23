@@ -7,6 +7,7 @@ public class ControlManager : MonoBehaviour
     private ControlFirer _controls;
     private bool releaseL, releaseR, releaseB, releaseS;
     public ControlFirer initialMenuItem;
+    public bool IsTitleMenu = true;
 
     private ControlListener c1, c2, c3, c4;
     
@@ -34,7 +35,7 @@ public class ControlManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void Awake()
     {
         c1 = new ControlListener(this);
         c2 = new ControlListener(this);
@@ -43,8 +44,8 @@ public class ControlManager : MonoBehaviour
 
         _controls = initialMenuItem;
         controls = initialMenuItem;
-
-        enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
+        if(IsTitleMenu)
+            enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
     }
     public void PassControl(ControlFirer to)
     {
@@ -59,19 +60,26 @@ public class ControlManager : MonoBehaviour
 
     public void ControllerListener1(ControlStruct newControls)
     {
-        c1.ControllerListener(newControls);
+        if (gameObject.activeInHierarchy && enabled)
+        {
+            //print("control listener, performing action " + gameObject.name);
+            c1.ControllerListener(newControls);
+        }
     }
     public void ControllerListener2(ControlStruct newControls)
     {
-        c2.ControllerListener(newControls);
+        if (gameObject.activeInHierarchy && enabled)
+            c2.ControllerListener(newControls);
     }
     public void ControllerListener3(ControlStruct newControls)
     {
-        c3.ControllerListener(newControls);
+        if (gameObject.activeInHierarchy && enabled)
+            c3.ControllerListener(newControls);
     }
     public void ControllerListener4(ControlStruct newControls)
     {
-        c4.ControllerListener(newControls);
+        if (gameObject.activeInHierarchy && enabled)
+            c4.ControllerListener(newControls);
     }
 
     public void FireL()
