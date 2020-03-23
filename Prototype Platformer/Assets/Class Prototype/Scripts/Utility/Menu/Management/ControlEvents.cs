@@ -138,14 +138,24 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (moving)
+        {
+            return;
+        }
         if (Active)
+        {
             activeClick.Invoke();
+        }
         else
         {
             if (Home)
+            {
                 homeClick.Invoke();
+            }
             else
+            {
                 inactiveClick.Invoke();
+            }
         }
     }
     

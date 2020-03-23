@@ -369,7 +369,6 @@ public class LevelRandomizer : MonoBehaviour
 
         print("no compatible tile found");
         return -1;
-        return tileIndex;
     }
     private void deactivateLevel()
     {
