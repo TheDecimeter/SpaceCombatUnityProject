@@ -255,11 +255,11 @@ public partial class AI : MonoBehaviour
 
     private int TaskAttackPlayerInRoom(PlayerHealth player)
     {
-        print("\n");
-        print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
+        //print("\n");
+        //print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
         //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
         if (player.isDead)
-            return complete;
+            return ErrorChecking(complete);
         
 
 
@@ -275,7 +275,7 @@ public partial class AI : MonoBehaviour
 
         if (canAttackTarget(player))
         {
-            print(this.player.gameObject.name + " Can Attack player " + player.gameObject.name);
+            //print(this.player.gameObject.name + " Can Attack player " + player.gameObject.name);
             roomStagnateTimer = .5f;
             //print(gameObject.name + " attacking " + player.gameObject);
             controls.attack = true;
@@ -290,7 +290,7 @@ public partial class AI : MonoBehaviour
         if (mX != pX || mY != pY)
         {
 
-            print(this.player.gameObject.name + " Going to attack player " + player.gameObject.name);
+            //print(this.player.gameObject.name + " Going to attack player " + player.gameObject.name);
             ret = GoToTarget(mX, mY, pX, pY);
             return ErrorChecking(ret);
         }
@@ -305,10 +305,10 @@ public partial class AI : MonoBehaviour
         ret= ErrorChecking();
         if (ret != impossible)
         {
-            print(this.player.gameObject.name + " Successful Attack/Move " + player.gameObject.name);
+            //print(this.player.gameObject.name + " Successful Attack/Move " + player.gameObject.name);
             return ret;
         }
-        print(this.player.gameObject.name + " Error correction attack/move " + player.gameObject.name);
+        //print(this.player.gameObject.name + " Error correction attack/move " + player.gameObject.name);
 
         Move(controls.moveLeft, 1);
         return impossible;

@@ -5,12 +5,15 @@ using UnityEngine;
 public class CameraRectSetter : MonoBehaviour
 {
     public int playerNum = 1;
-    public bool vertical=true;
     private int playerAmmount;
+    private bool vertical = false;
+    private float fov;
     // Start is called before the first frame update
     void Start()
     {
+        fov = GetComponent<Camera>().fieldOfView;
         playerAmmount = GetPlayers();
+        vertical = GetVerticalSplit();
         SetShared();
     }
     
@@ -41,6 +44,18 @@ public class CameraRectSetter : MonoBehaviour
         }
     }
 
+    public void Reset(bool vertical)
+    {
+        this.vertical = vertical;
+        SetShared();
+    }
+
+    private bool GetVerticalSplit()
+    {
+        bool r = false;
+        FindObjectOfType<UndestroyableData>().GetVerticalScreenSplit((x) => { r = x; });
+        return r;
+    }
     private void set4()
     {
         float x = 0, y = 0;
@@ -56,8 +71,9 @@ public class CameraRectSetter : MonoBehaviour
     {
         Camera cam = GetComponent<Camera>();
 
-        if (vertical)
+        if (!vertical)
         {
+            cam.fieldOfView = fov;
             if(playerNum==2)
             {
                 cam = GetComponent<Camera>();
@@ -73,6 +89,8 @@ public class CameraRectSetter : MonoBehaviour
             cam.enabled = false;
             return;
         }
+        
+        cam.fieldOfView = fov * 2;
 
         float x = 0;
         if (playerNum == 2)

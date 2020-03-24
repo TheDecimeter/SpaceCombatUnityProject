@@ -8,7 +8,7 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
 {
     //private Vector2 newLoc;
     private GameObject newLoc;
-    private bool moving=false;
+    public bool moving=false;
 
     private Stack<Vector2> moveLocs = new Stack<Vector2>();
     
@@ -27,26 +27,31 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
     }
 
     // Start is called before the first frame update
+    //void Start()
+    //{
+    //    //newLoc = transform.localPosition;
+    //    //newLoc = new GameObject("location anchor for "+name);
+    //    //newLoc.transform.localPosition = transform.localPosition;
+    //    //newLoc.transform.SetParent(transform.parent);
+    //}
     void Start()
-    {
-        //newLoc = transform.position;
-        //newLoc = new GameObject("location anchor for "+name);
-        //newLoc.transform.position = transform.position;
-        //newLoc.transform.SetParent(transform.parent);
-    }
-    void OnEnable()
     {
         newLoc = new GameObject("location anchor for " + name);
         newLoc.transform.SetParent(transform.parent);
         newLoc.transform.localPosition = transform.localPosition;
         //Debug.LogWarning("Creating anchor for " + gameObject.name + " t.p " + transform.localPosition + " n.p " + newLoc.transform.localPosition);
-        //Debug.LogWarning("Created anchor for " + gameObject.name + " t.p " + transform.position + " n.p " + newLoc.transform.position);
+        //Debug.LogWarning("Created anchor for " + gameObject.name + " t.p " + transform.localPosition + " n.p " + newLoc.transform.localPosition);
+    }
+    void OnEnable()
+    {
+        if (moving)
+            FinishMoving();
     }
 
     public Vector2 Loc()
     {
-        //Debug.LogWarning("Returning anchor for " + gameObject.name + " t.p " + transform.position + " n.p " + newLoc.transform.position);
-        return newLoc.transform.position;
+        //Debug.LogWarning("Returning anchor for " + gameObject.name + " t.p " + transform.localPosition + " n.p " + newLoc.transform.localPosition);
+        return newLoc.transform.localPosition;
     }
 
     IEnumerator Move()
@@ -57,27 +62,27 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
             Vector2 moveLoc = moveLocs.Pop();
 
             
-            while (Vector2.Distance(transform.position, moveLoc) > closeEnough)
+            while (Vector2.Distance(transform.localPosition, moveLoc) > closeEnough)
             {
                 float dist = Dist(moveLoc);
-                Vector2 dir = moveLoc- (Vector2)transform.position;
+                Vector2 dir = moveLoc- (Vector2)transform.localPosition;
                 dir = dir.normalized * Time.deltaTime * dist * lerpAt;
 
-                if (dir.magnitude > Vector2.Distance(transform.position, moveLoc))
-                    transform.position = moveLoc;
+                if (dir.magnitude > Vector2.Distance(transform.localPosition, moveLoc))
+                    transform.localPosition = moveLoc;
                 else
-                    transform.position = (Vector2)transform.position + dir;
+                    transform.localPosition = (Vector2)transform.localPosition + dir;
                 yield return null;
             }
         }
-        //transform.position = newLoc;
-        transform.position = newLoc.transform.position;
+        //transform.localPosition = newLoc;
+        transform.localPosition = newLoc.transform.localPosition;
         moving = false;
     }
 
     private float Dist(Vector2 first)
     {
-        float dist = Vector2.Distance(transform.position, first);
+        float dist = Vector2.Distance(transform.localPosition, first);
         foreach(Vector2 to in moveLocs)
         {
             dist += Vector2.Distance(first, to);
@@ -89,8 +94,10 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
 
     public void MoveTo(Vector2 newLoc)
     {
+        //if (!gameObject.activeInHierarchy)
+        //    return;
         //this.newLoc = newLoc;
-        this.newLoc.transform.position = newLoc;
+        SetNewloc(newLoc);
         moveLocs.Push(newLoc);
         if (!moving)
         {
@@ -101,10 +108,25 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
     }
     public void MoveDirectlyTo(Vector2 newLoc)
     {
-        this.newLoc.transform.position = newLoc;
+        //if (!gameObject.activeInHierarchy)
+        //    return;
+        SetNewloc(newLoc);
         moving = false;
         moveLocs.Clear();
-        transform.position = newLoc;
+        transform.localPosition = newLoc;
+    }
+
+    private void FinishMoving()
+    {
+        StopAllCoroutines();
+        MoveDirectlyTo(newLoc.transform.localPosition);
+    }
+
+    private void SetNewloc(Vector2 newLoc)
+    {
+        //if (!gameObject.activeInHierarchy)
+        //    return;
+        this.newLoc.transform.localPosition = newLoc;
     }
 
     public override void FireL()

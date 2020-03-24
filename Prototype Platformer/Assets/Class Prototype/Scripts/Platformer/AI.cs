@@ -86,7 +86,7 @@ public partial class AI : MonoBehaviour
 
         GoalCheckers.Add(new CheckerGrabItem(this,10));
 
-        GoalCheckers.Add(new CheckerAvoidAsteroids(this, 10));
+        GoalCheckers.Add(new CheckerAvoidAsteroids(this, 15));
 
         GoalCheckers.Add(new CheckerEscapePod(this, 20));
 

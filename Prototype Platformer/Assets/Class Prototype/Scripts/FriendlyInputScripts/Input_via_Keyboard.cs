@@ -6,6 +6,8 @@ using UnityEngine.Events;
 public class Input_via_Keyboard : MonoBehaviour
 {
 
+    public HUD hud;
+
     [System.Serializable]
     public class keysEvent : UnityEvent<ControlStruct> { }
 
@@ -15,12 +17,7 @@ public class Input_via_Keyboard : MonoBehaviour
     public keysEvent WASD_and_Space_keys;
     public keysEvent IJKL_and_H_keys;
     public keysEvent NumericPad_and_NumericEnter_keys;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -29,6 +26,19 @@ public class Input_via_Keyboard : MonoBehaviour
         sendWASDcontrols();
         sendIJKLcontrols();
         sendNumPadcontrols();
+
+        sendMenu();
+    }
+
+    void sendMenu()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            if(hud.Link.Menu[0].IsGlobalMenuActive())
+                hud.Link.Menu[0].SetGlobalMenuActive(false);
+            else
+                hud.Link.Menu[0].SetGlobalMenuActive(true);
+        }
     }
 
     private void sendArrowcontrols()
@@ -63,7 +73,7 @@ public class Input_via_Keyboard : MonoBehaviour
         c.B = Input.GetKey(KeyCode.B);
         c.action = Input.GetKey(KeyCode.S);
 
-        c.inGameMenu = Input.GetKey(KeyCode.Escape);
+        c.inGameMenu = Input.GetKey(KeyCode.Tab);
 
         if (Input.GetKey(KeyCode.A))
             c.moveLeft = -1;

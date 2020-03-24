@@ -53,10 +53,8 @@ public class IntUpdater : MonoBehaviour
             wrapDir = -1;
             value = Min;
         }
-
-        print("change val " + value);
+        
         value = ConfirmVal(wrapDir);
-        print("constrained val " + value);
         UpdateDisplay();
         //Menu.savedData.SetRounds(rounds);
     }

@@ -64,6 +64,7 @@ public class CharacterMovement_Physics : MonoBehaviour
     public Item _currentItem;
     private Item defaultWeapon;
     public Item offeredItem { get; set; }
+
     public TextManager info;
     //public Text currentItemHUD;
     //public GameObject HUDmount;
@@ -117,12 +118,17 @@ public class CharacterMovement_Physics : MonoBehaviour
                 newOrientation = DoorController.DoorType.North;
 
         currentDoors.Add(cont);
+        if (currentDoors.Count == 1)
+            updateControlsDoor(true);
         return currentDoors.Count;
     }
     public void RemoveDoor(DoorController cont)
     {
         if (currentDoors.Contains(cont))
             currentDoors.Remove(cont);
+
+        if (currentDoors.Count == 0)
+            updateControlsDoor(false);
     }
     public bool TouchingDoor(DoorController.DoorType dir)
     {
@@ -162,6 +168,9 @@ public class CharacterMovement_Physics : MonoBehaviour
 
     private void Update()
     {
+        //foreach (DoorController d in currentDoors)
+        //    Debug.DrawLine(transform.position, d.transform.position);
+
         if (!_canMove||gameMenuActive) return;
 
         if (isGrounded())
@@ -211,9 +220,10 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (_canAttack) Attack();
         if (clearText == 0)
         {
+            updateControlsItem(false);
             offeredItem = null;
             //currentItemHUD.text = _currentItem.getName();
-            print("updating hud, clearing offered item");
+            //print("updating hud, clearing offered item");
             if (_currentItem == null)
                 _currentItem = defaultWeapon;
             updateItemHUD(_currentItem.getInUseHUD());
@@ -222,6 +232,14 @@ public class CharacterMovement_Physics : MonoBehaviour
         else clearText--;
     }
 
+    private void updateControlsItem(bool offered)
+    {
+        hud.Link.PickupButton[PlayerNumber].UpdateButton(offered);
+    }
+    private void updateControlsDoor(bool available)
+    {
+        hud.Link.DoorButton[PlayerNumber].UpdateButton(available);
+    }
 
     private void updateItemHUD(GameObject newHUD)
     {
@@ -371,6 +389,7 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (!_canMove)
             return;
 
+        updateControlsItem(true);
         offeredItem = item;
         info.say(item.getName(), 2);
         //currentItemHUD.text="GRAB:  "+item.getName();

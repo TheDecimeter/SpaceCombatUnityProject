@@ -72,11 +72,11 @@ public class StartMenu : MonoBehaviour
 
         savedData.SetRounds(ValidateVal(savedData.GetRoundsE, savedData.SetRounds, 1, 50));
 
-        savedData.SetRounds(ValidateVal(savedData.GetPlayers, savedData.SetPlayers, 0, 4));
+        savedData.SetPlayers(ValidateVal(savedData.GetPlayers, savedData.SetPlayers, 0, 4));
 
-        savedData.SetRounds(ValidateVal(savedData.GetMapTileCount, savedData.SetMapTileCount, 6, 100));
-        savedData.SetRounds(ValidateVal(savedData.GetMapHeight, savedData.SetMapHeight, 3, 10));
-        savedData.SetRounds(ValidateVal(savedData.GetMapWidth, savedData.SetMapWidth, 3, 10));
+        savedData.SetMapTileCount(ValidateVal(savedData.GetMapTileCount, savedData.SetMapTileCount, 6, 100));
+        savedData.SetMapHeight(ValidateVal(savedData.GetMapHeight, savedData.SetMapHeight, 3, 10));
+        savedData.SetMapWidth(ValidateVal(savedData.GetMapWidth, savedData.SetMapWidth, 3, 10));
 
 
         savedData.CloseStartMenu();

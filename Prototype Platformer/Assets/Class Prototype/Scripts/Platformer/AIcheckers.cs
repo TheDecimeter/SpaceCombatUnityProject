@@ -226,8 +226,7 @@ public partial class AI : MonoBehaviour
         private void FleeRoom()
         {
             //print("     flee room");
-
-            List<DoorBehavior> doors = new List<DoorBehavior>();
+            
             DoorBehavior door;
             float MinDist = float.MaxValue;
             Task BestPath=null; //the game rules dictate that there will be a door available, so this will be set

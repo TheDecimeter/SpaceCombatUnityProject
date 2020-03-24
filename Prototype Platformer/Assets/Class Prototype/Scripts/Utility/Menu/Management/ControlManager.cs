@@ -37,16 +37,32 @@ public class ControlManager : MonoBehaviour
 
     private void Awake()
     {
-        c1 = new ControlListener(this);
-        c2 = new ControlListener(this);
-        c3 = new ControlListener(this);
-        c4 = new ControlListener(this);
+        Init();
+        //c1 = new ControlListener(this);
+        //c2 = new ControlListener(this);
+        //c3 = new ControlListener(this);
+        //c4 = new ControlListener(this);
 
-        _controls = initialMenuItem;
-        controls = initialMenuItem;
+        //_controls = initialMenuItem;
+        //controls = initialMenuItem;
         if(IsTitleMenu)
             enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
     }
+
+    public void Init()
+    {
+        if (c1 == null)
+        {
+            c1 = new ControlListener(this);
+            c2 = new ControlListener(this);
+            c3 = new ControlListener(this);
+            c4 = new ControlListener(this);
+
+            _controls = initialMenuItem;
+            controls = initialMenuItem;
+        }
+    }
+
     public void PassControl(ControlFirer to)
     {
         controls = to;

@@ -19,6 +19,16 @@ public class HUD : MonoBehaviour
                 return;
             }
 
+            //Init new Controls;
+            value.MenuControls.Init();
+
+            //set ItemButton
+            for (int i = 0; i < links.PickupButton.Length; ++i)
+                CarryOverButtonInfo(links.PickupButton[i], value.PickupButton[i]);
+            //set DoorButton
+            for (int i = 0; i < links.DoorButton.Length; ++i)
+                CarryOverButtonInfo(links.DoorButton[i], value.DoorButton[i]);
+
             //set menu
             for (int i = 0; i < links.Menu.Length; ++i)
                 CarryOverMenuSettings(links.Menu[i], value.Menu[i]);
@@ -37,6 +47,11 @@ public class HUD : MonoBehaviour
 
     private HudLinks links;
     
+
+    private void CarryOverButtonInfo(DynamicButton oldb, DynamicButton newb)
+    {
+        newb.UpdateButton(oldb.IsActive());
+    }
 
     private void CarryOverMenuSettings(InGameMenuManager oldm, InGameMenuManager newm)
     {
@@ -67,7 +82,6 @@ public class HUD : MonoBehaviour
     {
         if (Link == null)
         {
-            print("Link is null");
             return;
         }
         else if (Link.MenuControls == null)
@@ -79,14 +93,26 @@ public class HUD : MonoBehaviour
     }
     public void ControllerListener2(ControlStruct newControls)
     {
+        if (Link == null)
+        {
+            return;
+        }
         Link.MenuControls.ControllerListener2(newControls);
     }
     public void ControllerListener3(ControlStruct newControls)
     {
+        if (Link == null)
+        {
+            return;
+        }
         Link.MenuControls.ControllerListener3(newControls);
     }
     public void ControllerListener4(ControlStruct newControls)
     {
+        if (Link == null)
+        {
+            return;
+        }
         Link.MenuControls.ControllerListener4(newControls);
     }
 

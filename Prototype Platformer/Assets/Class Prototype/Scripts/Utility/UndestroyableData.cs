@@ -115,11 +115,24 @@ public class UndestroyableData : MonoBehaviour
     //camera settings
     public void SetVerticalScreenSplit(bool vertical)
     {
-        sSave.CamRot.verticalSplit = vertical;
+        if(sSave.PlayerCount==2)
+            sSave.CamRot.verticalSplit = vertical;
     }
-    public void GetVerticalScreenSplit(IntUpdater.Get get)
+    public void GetVerticalScreenSplit(BoolUpdater.Get get)
     {
-        get(sSave.PlayerCount);
+        get(sSave.CamRot.verticalSplit);
+    }
+
+
+
+    //camera settings
+    public void SetTouchScreenControls(bool active)
+    {
+        sSave.TouchScreenControls = active;
+    }
+    public void GetTouchScreenControls(BoolUpdater.Get get)
+    {
+        get(sSave.TouchScreenControls);
     }
 
 
@@ -214,11 +227,16 @@ public class UndestroyableData : MonoBehaviour
     public void IncreaseScore(int PlayerNumber, int HowMuch)
     {
         if (WinText.text == "")
+        {
             WinText.text = "Player " + (PlayerNumber + 1) + " Wins";
-        else
+            sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
+        }
+        else if (WinText.text.Contains("" + (PlayerNumber + 1)))
+        {
+            sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
             WinText.text += "\ntwice?";
+        }
 
-        sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
         //print("score increased for " + PlayerNumber + " score: " + save.ScoreKeeper.player[PlayerNumber]);
     }
     public IEnumerable<int> GetScore()
@@ -367,7 +385,7 @@ public class UndestroyableData : MonoBehaviour
             public static bool FillLevel;
         }
         public static int RoundCounter, Rounds, PlayerCount;
-        public static bool NotYetHappened=true;
+        public static bool NotYetHappened=true, TouchScreenControls;
 
         public static class CamRot
         {
@@ -381,9 +399,14 @@ public class UndestroyableData : MonoBehaviour
     {
         public int[] PlayerRot;
         public int PlayerCount;
-        public bool ScreenSplitVertical = true;
+        public bool ScreenSplitVertical = true,TouchScreenControls;
         public int rounds,mapx,mapy,tileQuant;
-        
+
+        public override string ToString()
+        {
+            return " players: " + PlayerCount + ", TouchControls: " + TouchScreenControls + ", " +
+                "rounds: " + rounds + ", mapx: " + mapx + ", mapy: " + mapy + ", tiles: " + tileQuant; 
+        }
     }
 
     public void SaveFile(string fileName)
@@ -404,6 +427,8 @@ public class UndestroyableData : MonoBehaviour
         data.mapx=sSave.Play.MapDemensionX;
         data.mapy=sSave.Play.MapDemensionY;
         data.tileQuant=sSave.Play.MaxTiles;
+
+        data.TouchScreenControls = sSave.TouchScreenControls;
 
 
         BinaryFormatter bf = new BinaryFormatter();
@@ -440,10 +465,11 @@ public class UndestroyableData : MonoBehaviour
             sSave.Play.MapDemensionY = data.mapy;
             sSave.Play.MaxTiles = data.tileQuant;
 
-
             sSave.Play.FillLevel = (sSave.Play.MaxTiles == sSave.Play.MapDemensionY * sSave.Play.MapDemensionX);
 
-            print("read saved data "+data.rounds);
+            sSave.TouchScreenControls = data.TouchScreenControls;
+
+            print("read saved data "+data);
         }
         catch(System.Exception e)
         {
@@ -466,5 +492,11 @@ public class UndestroyableData : MonoBehaviour
         sSave.Play.MapDemensionX = 3;
         sSave.Play.MapDemensionY = 4;
         sSave.Play.MaxTiles = 12;
+
+#if UNITY_ANDROID
+        sSave.TouchScreenControls = true;
+#else
+        sSave.TouchScreenControls = false;
+#endif
     }
 }

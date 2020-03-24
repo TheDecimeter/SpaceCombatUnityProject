@@ -17,12 +17,8 @@ public class ScrollManager : ControlFirer
         Ledge = 0;
         Redge = Controls.Length-1;
         Controls[atControl].Home = true;
-
-    }
-
-    private void OnEnable()
-    {
         SetEndLocs();
+
     }
 
     /// <summary>

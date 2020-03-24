@@ -9,4 +9,6 @@ public class HudLinks : MonoBehaviour
     public Text [] Health;
     public InGameMenuManager[] Menu;
     public ControlManager MenuControls;
+    public DynamicButton [] DoorButton;
+    public DynamicButton [] PickupButton;
 }

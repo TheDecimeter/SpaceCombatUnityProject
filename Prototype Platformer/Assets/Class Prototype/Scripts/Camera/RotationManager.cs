@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RotationManager : MonoBehaviour
 {
+    public string CoversPlayers;
     public UndestroyableData SaveData;
     //public PlayerSetter playerLinks;
     public HUD hud;
@@ -24,9 +25,15 @@ public class RotationManager : MonoBehaviour
     }
 
     private int currentRot = 0;
+    
 
     private void Start()
     {
+        if (!CoversPlayers.Contains("" + GetPlayers()))
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         Rotate(SaveData.GetRotation());
         hud.Link.MenuControls.gameObject.SetActive(false);
     }
@@ -57,6 +64,8 @@ public class RotationManager : MonoBehaviour
         HudLinks oldHud = configurations[currentRot].Hud;
         HudLinks newHud = configurations[index].Hud;
 
+        VerifyVerticalSplit(index);
+
         //Set Links
         //playerLinks.SwitchLinks(newHud);
         hud.Link = newHud;
@@ -82,5 +91,36 @@ public class RotationManager : MonoBehaviour
         SaveData.WinText.text = "";
         SaveData.WinText = newHud.transform.Find("WinMessage").GetComponent<TextMeshProUGUI>();
         SaveData.WinText.text = txt;
+    }
+
+    private void VerifyVerticalSplit(int index)
+    {
+        bool vert = configurations[index].VerticalSplit;
+        if (GetVerticalSplit() != vert)
+        {
+            SetVerticalSplit(vert);
+            foreach(ViewPortScale v in FindObjectsOfType<ViewPortScale>())
+                v.Reset(vert);
+            foreach (CameraRectSetter v in FindObjectsOfType<CameraRectSetter>())
+                v.Reset(vert);
+        }
+    }
+
+    private int GetPlayers()
+    {
+        int r = 0;
+        FindObjectOfType<UndestroyableData>().GetPlayers((x) => { r = x; });
+        return r;
+    }
+    private bool GetVerticalSplit()
+    {
+        bool r = false;
+        FindObjectOfType<UndestroyableData>().GetVerticalScreenSplit((x) => { r = x; });
+        return r;
+    }
+
+    private void SetVerticalSplit(bool val)
+    {
+        FindObjectOfType<UndestroyableData>().SetVerticalScreenSplit(val);
     }
 }
