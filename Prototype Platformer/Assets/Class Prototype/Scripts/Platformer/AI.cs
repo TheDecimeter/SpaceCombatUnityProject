@@ -40,6 +40,8 @@ public partial class AI : MonoBehaviour
 
     private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
 
+    //debugging
+    private string asyncname = "";
 
     //thread stuff
     //private static Thread RunThread;
@@ -65,6 +67,8 @@ public partial class AI : MonoBehaviour
 
     void Start()
     {
+        asyncname = name;
+
         lastPosition = transform.position;
         rb = GetComponent<Rigidbody>();
         player = GetComponent<CharacterMovement_Physics>();
@@ -80,6 +84,8 @@ public partial class AI : MonoBehaviour
             roomPath[i] = new byte[3];
         }
         priority =0;
+        GoalCheckers.Add(new CheckerHarm(this, 1, 3));
+
         GoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
 
         GoalCheckers.Add(new CheckerKillPlayers(this, 6));

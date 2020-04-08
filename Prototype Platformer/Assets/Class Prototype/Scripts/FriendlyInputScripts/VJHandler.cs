@@ -91,21 +91,21 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
         }
         else if (InputDirection.x > .1)
         {
-            Controls.PlayerRight(true);
+            Controls.PlayerRight(InputDirection.x);
         }
         else
         {
-            Controls.PlayerRight(false);
+            Controls.PlayerRight(InputDirection.x);
         }
 
-        if (InputDirection.y > .4)
+        if (InputDirection.y > .7)
         {
             Controls.PlayerJump(true);
         }
         else
         {
             Controls.PlayerJump(false);
-            if (InputDirection.y < -.6)
+            if (InputDirection.y < -.9)
             {
                 Controls.PlayerPickup(true);
             }

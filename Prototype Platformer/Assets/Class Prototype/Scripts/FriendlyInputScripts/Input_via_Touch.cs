@@ -14,6 +14,7 @@ public class Input_via_Touch : MonoBehaviour
     public void PlayerMenu(bool val) { Player_Menu = val; }
     public void PlayerLeft(bool val) { if (val) Player_Right = -1; else Player_Right = 0; }
     public void PlayerRight(bool val) { if (val) Player_Right = 1; else Player_Right = 0; }
+    public void PlayerRight(float val) { Player_Right = val; }
 
 
 

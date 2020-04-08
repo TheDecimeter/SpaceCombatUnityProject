@@ -393,7 +393,6 @@ public class CharacterMovement_Physics : MonoBehaviour
         offeredItem = item;
         info.say(item.getName(), 2);
         //currentItemHUD.text="GRAB:  "+item.getName();
-        print("updating hut for newly encountered item");
         updateItemHUD(item.getPickUpHUD());
         clearText = 2;
         if (actionPressed)

@@ -19,7 +19,8 @@ public class PlayerHealth : MonoBehaviour {
     public UnityEvent damageEvent;
     public UnityEvent deathEvent;
 
-    private int _currentHealth, frameCounter, maxHealth=100;
+    private int _currentHealth;
+    private int frameCounter, maxHealth=100;
     private bool _canTakeDamage = true;
     public GameObject colliders;
 
@@ -49,6 +50,7 @@ public class PlayerHealth : MonoBehaviour {
     private bool isHuman = false;
 
     public Vector3 AsyncPosition { get; protected set; }
+    public string asyncname = "";
     public void Init()
     {
         AsyncPosition = transform.position;
@@ -59,8 +61,10 @@ public class PlayerHealth : MonoBehaviour {
         Init();
     }
 
+
     public void Start ()
     {
+        asyncname = gameObject.name;
         framesDamage = 0;
         //MotionBlur mb;
         //if (camEffects.profile.TryGetSettings(out mb))
@@ -211,6 +215,11 @@ public class PlayerHealth : MonoBehaviour {
 
         if (healthCheck == _currentHealth)
             print("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
+    }
+
+    public void Damage(int ammount)
+    {
+        _currentHealth -= ammount;
     }
 
     private bool KilledByPersonInst(DamageMessage message)

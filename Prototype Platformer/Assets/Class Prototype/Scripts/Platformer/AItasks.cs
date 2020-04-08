@@ -291,7 +291,19 @@ public partial class AI : MonoBehaviour
         {
 
             //print(this.player.gameObject.name + " Going to attack player " + player.gameObject.name);
-            ret = GoToTarget(mX, mY, pX, pY);
+            if (mX == pX)
+            {
+                ret = GoToTarget(mX, mY, pX, pY);
+                if (controls.moveLeft == 0)
+                {
+                    if (rb.velocity.x > 0)
+                        Move(1, 0);
+                    else
+                        Move(-1, 0);
+                }
+            }
+            else
+                ret = GoToTarget(mX, mY, pX, pY);
             return ErrorChecking(ret);
         }
 
@@ -322,6 +334,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskAssignAttackPlayerInRoom(PlayerHealth p)
     {
+        //print(asyncname+" targeting " + p.asyncname);
         TaskList.Push(() => TaskAttackPlayerInRoom(p));
         TaskList.Push(TaskMapRoom);
         roomStagnateTimer = roomStagnateTime;
@@ -330,7 +343,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskComplete()
     {
-        print("task complete " + player.gameObject.name);
+        //print("task complete " + player.gameObject.name);
         return complete;
     }
 

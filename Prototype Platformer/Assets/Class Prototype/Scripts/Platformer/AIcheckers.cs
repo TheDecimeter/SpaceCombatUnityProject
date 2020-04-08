@@ -11,6 +11,30 @@ using UnityEngine;
 public partial class AI : MonoBehaviour
 {
 
+    private class CheckerHarm : IChecker
+    {
+        AI outer;
+        float timer=0;
+        float updateTime;
+        PlayerHealth health;
+
+        public CheckerHarm(AI outer, int updateTime, int priority)
+        {
+            this.outer = outer;
+            this.updateTime = updateTime;
+            health = outer.GetComponent<PlayerHealth>();
+        }
+        public int Do(int priority, float deltaTime, bool failed = false)
+        {
+            timer += deltaTime;
+            if (timer > updateTime)
+            {
+                timer = 0;
+                health.Damage(1);
+            }
+            return priority;
+        }
+    }
 
     private class CheckerIdle : IChecker
     {
@@ -69,6 +93,7 @@ public partial class AI : MonoBehaviour
         float timer = 0;
         const float updateTime = 1;
         List<PlayerHealth> players;
+        PlayerHealth targetPlayer;
 
         public CheckerKillPlayers(AI outer, int priority)
         {
@@ -98,16 +123,21 @@ public partial class AI : MonoBehaviour
 
         private int Reset(int inCommingPriority)
         {
-            for(int i=players.Count-1;i>=0; --i)
+            //print("resetting attack for  " +outer.asyncname+" remaining players: "+players.Count);
+            for (int i=players.Count-1;i>=0; --i)
             {
 
                 if (players[i].isDead)
                 {
+                    //print("removed player " + players[i].asyncname);
                     players.RemoveAt(i);
                     continue;
                 }
-                if (players[i].framesDamage > 0)
+                if (players[i].framesDamage > 0 && i != 0)
+                {
+                    //print("skipping poisoned player " + players[i].asyncname);
                     continue;
+                }
 
                 PlayerHealth p = players[i];
 
@@ -116,7 +146,10 @@ public partial class AI : MonoBehaviour
                 outer.GetMapGridPos(outer.AsyncPosition, out mx, out my);
 
                 if (mx != px || my != py)
+                {
+                    //print("skipping out of room player" + players[i].asyncname);
                     continue;
+                }
 
                 float distP = Vector2.Distance(outer.AsyncPosition, p.AsyncPosition);
                 foreach(PlayerHealth pp in players)
@@ -225,7 +258,7 @@ public partial class AI : MonoBehaviour
 
         private void FleeRoom()
         {
-            //print("     flee room");
+            print("     flee room "+outer.asyncname);
             
             DoorBehavior door;
             float MinDist = float.MaxValue;

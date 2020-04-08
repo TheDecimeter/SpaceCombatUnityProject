@@ -9,6 +9,8 @@ public class Asteroid : MonoBehaviour
 
     private static AudioManager audio;
     private bool playOnce = true;
+    public EscapePodLauncher EscapePod;
+    private bool divert = true;
 
     private const float timeToLive = 4f;
     private float timer = 0;
@@ -21,6 +23,15 @@ public class Asteroid : MonoBehaviour
 
     private void Update()
     {
+        if (divert)
+        {
+            if (EscapePod.AsyncIncomming)
+            {
+                divert = false;
+                GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), 0));
+            }
+
+        }
         if (!playOnce)
         {
             if (timer > timeToLive)
