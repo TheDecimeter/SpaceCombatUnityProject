@@ -6,4 +6,5 @@ public abstract class DynamicButton : MonoBehaviour
 {
     public abstract void UpdateButton(bool active);
     public abstract bool IsActive();
+    public abstract void Complete(bool success);
 }

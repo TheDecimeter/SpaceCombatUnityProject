@@ -236,6 +236,10 @@ public class CharacterMovement_Physics : MonoBehaviour
     {
         hud.Link.PickupButton[PlayerNumber].UpdateButton(offered);
     }
+    private void updateControllsSuccessfulItem()
+    {
+        hud.Link.PickupButton[PlayerNumber].Complete(true);
+    }
     private void updateControlsDoor(bool available)
     {
         hud.Link.DoorButton[PlayerNumber].UpdateButton(available);
@@ -809,6 +813,7 @@ public class CharacterMovement_Physics : MonoBehaviour
 
 
         _currentItem = item;
+        updateControllsSuccessfulItem();
         item.itemExterior.SendMessageUpwards("feedback", true, SendMessageOptions.DontRequireReceiver);
         if (_currentItem.effect.Contains("shield"))
         {

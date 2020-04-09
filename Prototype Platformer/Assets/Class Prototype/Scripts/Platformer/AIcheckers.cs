@@ -30,7 +30,7 @@ public partial class AI : MonoBehaviour
             if (timer > updateTime)
             {
                 timer = 0;
-                health.Damage(1);
+                health.AsyncDamage(1);
             }
             return priority;
         }
@@ -123,19 +123,19 @@ public partial class AI : MonoBehaviour
 
         private int Reset(int inCommingPriority)
         {
-            //print("resetting attack for  " +outer.asyncname+" remaining players: "+players.Count);
+            print("resetting attack for  " +outer.asyncname+" remaining players: "+players.Count);
             for (int i=players.Count-1;i>=0; --i)
             {
 
                 if (players[i].isDead)
                 {
-                    //print("removed player " + players[i].asyncname);
+                    print("removed player " + players[i].asyncname);
                     players.RemoveAt(i);
                     continue;
                 }
                 if (players[i].framesDamage > 0 && i != 0)
                 {
-                    //print("skipping poisoned player " + players[i].asyncname);
+                    print("skipping poisoned player " + players[i].asyncname);
                     continue;
                 }
 
@@ -147,7 +147,7 @@ public partial class AI : MonoBehaviour
 
                 if (mx != px || my != py)
                 {
-                    //print("skipping out of room player" + players[i].asyncname);
+                    print("skipping out of room player" + players[i].asyncname);
                     continue;
                 }
 

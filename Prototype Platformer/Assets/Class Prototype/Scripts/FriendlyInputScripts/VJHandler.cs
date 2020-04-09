@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+
 public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
     public RawImage NoItemRing;
@@ -8,11 +9,13 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
     private RawImage outerRing;
     public RawImage InnerNub;
     public Input_via_Touch Controls;
+    private bool autoJump;
 
     private Vector3 InputDirection;
 
     void Start()
     {
+        autoJump = false;
         outerRing = NoItemRing;
         //outerRing = GetComponent<Image>();
         //joystick = transform.GetChild(0).GetComponent<Image>(); //this command is used because there is only one child in hierarchy
@@ -100,22 +103,38 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
 
         if (InputDirection.y > .7)
         {
-            Controls.PlayerJump(true);
+            if (autoJump)
+            {
+                autoJump = false;
+                Controls.PlayerJump(true);
+            }
+            else
+            {
+                Controls.PlayerJump(false);
+                autoJump = true;
+            }
         }
         else
         {
+            autoJump = false;
             Controls.PlayerJump(false);
             if (InputDirection.y < -.9)
             {
                 Controls.PlayerPickup(true);
             }
             else
+            {
                 Controls.PlayerPickup(false);
+            }
         }
     }
 
     public override bool IsActive()
     {
         return (outerRing == ItemRing);
+    }
+
+    public override void Complete(bool success)
+    {
     }
 }

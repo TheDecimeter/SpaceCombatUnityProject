@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class ShowButtonWhenNeeded : DynamicButton
 {
+    public override void Complete(bool success)
+    {
+    }
+
     public override bool IsActive()
     {
         return gameObject.activeInHierarchy;

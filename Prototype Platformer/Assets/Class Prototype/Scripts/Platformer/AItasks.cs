@@ -337,7 +337,9 @@ public partial class AI : MonoBehaviour
         //print(asyncname+" targeting " + p.asyncname);
         TaskList.Push(() => TaskAttackPlayerInRoom(p));
         TaskList.Push(TaskMapRoom);
-        roomStagnateTimer = roomStagnateTime;
+        GetMapGridPos(transform.position, out int x, out int y);
+        if(x!=currentMapX||y!=currentMapY)
+            roomStagnateTimer = roomStagnateTime;
         return complete;
     }
 

@@ -49,6 +49,7 @@ public class PlayerHealth : MonoBehaviour {
 
     private bool isHuman = false;
 
+    private int asyncDamage=0;
     public Vector3 AsyncPosition { get; protected set; }
     public string asyncname = "";
     public void Init()
@@ -91,6 +92,18 @@ public class PlayerHealth : MonoBehaviour {
 
     void FixedUpdate()
     {
+        if (asyncDamage != 0)
+        {
+            _currentHealth -= asyncDamage;
+            hud.Link.Health[PlayerNumber].text = " " + _currentHealth;
+            asyncDamage = 0;
+            if (_currentHealth <= 0)
+            {
+                KilledBy = null;
+                KilledByTime();
+                PlayerDeath();
+            }
+        }
         AsyncPosition = transform.position;
         if (isHuman)
         {
@@ -217,9 +230,10 @@ public class PlayerHealth : MonoBehaviour {
             print("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
     }
 
-    public void Damage(int ammount)
+    public void AsyncDamage(int ammount)
     {
-        _currentHealth -= ammount;
+        //Debug.LogWarning("damage " + asyncname + " " + ammount);
+        asyncDamage += ammount;
     }
 
     private bool KilledByPersonInst(DamageMessage message)
@@ -301,6 +315,27 @@ public class PlayerHealth : MonoBehaviour {
             case 2:
                 hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("What doesn't kill you\nmakes you stronger.\nNormally\nit <b>kills</b> you though.", -1);
+                break;
+            default:
+                hud.Link.Health[PlayerNumber].text = "0";
+                info.say("", -1);
+                break;
+        }
+    }
+    private void KilledByTime()
+    {
+        if (!isHuman)
+            return;
+        deathQuip = true;
+        switch (Random.Range(0, 10))
+        {
+            case 0:
+                hud.Link.Health[PlayerNumber].text = " : (";
+                info.say("Smoked too many\ncigarettes.", -1);
+                break;
+            case 1:
+                hud.Link.Health[PlayerNumber].text = " :'{";
+                info.say("I was bored\nanyway", -1);
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
