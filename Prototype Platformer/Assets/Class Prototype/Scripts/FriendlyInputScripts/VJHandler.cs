@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
@@ -9,12 +10,13 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
     private RawImage outerRing;
     public RawImage InnerNub;
     public Input_via_Touch Controls;
-    private bool autoJump;
+    private bool autoJump,currentJump;
 
     private Vector3 InputDirection;
 
     void Start()
     {
+        currentJump = false;
         autoJump = false;
         outerRing = NoItemRing;
         //outerRing = GetComponent<Image>();
@@ -48,6 +50,28 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
 
         SetControls(InputDirection);
         
+    }
+
+    private IEnumerator AutoJump()
+    {
+        autoJump = true;
+        Controls.PlayerJump(false);
+        currentJump = true;
+        while (autoJump)
+        {
+            if (currentJump)
+            {
+                currentJump = false;
+                Controls.PlayerJump(true);
+            }
+            else
+            {
+                Controls.PlayerJump(false);
+                currentJump = true;
+            }
+            yield return null;
+        }
+        Controls.PlayerJump(false);
     }
 
     public void OnPointerDown(PointerEventData ped)
@@ -88,11 +112,11 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
 
     private void SetControls(Vector2 InputDirection)
     {
-        if (InputDirection.x < -.1)
+        if (InputDirection.x < -.1f)
         {
             Controls.PlayerLeft(true);
         }
-        else if (InputDirection.x > .1)
+        else if (InputDirection.x > .1f)
         {
             Controls.PlayerRight(InputDirection.x);
         }
@@ -101,24 +125,27 @@ public class VJHandler : DynamicButton, IDragHandler, IPointerUpHandler, IPointe
             Controls.PlayerRight(InputDirection.x);
         }
 
-        if (InputDirection.y > .7)
+        if (InputDirection.y > .4f)
         {
-            if (autoJump)
+            if (!autoJump)
             {
-                autoJump = false;
-                Controls.PlayerJump(true);
+                StartCoroutine(AutoJump());
             }
-            else
-            {
-                Controls.PlayerJump(false);
-                autoJump = true;
-            }
+            //if (autoJump)
+            //{
+            //    autoJump = false;
+            //    Controls.PlayerJump(true);
+            //}
+            //else
+            //{
+            //    Controls.PlayerJump(false);
+            //    autoJump = true;
+            //}
         }
         else
         {
             autoJump = false;
-            Controls.PlayerJump(false);
-            if (InputDirection.y < -.9)
+            if (InputDirection.y < -.7f)
             {
                 Controls.PlayerPickup(true);
             }

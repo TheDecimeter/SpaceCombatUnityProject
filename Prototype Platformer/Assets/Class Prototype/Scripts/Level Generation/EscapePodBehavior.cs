@@ -87,6 +87,7 @@ public class EscapePodBehavior : MonoBehaviour
 
     void leave()
     {
+        PlayerHealth.StopDamage = true;
         dontMove = false;
         transform.LookAt(player.GetComponent<CameraLocator>().CameraLocation);
         GetComponent<Rigidbody>().velocity = transform.forward * LaunchSpeed;

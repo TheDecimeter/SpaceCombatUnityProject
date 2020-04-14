@@ -35,8 +35,8 @@ public class Asteroid : MonoBehaviour
                 if (Random.Range(0, 2) > 0)
                     y *= -1;
                 Vector2 v = new Vector2(x, y);
-                Rigidbody rb = GetComponent<Rigidbody>();
-                v =v.normalized*rb.velocity.normalized;
+                //Rigidbody rb = GetComponent<Rigidbody>();
+                v = v.normalized * 1000;//rb.velocity.normalized;
                 divert = false;
                 GetComponent<Rigidbody>().AddForce(new Vector3(v.x, v.y, 0));
             }

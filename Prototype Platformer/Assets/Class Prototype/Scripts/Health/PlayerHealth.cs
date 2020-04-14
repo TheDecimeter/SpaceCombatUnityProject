@@ -10,6 +10,8 @@ public class PlayerHealth : MonoBehaviour {
     private static readonly string[] name = { "Bibbs", "Leslie", "Giggles", "Hobbs" };
     private const int CullingMask = ~(1 << 24 | 1 << 23 | 1 << 22 | 1 << 21 | 1 << 20);
 
+    public static bool StopDamage=false;
+
     private AudioManager audio;
     private int PlayerNumber;
 
@@ -65,6 +67,7 @@ public class PlayerHealth : MonoBehaviour {
 
     public void Start ()
     {
+        StopDamage = false;
         asyncname = gameObject.name;
         framesDamage = 0;
         //MotionBlur mb;
@@ -115,6 +118,8 @@ public class PlayerHealth : MonoBehaviour {
             }
             if (framesDamage > 0)
             {
+                if (StopDamage)
+                    return;
                 secondsCounter++;
                 if (secondsCounter == 50)
                 {
@@ -129,6 +134,8 @@ public class PlayerHealth : MonoBehaviour {
 
     public void DealDamage(DamageMessage message)
     {
+        if (StopDamage)
+            return;
         //if (message.friend==gameObject||message.friend == colliders)
         //return;
 
@@ -232,6 +239,8 @@ public class PlayerHealth : MonoBehaviour {
 
     public void AsyncDamage(int ammount)
     {
+        if (StopDamage)
+            return;
         //Debug.LogWarning("damage " + asyncname + " " + ammount);
         asyncDamage += ammount;
     }
@@ -470,7 +479,7 @@ public class PlayerHealth : MonoBehaviour {
 
         float rot=30f;
         float xythrust = 1f;
-        float zthrust = 10f;
+        float zthrust = 20f;
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.constraints = 0;

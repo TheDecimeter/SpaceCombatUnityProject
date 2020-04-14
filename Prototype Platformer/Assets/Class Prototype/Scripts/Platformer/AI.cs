@@ -4,7 +4,6 @@ using UnityEngine;
 
 public partial class AI : MonoBehaviour
 {
-
     public LevelRandomizer levelStats;
 
     private CharacterMovement_Physics player;
@@ -25,8 +24,8 @@ public partial class AI : MonoBehaviour
 
     //Stuck checking
     private Vector3 lastPosition;
-    private float stagnateTimer = 0, freedomTimer=0,roomStagnateTimer=0;
-    private const float stagnateTime = .5f, freedomTime=stagnateTime/2,roomStagnateTime=2;
+    private float stagnateTimer = 0, freedomTimer = 0, roomStagnateTimer = 0;
+    private const float stagnateTime = .5f, freedomTime = stagnateTime / 2, roomStagnateTime = 2;
     private bool PickUpItem = false;
 
     //Tasks and planning
@@ -35,8 +34,8 @@ public partial class AI : MonoBehaviour
     private int priority;
     private List<IChecker> GoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
-    private bool specialDirections = false, up, down, left, right, failed=false;
-    
+    private bool specialDirections = false, up, down, left, right, failed = false;
+
 
     private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
 
@@ -57,7 +56,7 @@ public partial class AI : MonoBehaviour
     {
         AsyncPosition = transform.position;
     }
-    
+
     void Awake()
     {
         if (AIcount == 4)
@@ -83,14 +82,14 @@ public partial class AI : MonoBehaviour
         {
             roomPath[i] = new byte[3];
         }
-        priority =0;
+        priority = 0;
         GoalCheckers.Add(new CheckerHarm(this, 1, 3));
 
         GoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
 
         GoalCheckers.Add(new CheckerKillPlayers(this, 6));
 
-        GoalCheckers.Add(new CheckerGrabItem(this,10));
+        GoalCheckers.Add(new CheckerGrabItem(this, 10));
 
         GoalCheckers.Add(new CheckerAvoidAsteroids(this, 15));
 
@@ -213,19 +212,19 @@ public partial class AI : MonoBehaviour
         //        Debug.LogError("Had to use loop counter task update");
         //        break;
         //    }
-            int status = currentTask();
-            if (status == complete)
+        int status = currentTask();
+        if (status == complete)
+        {
+            if (TaskList.Count > 0)
+                currentTask = TaskList.Pop();
+            else
             {
-                if (TaskList.Count > 0)
-                    currentTask = TaskList.Pop();
-                else
-                {
-                    //print(gameObject.name + " end of task list " + TaskList.Count);
-                    priority = 0;
-                    //break;
-                }
-
+                //print(gameObject.name + " end of task list " + TaskList.Count);
+                priority = 0;
+                //break;
             }
+
+        }
         //}
 
         if (status == impossible)
@@ -261,14 +260,14 @@ public partial class AI : MonoBehaviour
     {
         ResetRoomPath();
         int gridx; int gridy;
-        GetMapGridPos(transform.position,out gridx, out gridy);
+        GetMapGridPos(transform.position, out gridx, out gridy);
         int roomx; int roomy;
         GetRoomGrid(transform.position, out roomx, out roomy);
 
         Queue<MapNode> n = new Queue<MapNode>();
         Vector3 centerOfRoomGrid = GetCenterOfRoomGrid(transform.position);
 
-        if(specialDirections)
+        if (specialDirections)
         {
             //print("special directions ");
             roomPath[roomy][roomx] = 1;
@@ -285,7 +284,7 @@ public partial class AI : MonoBehaviour
             n.Enqueue(new MapNode(roomx, roomy, 1, centerOfRoomGrid));
 
         RaycastHit h;
-        
+
         //For some reason ignoring a layer seems to ignore all layers on ray cast.
         // I couldn't find anything about this bug for this verison of unity, but it
         // just isn't working, therefore if a ray intersects a player I just assume the path
@@ -308,26 +307,26 @@ public partial class AI : MonoBehaviour
             //check left
             if (!(c.x - 1 < 0 || c.x - 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x - 1] != 0))
             {
-                if (!Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f,ignoreLayer,QueryTriggerInteraction.Ignore))
+                if (!Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
                 //else
                 //    print("hit " + h.collider.gameObject.name);
             }
-                
+
             //check right
             if (!(c.x + 1 < 0 || c.x + 1 > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x + 1] != 0))
             {
-                if(!Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
+                if (!Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
                 //else
                 //    print("hit " + h.collider.gameObject.name);
             }
-               
-                
+
+
             //check up
             if (!(c.x < 0 || c.x > 2 || c.y + 1 < 0 || c.y + 1 > 1 || roomPath[c.y + 1][c.x] != 0))
             {
-                if(!Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
+                if (!Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
                 //else
                 //    print("hit " + h.collider.gameObject.name);
@@ -342,7 +341,7 @@ public partial class AI : MonoBehaviour
             }
         }
 
-        
+
 
         //print(roomGridString());
         return complete;
@@ -368,9 +367,9 @@ public partial class AI : MonoBehaviour
     private bool isAPlayer(RaycastHit h, out int player)
     {
         player = h.transform.gameObject.layer - 13;
-        return player>=1 && player<=4;
+        return player >= 1 && player <= 4;
     }
-    
+
 
     private void ResetRoomPath()
     {
@@ -383,10 +382,10 @@ public partial class AI : MonoBehaviour
         }
     }
 
-    
-    
 
-    
+
+
+
 
     private void GetRoomGrid(Vector3 loc, out int x, out int y)
     {
@@ -396,7 +395,7 @@ public partial class AI : MonoBehaviour
         TileInformation room = levelStats.Map[gridY][gridX];
         Vector3 roomLoc = room.transform.position;
         x = (int)((loc.x - roomLoc.x) / 4);
-        y = (int)((loc.y - (roomLoc.y+StartY)) / 3);
+        y = (int)((loc.y - (roomLoc.y + StartY)) / 3);
         x = Mathf.Clamp(x, 0, 2);
         y = Mathf.Clamp(y, 0, 1);
 
@@ -461,7 +460,7 @@ public partial class AI : MonoBehaviour
     {
         int x, y;
         GetMapGridPos(AsyncPosition, out x, out y);
-        
+
         if (x < levelStats.MapDemensionsX - 1)
         {
             if (!levelStats.Map[y][x + 1])
@@ -580,9 +579,9 @@ public partial class AI : MonoBehaviour
         Transform playerT = FindClosestPlayer();
         //print("closest player is " + playerT.gameObject.name);
         int x, y;
-        GetMapGridPos(playerT.position,out x, out y);
+        GetMapGridPos(playerT.position, out x, out y);
         //print(" they are at " + x + "," + y);
-        
+
     }
 
 
@@ -590,14 +589,14 @@ public partial class AI : MonoBehaviour
     {
         x = (int)((loc.x - StartX) / levelStats.xTileSize);
         y = (int)((loc.y - StartY) / levelStats.yTileSize);
-        x = Mathf.Clamp(x, 0, levelStats.MapDemensionsX-1);
-        y = Mathf.Clamp(y, 0, levelStats.MapDemensionsY-1);
+        x = Mathf.Clamp(x, 0, levelStats.MapDemensionsX - 1);
+        y = Mathf.Clamp(y, 0, levelStats.MapDemensionsY - 1);
     }
 
 
     private Transform FindClosestPlayer()
     {
-        Transform closest=null;
+        Transform closest = null;
         float closestDist = float.MaxValue;
 
         foreach (Transform child in levelStats.PlayerArray.transform)
@@ -636,7 +635,7 @@ public partial class AI : MonoBehaviour
         }
         //print("not stagnate " + lastPosition + " " + transform.position);
         lastPosition = transform.position;
-        stagnateTimer = 0; 
+        stagnateTimer = 0;
         return false;
     }
 
@@ -728,7 +727,7 @@ public partial class AI : MonoBehaviour
             return true;
     }
 
-    
+
 
 
     private void OnCollisionStay(Collision col)
@@ -767,7 +766,7 @@ public partial class AI : MonoBehaviour
 
         if (cp.normal.x > -.1f)
             return false;
-        return isObsticle(cp); 
+        return isObsticle(cp);
 
     }
     private bool isWestObstruction(ContactPoint cp)
@@ -782,10 +781,10 @@ public partial class AI : MonoBehaviour
         if (cp.otherCollider.gameObject.GetComponent<DoorBehavior>())
             return false;
         float otherHeight = cp.otherCollider.bounds.center.y + cp.otherCollider.bounds.extents.y / 2;
-        float thisHeight= cp.thisCollider.bounds.center.y + cp.thisCollider.bounds.extents.y / 2;
+        float thisHeight = cp.thisCollider.bounds.center.y + cp.thisCollider.bounds.extents.y / 2;
         //print("heights this: "+thisHeight + " other " + otherHeight + "\n for " + gameObject.name);
         //print("this collider " + cp.thisCollider.gameObject.name + " other: " + cp.otherCollider.gameObject.name);
-        if (thisHeight<otherHeight)
+        if (thisHeight < otherHeight)
             return false;
         return true;
     }
@@ -797,7 +796,8 @@ public partial class AI : MonoBehaviour
         public byte cost;
         public Vector3 loc;
 
-        public MapNode(int x, int y, int cost, Vector3 loc) {
+        public MapNode(int x, int y, int cost, Vector3 loc)
+        {
             //print("created Node (" + x + "," + y + ") " + cost + " " + loc);
             this.x = x;
             this.y = y;
