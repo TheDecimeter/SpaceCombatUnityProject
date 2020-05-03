@@ -50,9 +50,6 @@ public class ShowDamage : MonoBehaviour
         else
             currentDamage += Time.deltaTime;
     }
-    void LateUpdate()
-    {
-    }
 
     public void animateDamage()
     {
