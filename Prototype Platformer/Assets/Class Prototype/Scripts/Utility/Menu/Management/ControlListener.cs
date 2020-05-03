@@ -46,7 +46,7 @@ public class ControlListener
         {
             releaseR = true;
         }
-        if (_controllerStatus.jump)
+        if (_controllerStatus.A)
         {
             if (releaseS)
             {

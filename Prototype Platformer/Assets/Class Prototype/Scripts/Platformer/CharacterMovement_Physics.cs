@@ -277,14 +277,14 @@ public class CharacterMovement_Physics : MonoBehaviour
         if (ignoreInput)
         {
             if (_controllerStatus.B) return;
-            if (_controllerStatus.jump) return;
+            if (_controllerStatus.A) return;
             if (_controllerStatus.inGameMenu) return;
             ignoreInput = false;
         }
         if (gameMenuActive)
         {
             gameMenuActive=hud.Link.Menu[PlayerNumber].IsMenuActive();
-            if (_controllerStatus.jump)
+            if (_controllerStatus.A)
             {
                 hud.Link.Menu[PlayerNumber].SetGlobalMenuActive(true);
             }

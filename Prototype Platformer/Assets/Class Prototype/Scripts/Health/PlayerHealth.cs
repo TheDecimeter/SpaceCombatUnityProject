@@ -152,7 +152,10 @@ public class PlayerHealth : MonoBehaviour {
                 framesDamage = 0;
             }
             if (_currentHealth > maxHealth)
+            {
+                _currentHealth = maxHealth;
                 return;
+            }
             _currentHealth -= message.damage;
             if (_currentHealth > maxHealth)
             {
@@ -176,6 +179,7 @@ public class PlayerHealth : MonoBehaviour {
             {
                 HealthParticle.Create(transform, -message.damage);
             }
+            hud.Link.Health[PlayerNumber].text = " " + _currentHealth;
             info.say("HP: " + _currentHealth, 15);
             return;
         }

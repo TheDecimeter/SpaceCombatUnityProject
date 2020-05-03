@@ -28,7 +28,7 @@ public class Input_via_GamePad : MonoBehaviour
     //Button A=0, B=1, X=2, Y=3, Rbumper=12
 
 
-    private const int start=5, jump = 0, attackButton = 2, attackAxis1=4, attackAxis2 = 5, action = 3, door1=1, door2=12, door3 = 11, left = 0, right = 0;
+    private const int start=5, jump = 0, attackButton = 2, attackAxis1=4, attackAxis2 = 5, action = 3, door1=1, door2=12, door3 = 11, left = 0, right = 0, menu=1;
     private const int AXIS = 1, BUTTON = 0;
     private float axisThreshold = 0.2f;
 
@@ -259,6 +259,7 @@ public class Input_via_GamePad : MonoBehaviour
             {
                 case jump:
                     current.jump = true;
+                    current.A = true;
                     break;
                 case attackButton:
                     current.attack = true;
@@ -298,6 +299,12 @@ public class Input_via_GamePad : MonoBehaviour
         {
             case left:
                 current.moveLeft = state;
+                break;
+            case menu:
+                if (state > axisThreshold)
+                    current.A = true;
+                else if (state < -axisThreshold)
+                    current.B = true;
                 break;
             case attackAxis1:
             case attackAxis2:

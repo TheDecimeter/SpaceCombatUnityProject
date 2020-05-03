@@ -45,7 +45,7 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
-        c.jump = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Return);
+        c.A = c.jump = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Return);
         c.attack = Input.GetKey(KeyCode.RightShift);
         c.door = Input.GetKey(KeyCode.RightControl);
         c.B = Input.GetKey(KeyCode.RightControl);
@@ -67,7 +67,8 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
-        c.jump = Input.GetKey(KeyCode.W);
+        c.A = c.jump = Input.GetKey(KeyCode.W);
+        
         c.attack = Input.GetKey(KeyCode.Space);
         c.door = Input.GetKey(KeyCode.B);
         c.B = Input.GetKey(KeyCode.B);
@@ -89,7 +90,7 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
-        c.jump = Input.GetKey(KeyCode.I);
+        c.A = c.jump = Input.GetKey(KeyCode.I);
         c.attack = Input.GetKey(KeyCode.H);
         c.door = Input.GetKey(KeyCode.Y);
         c.B = Input.GetKey(KeyCode.Y);
@@ -111,7 +112,7 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
-        c.jump = Input.GetKey(KeyCode.Keypad8);
+        c.A = c.jump = Input.GetKey(KeyCode.Keypad8);
         c.attack = Input.GetKey(KeyCode.KeypadEnter);
         c.door = Input.GetKey(KeyCode.Keypad0);
         c.B = Input.GetKey(KeyCode.Keypad0);

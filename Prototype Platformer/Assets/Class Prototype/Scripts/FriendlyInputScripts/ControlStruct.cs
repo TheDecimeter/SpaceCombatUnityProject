@@ -10,10 +10,11 @@ public class ControlStruct
     public bool attack { get { return bAttack != None; } set { if (value) bAttack = source; else bAttack = None; } }
     public bool action { get { return bAction != None; } set { if (value) bAction = source; else bAction = None; } }
     public bool door { get { return bDoor != None; } set { if (value) bDoor = source; else bDoor = None; } }
-    public bool B { get { return door; } set { door = value; } }
+    public bool A { get { return bA != None; } set { if (value) bA = source; else bA = None; } }
+    public bool B { get { return bB != None; } set { if (value) bB = source; else bB = None; } }
     public bool inGameMenu { get { return bMenu != None; } set { if (value) bMenu = source; else bMenu = None; } }
 
-    private int bJump, bAttack, bAction, bDoor, bMenu, bLeft;
+    private int bJump, bAttack, bAction, bDoor, bMenu, bLeft, bA, bB;
 
     public float moveLeft { get { return left; } set { if (Mathf.Abs(value) > deadZone) { bLeft = source; left = value; } else{ bLeft = None; left = 0; } } }
     private float left = 0;
@@ -42,7 +43,8 @@ public class ControlStruct
         jump = false;
         action = false;
         door = false;
-        //B = false;
+        B = false;
+        A = false;
         attack = false;
         inGameMenu = false;
     }
@@ -57,9 +59,15 @@ public class ControlStruct
 
         if(other.action) bAction |=  other.source;
         else             bAction &= ~other.source;
-
-        if(other.door || other.B) bDoor |=  other.source;
-        else                      bDoor &= ~other.source;
+        
+        if(other.door)   bDoor |=  other.source;
+        else             bDoor &= ~other.source;
+        
+        if(other.B)      bB |=  other.source;
+        else             bB &= ~other.source;
+        
+        if(other.A)      bA |=  other.source;
+        else             bA &= ~other.source;
 
         if(other.inGameMenu)      bMenu |=  other.source;
         else                      bMenu &= ~other.source;
