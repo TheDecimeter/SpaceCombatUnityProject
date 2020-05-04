@@ -44,12 +44,11 @@ public class Input_via_Keyboard : MonoBehaviour
     private void sendArrowcontrols()
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
-
-        c.A = c.jump = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Return);
+        c.A = Input.GetKey(KeyCode.Return);
+        c.A |= c.jump = Input.GetKey(KeyCode.UpArrow);
         c.attack = Input.GetKey(KeyCode.RightShift);
         c.door = Input.GetKey(KeyCode.RightControl);
-        c.B = Input.GetKey(KeyCode.RightControl);
-        c.action = Input.GetKey(KeyCode.DownArrow);
+        c.B = c.action = Input.GetKey(KeyCode.DownArrow);
 
         c.inGameMenu = Input.GetKey(KeyCode.Slash);
 
@@ -71,8 +70,7 @@ public class Input_via_Keyboard : MonoBehaviour
         
         c.attack = Input.GetKey(KeyCode.Space);
         c.door = Input.GetKey(KeyCode.B);
-        c.B = Input.GetKey(KeyCode.B);
-        c.action = Input.GetKey(KeyCode.S);
+        c.B = c.action = Input.GetKey(KeyCode.S);
 
         c.inGameMenu = Input.GetKey(KeyCode.Tab);
 
@@ -93,8 +91,7 @@ public class Input_via_Keyboard : MonoBehaviour
         c.A = c.jump = Input.GetKey(KeyCode.I);
         c.attack = Input.GetKey(KeyCode.H);
         c.door = Input.GetKey(KeyCode.Y);
-        c.B = Input.GetKey(KeyCode.Y);
-        c.action = Input.GetKey(KeyCode.K);
+        c.B = c.action = Input.GetKey(KeyCode.K);
 
         c.inGameMenu = Input.GetKey(KeyCode.Backslash);
 
@@ -113,10 +110,9 @@ public class Input_via_Keyboard : MonoBehaviour
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
 
         c.A = c.jump = Input.GetKey(KeyCode.Keypad8);
-        c.attack = Input.GetKey(KeyCode.KeypadEnter);
+        c.A |= c.attack = Input.GetKey(KeyCode.KeypadEnter);
         c.door = Input.GetKey(KeyCode.Keypad0);
-        c.B = Input.GetKey(KeyCode.Keypad0);
-        c.action = Input.GetKey(KeyCode.Keypad5);
+        c.B = c.action = Input.GetKey(KeyCode.Keypad5);
 
         c.inGameMenu = Input.GetKey(KeyCode.KeypadDivide);
 
