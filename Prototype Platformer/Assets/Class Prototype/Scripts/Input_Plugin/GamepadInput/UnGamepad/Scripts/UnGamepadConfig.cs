@@ -52,7 +52,7 @@ public class UnGamepadConfig : ScriptableObject
 		}
 	}
 
-	public List<UnGamepadPlatform> restrictPlatforms = new List<UnGamepadPlatform> (); //use this for OS-specific config
+	public List<UnGamepadPlatform> restrictPlatforms1 = new List<UnGamepadPlatform> (); //use this for OS-specific config
 	public string[] joystickNames = new string[0];
 	public string displayName = "";
 	public GamepadLayout layout = null;
@@ -93,18 +93,21 @@ public class UnGamepadConfig : ScriptableObject
 
 	public bool IsAvailableOnCurrentPlatform ()
 	{
-		if (restrictPlatforms.Count == 0)
+		if (restrictPlatforms1.Count == 0)
 			return true;
 
-		if (Application.platform.ToString ().Contains ("Windows") && restrictPlatforms.Contains (UnGamepadPlatform.Windows))
+		if (Application.platform.ToString ().Contains ("Windows") && restrictPlatforms1.Contains (UnGamepadPlatform.Windows))
 			return true;
 
-		if (Application.platform.ToString ().Contains ("OSX") && restrictPlatforms.Contains (UnGamepadPlatform.Mac))
+		if (Application.platform.ToString ().Contains ("OSX") && restrictPlatforms1.Contains (UnGamepadPlatform.Mac))
 			return true;
 
-		if (Application.platform.ToString ().Contains ("Linux") && restrictPlatforms.Contains (UnGamepadPlatform.Linux))
-			return true;
+        if (Application.platform.ToString().Contains("Linux") && restrictPlatforms1.Contains(UnGamepadPlatform.Linux))
+            return true;
 
-		return false;
+        if (Application.platform.ToString().Contains("Android") && restrictPlatforms1.Contains(UnGamepadPlatform.Linux))
+            return true;
+
+        return false;
 	}
 }

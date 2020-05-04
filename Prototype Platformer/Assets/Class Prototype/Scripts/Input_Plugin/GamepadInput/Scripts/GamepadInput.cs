@@ -18,8 +18,7 @@ public class GamepadInput : MonoBehaviour
 
 	public event System.Action<GamepadDevice> OnGamepadAdded;
 	public event System.Action<GamepadDevice> OnGamepadRemoved;
-
-#if !UNITY_ANDROID
+    
     void Start()
 	{
 #if UNITY_STANDALONE_WIN
@@ -56,6 +55,5 @@ public class GamepadInput : MonoBehaviour
 		if (OnGamepadRemoved != null)
 			OnGamepadRemoved (gamepadDevice);
 	}
-
-#endif
+    
 }

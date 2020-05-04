@@ -22,8 +22,7 @@ public class Input_via_GamePad : MonoBehaviour
     public int maxPlayers = 4;
 
     private static GamepadDevice [] devices;
-
-#if !UNITY_ANDROID
+    
     private List<ControlStruct> previousControls;
     //Axis 4=lefttrig, 5=righttrig, 0=leftAnalogH
 
@@ -334,7 +333,6 @@ public class Input_via_GamePad : MonoBehaviour
     }
 
     
-#endif
 
 
 }
