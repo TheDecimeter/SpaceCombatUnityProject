@@ -134,6 +134,19 @@ public class UndestroyableData : MonoBehaviour
     {
         get(sSave.TouchScreenControls);
     }
+    
+    public void SetLayerBlur(bool active)
+    {
+        sSave.LayerBlur = active;
+    }
+    public void GetLayerBlur(BoolUpdater.Get get)
+    {
+        get(sSave.LayerBlur);
+    }
+    public static bool GetLayerBlur()
+    {
+        return sSave.LayerBlur;
+    }
 
 
 
@@ -385,7 +398,7 @@ public class UndestroyableData : MonoBehaviour
             public static bool FillLevel;
         }
         public static int RoundCounter, Rounds, PlayerCount;
-        public static bool NotYetHappened=true, TouchScreenControls;
+        public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true;
 
         public static class CamRot
         {
@@ -399,12 +412,12 @@ public class UndestroyableData : MonoBehaviour
     {
         public int[] PlayerRot;
         public int PlayerCount;
-        public bool ScreenSplitVertical = true,TouchScreenControls;
+        public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur;
         public int rounds,mapx,mapy,tileQuant;
 
         public override string ToString()
         {
-            return " players: " + PlayerCount + ", TouchControls: " + TouchScreenControls + ", " +
+            return " players: " + PlayerCount + ", TouchControls: " + TouchScreenControls + ", " + LayerBlur + ", " +
                 "rounds: " + rounds + ", mapx: " + mapx + ", mapy: " + mapy + ", tiles: " + tileQuant; 
         }
     }
@@ -429,6 +442,7 @@ public class UndestroyableData : MonoBehaviour
         data.tileQuant=sSave.Play.MaxTiles;
 
         data.TouchScreenControls = sSave.TouchScreenControls;
+        data.LayerBlur = sSave.LayerBlur;
 
 
         BinaryFormatter bf = new BinaryFormatter();
@@ -468,6 +482,7 @@ public class UndestroyableData : MonoBehaviour
             sSave.Play.FillLevel = (sSave.Play.MaxTiles == sSave.Play.MapDemensionY * sSave.Play.MapDemensionX);
 
             sSave.TouchScreenControls = data.TouchScreenControls;
+            sSave.LayerBlur = data.LayerBlur;
 
             print("read saved data "+data);
         }
@@ -497,6 +512,11 @@ public class UndestroyableData : MonoBehaviour
         sSave.TouchScreenControls = true;
 #else
         sSave.TouchScreenControls = false;
+#endif
+#if UNITY_STANDALONE_LINUX
+        sSave.LayerBlur = false;
+#else
+        sSave.LayerBlur = true;
 #endif
     }
 }

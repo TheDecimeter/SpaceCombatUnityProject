@@ -283,6 +283,8 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
+        if (!UndestroyableData.GetLayerBlur())
+            return;
         if (!isHuman)
             return;
         if (blurLayer.activeInHierarchy)
@@ -301,6 +303,8 @@ public class PlayerHealth : MonoBehaviour {
     }
     private void endBlur()
     {
+        if (!UndestroyableData.GetLayerBlur())
+            return;
         //blurComponent.cullingMask = ~0;
         blurComponent.GetComponent<CameraRectSetter>().SetShared();
         frameCounter = blurFrames;
