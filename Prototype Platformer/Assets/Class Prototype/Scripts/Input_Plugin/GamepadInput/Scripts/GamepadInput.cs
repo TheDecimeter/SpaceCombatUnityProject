@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class GamepadInput : MonoBehaviour
 {
-#if !UNITY_ANDROID
 	GamepadManager manager;
 
 	public List<GamepadDevice> gamepads { 
@@ -20,7 +19,8 @@ public class GamepadInput : MonoBehaviour
 	public event System.Action<GamepadDevice> OnGamepadAdded;
 	public event System.Action<GamepadDevice> OnGamepadRemoved;
 
-	void Start()
+#if !UNITY_ANDROID
+    void Start()
 	{
 #if UNITY_STANDALONE_WIN
 		manager = new XGamepadManager (xGamepadLayout);
