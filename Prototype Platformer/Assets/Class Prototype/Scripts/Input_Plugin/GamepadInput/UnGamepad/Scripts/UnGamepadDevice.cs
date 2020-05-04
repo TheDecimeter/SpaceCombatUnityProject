@@ -6,6 +6,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class UnGamepadDevice : GamepadDevice
 {
@@ -69,44 +70,51 @@ public class UnGamepadDevice : GamepadDevice
 			
 		// update input
 		for (int i = 0; i < UnGamepadState.allInputTargetValues.Count; i++)
-		{
-			UnGamepadConfig.InputTarget input = UnGamepadState.allInputTargetValues[i];
-			UnGamepadConfig.InputMapping mapping = config.GetInputMapping (input);
-			float currentValRaw;
-			if (mapping.type == UnGamepadConfig.InputType.Button)
-			{
-				currentValRaw = Input.GetKey (GetKeyCode(deviceId, mapping.inputId)) ? 1 : 0;
-			}
-			else
-			{
-				currentValRaw = Input.GetAxisRaw (GetAxisString(deviceId,mapping.inputId));
-					
-				#if TRIGGER_HACK
-					// trigger hack on osx
-				if(input == UnGamepadConfig.InputTarget.LeftTrigger ||
-						input == UnGamepadConfig.InputTarget.RightTrigger )
-					{
-						if (!hasTriggerBeenMovedOnce.Contains (input)) // check if we receive valid values
-						{
-							if (!Mathf.Approximately (currentValRaw, 0f) )
-							{
-								hasTriggerBeenMovedOnce.Add (input);
-							}
-						}
+        {
+            try
+            {
+                UnGamepadConfig.InputTarget input = UnGamepadState.allInputTargetValues[i];
+			    UnGamepadConfig.InputMapping mapping = config.GetInputMapping (input);
+			    float currentValRaw;
+			    if (mapping.type == UnGamepadConfig.InputType.Button)
+			    {
+				    currentValRaw = Input.GetKey (GetKeyCode(deviceId, mapping.inputId)) ? 1 : 0;
+			    }
+			    else
+			    {
+                        currentValRaw = Input.GetAxisRaw(GetAxisString(deviceId, mapping.inputId));
+                    //Debug.Log("val for "+GetAxisString(deviceId, mapping.inputId)+": "+currentValRaw);
+				    #if TRIGGER_HACK
+					    // trigger hack on osx
+				    if(input == UnGamepadConfig.InputTarget.LeftTrigger ||
+						    input == UnGamepadConfig.InputTarget.RightTrigger )
+					    {
+						    if (!hasTriggerBeenMovedOnce.Contains (input)) // check if we receive valid values
+						    {
+							    if (!Mathf.Approximately (currentValRaw, 0f) )
+							    {
+								    hasTriggerBeenMovedOnce.Add (input);
+							    }
+						    }
 						
-						if (!hasTriggerBeenMovedOnce.Contains (input))
-						{
-							currentValRaw = mapping.inputMin;
-						}
-					}
-				#endif
-			}
+						    if (!hasTriggerBeenMovedOnce.Contains (input))
+						    {
+							    currentValRaw = mapping.inputMin;
+						    }
+					    }
+				    #endif
+			    }
 
 
-			float normalizedVal = Mathf.InverseLerp (mapping.inputMin, mapping.inputMax, currentValRaw);
+			    float normalizedVal = Mathf.InverseLerp (mapping.inputMin, mapping.inputMax, currentValRaw);
 
-			currentState.SetInputNormalized (input, normalizedVal);
-		}
+			    currentState.SetInputNormalized (input, normalizedVal);
+            }
+            catch (ArgumentException e)
+            {
+                //Debug.Log(e);
+            }
+        }
 
 		// check if state has changed
 		if (StateChanged (lastState, currentState))

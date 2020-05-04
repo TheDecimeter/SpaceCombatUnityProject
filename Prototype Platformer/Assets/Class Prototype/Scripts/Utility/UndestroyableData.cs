@@ -65,6 +65,10 @@ public class UndestroyableData : MonoBehaviour
     {
         get(sSave.PlayerCount);
     }
+    public static int GetPlayers()
+    {
+        return sSave.PlayerCount;
+    }
 
 
     //Map Dimensions  Getter Setter
@@ -123,9 +127,6 @@ public class UndestroyableData : MonoBehaviour
         get(sSave.CamRot.verticalSplit);
     }
 
-
-
-    //camera settings
     public void SetTouchScreenControls(bool active)
     {
         sSave.TouchScreenControls = active;
@@ -149,6 +150,22 @@ public class UndestroyableData : MonoBehaviour
     }
 
 
+    //player order, basically this will reverse player order of game pads so that
+    // computers without a num pad can plug in a controller and the fourth (num pad)
+    // player will get it, leaving keyboard controls for the remaining players in order of 
+    // desirablity.
+    public void SetPlayerOrder(bool active)
+    {
+        sSave.ReversePlayerOrder = active;
+    }
+    public void GetPlayerOrder(BoolUpdater.Get get)
+    {
+        get(sSave.ReversePlayerOrder);
+    }
+    public static bool GetReversePlayerOrder()
+    {
+        return sSave.ReversePlayerOrder;
+    }
 
 
 
@@ -398,7 +415,7 @@ public class UndestroyableData : MonoBehaviour
             public static bool FillLevel;
         }
         public static int RoundCounter, Rounds, PlayerCount;
-        public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true;
+        public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true, ReversePlayerOrder = false;
 
         public static class CamRot
         {
@@ -412,7 +429,7 @@ public class UndestroyableData : MonoBehaviour
     {
         public int[] PlayerRot;
         public int PlayerCount;
-        public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur;
+        public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur,ReversePlayerOrder;
         public int rounds,mapx,mapy,tileQuant;
 
         public override string ToString()
@@ -440,6 +457,8 @@ public class UndestroyableData : MonoBehaviour
         data.mapx=sSave.Play.MapDemensionX;
         data.mapy=sSave.Play.MapDemensionY;
         data.tileQuant=sSave.Play.MaxTiles;
+
+        data.ReversePlayerOrder = sSave.ReversePlayerOrder;
 
         data.TouchScreenControls = sSave.TouchScreenControls;
         data.LayerBlur = sSave.LayerBlur;
@@ -481,6 +500,8 @@ public class UndestroyableData : MonoBehaviour
 
             sSave.Play.FillLevel = (sSave.Play.MaxTiles == sSave.Play.MapDemensionY * sSave.Play.MapDemensionX);
 
+            sSave.ReversePlayerOrder = data.ReversePlayerOrder;
+
             sSave.TouchScreenControls = data.TouchScreenControls;
             sSave.LayerBlur = data.LayerBlur;
 
@@ -507,6 +528,8 @@ public class UndestroyableData : MonoBehaviour
         sSave.Play.MapDemensionX = 3;
         sSave.Play.MapDemensionY = 4;
         sSave.Play.MaxTiles = 12;
+
+        sSave.ReversePlayerOrder = false;
 
 #if UNITY_ANDROID
         sSave.TouchScreenControls = true;

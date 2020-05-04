@@ -605,8 +605,8 @@ MonoBehaviour:
   xGamepadLayout: {fileID: 11400000, guid: 7ba91af300bf5406ea907aed341630fb, type: 2}
   unGamepadConfigs:
   - {fileID: 11400000, guid: 65ee8cb3d9ee148eaacc1fcd1bd2349e, type: 2}
-  - {fileID: 11400000, guid: 15c40c6963c5c4718b3f19115620b7a0, type: 2}
   - {fileID: 11400000, guid: c7620e3e64d1f471c8bae06fbad534ef, type: 2}
+  - {fileID: 11400000, guid: 15c40c6963c5c4718b3f19115620b7a0, type: 2}
   - {fileID: 11400000, guid: 4c3e27c94731342928a6f76efde0bacf, type: 2}
 --- !u!4 &1532386130
 Transform:
@@ -963,7 +963,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1788575257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,6 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0c802dd16400d342bfb946573d0f16a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hud: {fileID: 0}
   Arrow_and_Rshift_keys:
     m_PersistentCalls:
       m_Calls: []

@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class Input_via_GamePad : MonoBehaviour
 {
+    private const int NotFound = -1;
+
     [System.Serializable]
     public class ControlEvent : UnityEvent<ControlStruct> { }
 
@@ -67,11 +69,13 @@ public class Input_via_GamePad : MonoBehaviour
         for (int i = 0; i < 4; ++i)
             if (IsDeviceAt(i,d))
                 return i;
-        return -1;
+        return NotFound;
     }
 
     private bool IsDeviceAt(int index, GamepadDevice d)
     {
+        if (index >= devices.Length)
+            return false;
         if (devices[index] == null)
             return false;
         if (devices[index] == d)
@@ -90,10 +94,24 @@ public class Input_via_GamePad : MonoBehaviour
     }
     private void FireDevice(int index,ControlStruct playerControls)
     {
-        if (index == 0) controller1.Invoke(playerControls);
-        if (index == 1) controller2.Invoke(playerControls);
-        if (index == 2) controller3.Invoke(playerControls);
-        if (index == 3) controller4.Invoke(playerControls);
+        //If there is no num pad users might opt to reverse the order in which
+        // players receive game pads, however only do this if there are 4 players
+        // in the game, otherwise in games with less players controllers won't go
+        // to those players.
+        if (UndestroyableData.GetReversePlayerOrder()&&UndestroyableData.GetPlayers()==4)
+        {
+            if (index == 3) controller1.Invoke(playerControls);
+            if (index == 2) controller2.Invoke(playerControls);
+            if (index == 1) controller3.Invoke(playerControls);
+            if (index == 0) controller4.Invoke(playerControls);
+        }
+        else
+        {
+            if (index == 0) controller1.Invoke(playerControls);
+            if (index == 1) controller2.Invoke(playerControls);
+            if (index == 2) controller3.Invoke(playerControls);
+            if (index == 3) controller4.Invoke(playerControls);
+        }
     }
     
     
@@ -183,7 +201,7 @@ public class Input_via_GamePad : MonoBehaviour
             for(int i=0; i<Ds.Count; ++i)
             {
                 int index = DeviceIndex(Ds[i]);
-                if (index == -1)
+                if (index == NotFound)
                     continue;
                 changed[index] = true;
                 FireDevice(index, Cs[i]);
@@ -193,7 +211,7 @@ public class Input_via_GamePad : MonoBehaviour
             for (int i = 0; i < Ds.Count; ++i)
             {
                 int index = DeviceIndex(Ds[i]);
-                if (index != -1)
+                if (index != NotFound)
                     continue;
 
                 int freeSpot=GetFirstUnchanged(changed);
