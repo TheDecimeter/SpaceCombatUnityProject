@@ -283,32 +283,39 @@ public class PlayerHealth : MonoBehaviour {
 
     private void startBlur()
     {
-        if (!UndestroyableData.GetLayerBlur())
-            return;
         if (!isHuman)
             return;
         if (blurLayer.activeInHierarchy)
             return;
+        
+        frameCounter = 0;
+        blurComponent.gameObject.GetComponent<CameraBob>().Bob = true;
 
+        if (!UndestroyableData.GetLayerBlur())
+        {
+            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = true;
+            return;
+        }
 
         //blurComponent.cullingMask = CullingMask;
         blurComponent.GetComponent<CameraRectSetter>().SetFull();
-        blurComponent.gameObject.GetComponent<CameraBob>().Bob=true;
         blurComponent.targetTexture = blurScreen;
         //blurComponent.depthTextureMode = DepthTextureMode.None;
         blurLayer.gameObject.SetActive(true);
-
-
-        frameCounter = 0;
+        
     }
     private void endBlur()
     {
-        if (!UndestroyableData.GetLayerBlur())
-            return;
-        //blurComponent.cullingMask = ~0;
-        blurComponent.GetComponent<CameraRectSetter>().SetShared();
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
+
+        if (!UndestroyableData.GetLayerBlur())
+        {
+            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = false;
+            return;
+        }
+        //blurComponent.cullingMask = ~0;
+        blurComponent.GetComponent<CameraRectSetter>().SetShared();
         //blurComponent.depthTextureMode = DepthTextureMode.Depth;
         blurComponent.targetTexture = null;
         blurLayer.gameObject.SetActive(false);
