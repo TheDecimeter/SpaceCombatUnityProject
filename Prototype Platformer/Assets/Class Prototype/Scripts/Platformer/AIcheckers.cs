@@ -129,13 +129,13 @@ public partial class AI : MonoBehaviour
 
                 if (players[i].isDead)
                 {
-                    print("removed player " + players[i].asyncname);
+                    print(outer.asyncname + " removed player " + players[i].asyncname);
                     players.RemoveAt(i);
                     continue;
                 }
                 if (players[i].framesDamage > 0 && i != 0)
                 {
-                    print("skipping poisoned player " + players[i].asyncname);
+                    print(outer.asyncname + " skipping poisoned player " + players[i].asyncname);
                     continue;
                 }
 
@@ -147,7 +147,7 @@ public partial class AI : MonoBehaviour
 
                 if (mx != px || my != py)
                 {
-                    print("skipping out of room player" + players[i].asyncname);
+                    print(outer.asyncname+" skipping out of room player" + players[i].asyncname);
                     continue;
                 }
 
@@ -169,7 +169,7 @@ public partial class AI : MonoBehaviour
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
             }
-            print("     DID NOT TARGET PLAYER");
+            print("     DID NOT TARGET PLAYER "+outer.asyncname);
             if(inCommingPriority==priority)
                 return 0;
             return inCommingPriority;

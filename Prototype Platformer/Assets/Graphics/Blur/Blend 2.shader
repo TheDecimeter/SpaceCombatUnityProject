@@ -1,5 +1,5 @@
 ﻿Shader "Blend Textures Hard" { 
- 
+ //https://forum.unity.com/threads/rendertexture-upside-down.460825/
 Properties {
         _MainTex ("Input Render Texture", 2D) = "black" {}
         _BTex ("Output Render Texture", 2D) = "black" {}
