@@ -297,6 +297,11 @@ public class UndestroyableData : MonoBehaviour
         return sSave.StartMenu.StartMenuOpened;
     }
 
+    public static bool IsMainMenuOpened()
+    {
+        return sSave.StartMenu.StartMenuOpened;
+    }
+
     private void SendDataIfReady()
     {
         if (!sSave.StartMenu.MenuNotSaved &&

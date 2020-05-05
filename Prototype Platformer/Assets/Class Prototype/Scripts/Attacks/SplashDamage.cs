@@ -8,6 +8,7 @@ public class SplashDamage : MonoBehaviour
     public float maxDamage;
     public float range;
 
+    private float pushFactor = 50;
 
     public void Fire(Transform attackSpawnPoint, GameObject friendly, float range, float maxDamage, string effect = "")
     {
@@ -18,7 +19,10 @@ public class SplashDamage : MonoBehaviour
             if (dist < range)
                 if (child.gameObject != friendly)
                 {
-                    child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage((int)(1 + maxDamage * (1 - (dist / range))), effect, friendly));
+                    int power = (int)(1 + maxDamage * (1 - (dist / range)));
+                    child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(power, effect, friendly));
+                    Vector2 dir = new Vector2(child.transform.position.x - transform.position.x, .5f);
+                    child.gameObject.GetComponent<Rigidbody>().AddForce(dir * pushFactor, ForceMode.Impulse);
                     //print("splashDamage " + (int)(1 + maxDamage * (1 - (dist / range))));
                 }
         }
@@ -34,11 +38,7 @@ public class SplashDamage : MonoBehaviour
             Fire(transform, friend, range, maxDamage);
         }
     }
-
-    private void OnDestroy()
-    {
-        Fire();
-    }
+    
 
     private static float distance(Vector3 from, Vector3 to)
     {

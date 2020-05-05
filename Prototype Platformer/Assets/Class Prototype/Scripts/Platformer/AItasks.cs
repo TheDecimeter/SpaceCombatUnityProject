@@ -255,8 +255,8 @@ public partial class AI : MonoBehaviour
 
     private int TaskAttackPlayerInRoom(PlayerHealth player)
     {
-        //print("\n");
-        //print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
+        print("\n");
+        print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
         //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
         if (player.isDead)
             return ErrorChecking(complete);

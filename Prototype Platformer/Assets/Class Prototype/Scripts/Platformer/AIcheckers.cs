@@ -169,6 +169,7 @@ public partial class AI : MonoBehaviour
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
             }
+            print("     DID NOT TARGET PLAYER");
             if(inCommingPriority==priority)
                 return 0;
             return inCommingPriority;

@@ -86,8 +86,12 @@ public class StartMenu : MonoBehaviour
     }
     public void QuitProgram()
     {
-        print("application quit");
-        Application.Quit();
+        #if UNITY_ANDROID
+            AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+            activity.Call<bool>("moveTaskToBack", true);
+        #else
+            Application.Quit();
+        #endif
     }
 
     delegate void Get(IntUpdater.Get get);

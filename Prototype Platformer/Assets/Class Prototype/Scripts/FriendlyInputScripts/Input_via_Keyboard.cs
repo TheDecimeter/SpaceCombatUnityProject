@@ -7,6 +7,9 @@ public class Input_via_Keyboard : MonoBehaviour
 {
 
     public HUD hud;
+    public ScrollManager MainMenu;
+    public ControlEvents ExitItem;
+
 
     [System.Serializable]
     public class keysEvent : UnityEvent<ControlStruct> { }
@@ -34,6 +37,14 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
+            if (hud.Link == null)
+            {
+                if(UndestroyableData.IsMainMenuOpened()&&MainMenu.gameObject.activeInHierarchy)
+                {
+                    MainMenu.ScrollTo(ExitItem);
+                    return;
+                }
+            }
             if(hud.Link.Menu[0].IsGlobalMenuActive())
                 hud.Link.Menu[0].SetGlobalMenuActive(false);
             else
