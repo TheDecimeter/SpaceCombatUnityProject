@@ -56,9 +56,10 @@ public class Input_via_Keyboard : MonoBehaviour
     {
         ControlStruct c = new ControlStruct(ControlStruct.Keyboard);
         c.A = Input.GetKey(KeyCode.Return);
+        c.door = Input.GetKey(KeyCode.RightControl) || c.A;
+
         c.A |= c.jump = Input.GetKey(KeyCode.UpArrow);
-        c.attack = Input.GetKey(KeyCode.RightShift);
-        c.door = Input.GetKey(KeyCode.RightControl);
+        c.attack = Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.Quote);
         c.B = c.action = Input.GetKey(KeyCode.DownArrow);
 
         c.inGameMenu = Input.GetKey(KeyCode.Slash);
