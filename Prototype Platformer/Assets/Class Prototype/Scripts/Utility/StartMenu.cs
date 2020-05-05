@@ -13,6 +13,9 @@ public class StartMenu : MonoBehaviour
     public UndestroyableData savedData;
     public SceneLoader sceneLoader;
 
+    public ScrollManager MainMenu;
+    public ControlEvents StartMenuItem;
+
     public bool OpenMenuOnStart = true;
     //private ControlStruct _controllerStatus;
 
@@ -87,6 +90,7 @@ public class StartMenu : MonoBehaviour
     public void QuitProgram()
     {
         #if UNITY_ANDROID
+            MainMenu.ScrollTo(StartMenuItem);
             AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
             activity.Call<bool>("moveTaskToBack", true);
         #else
