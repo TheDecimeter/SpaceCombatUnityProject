@@ -27,7 +27,7 @@ public class Asteroid : MonoBehaviour
         {
             if (EscapePod.AsyncIncomming)
             {
-                Debug.Log("Diverting asteroid");
+                Debug.LogWarning("Diverting asteroid");
                 float x = Random.Range(0, 1);
                 float y = 1 - x;
                 if (Random.Range(0, 2) > 0)
@@ -38,7 +38,9 @@ public class Asteroid : MonoBehaviour
                 //Rigidbody rb = GetComponent<Rigidbody>();
                 v = v.normalized * 1000;//rb.velocity.normalized;
                 divert = false;
-                GetComponent<Rigidbody>().AddForce(new Vector3(v.x, v.y, 0));
+                Rigidbody rb = GetComponent<Rigidbody>();
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
+                rb.AddForce(new Vector3(v.x, v.y, 0));
             }
 
         }

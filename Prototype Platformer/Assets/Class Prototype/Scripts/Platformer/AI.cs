@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
+
+
 public partial class AI : MonoBehaviour
 {
     public LevelRandomizer levelStats;
@@ -32,21 +37,18 @@ public partial class AI : MonoBehaviour
     private Stack<Task> TaskList = new Stack<Task>();
     private Task currentTask;
     private int priority;
-    private List<IChecker> GoalCheckers = new List<IChecker>();
+    private List<IChecker> PeriodicGoalCheckers = new List<IChecker>();
+    private List<IChecker> ConstantGoalCheckers = new List<IChecker>();
     private byte[][] roomPath;
     private bool specialDirections = false, up, down, left, right, failed = false;
 
 
-    private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17));
+    private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17) | (1 << 18) | (1 << 25) | (1<<26));
 
     //debugging
     private string asyncname = "";
 
     //thread stuff
-    //private static Thread RunThread;
-    //private bool KeepRunning;
-    //private delegate bool Runner(float deltaTime);
-    //private static List<Runner> Runners;
     private static int AIcount;
     private Doer doer;
 
@@ -77,23 +79,27 @@ public partial class AI : MonoBehaviour
         roomCell = levelStats.yTileSize / 2;
 
 
+
         roomPath = new byte[2][];
         for (int i = 0; i < 2; ++i)
         {
             roomPath[i] = new byte[3];
         }
+
+
+        ConstantGoalCheckers.Add(new CheckerGrabItem(this, 10));
+
+
         priority = 0;
-        GoalCheckers.Add(new CheckerHarm(this, 1, 3));
+        PeriodicGoalCheckers.Add(new CheckerHarm(this, 1, 3));
 
-        GoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
+        PeriodicGoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
 
-        GoalCheckers.Add(new CheckerKillPlayers(this, 6));
+        PeriodicGoalCheckers.Add(new CheckerKillPlayers(this, 6));
 
-        GoalCheckers.Add(new CheckerGrabItem(this, 10));
+        PeriodicGoalCheckers.Add(new CheckerAvoidAsteroids(this, 15));
 
-        GoalCheckers.Add(new CheckerAvoidAsteroids(this, 15));
-
-        GoalCheckers.Add(new CheckerEscapePod(this, 20));
+        PeriodicGoalCheckers.Add(new CheckerEscapePod(this, 20));
 
         currentTask = TaskComplete;
 
@@ -169,7 +175,7 @@ public partial class AI : MonoBehaviour
             return true;
         }
 
-        foreach (IChecker checker in GoalCheckers)
+        foreach (IChecker checker in PeriodicGoalCheckers)
             priority = checker.Do(priority, deltaTime, failed);
         failed = false;
 
@@ -189,6 +195,8 @@ public partial class AI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         AsyncPosition = transform.position;
         if (!player._canMove)//player.GetComponent<PlayerHealth>().isDead)
         {
@@ -198,34 +206,37 @@ public partial class AI : MonoBehaviour
 
         controls.reset();
 
-        //foreach (IChecker checker in GoalCheckers)
-        //    priority = checker.Do(priority, Time.deltaTime, failed);
-        //failed = false;
+        foreach (IChecker checker in ConstantGoalCheckers)
+            checker.Do(priority, Time.deltaTime, false);
 
-        //int count = 100;
-        //int status = complete;
-        //while (status == complete)
-        //{
-        //    count -= 1;
-        //    if (count < 0)
-        //    {
-        //        Debug.LogError("Had to use loop counter task update");
-        //        break;
-        //    }
-        int status = currentTask();
+        int count = 100;
+        int status = complete;
+        while (status == complete)
+        {
+            count -= 1;
+            if (count < 0)
+            {
+                Debug.LogError("Had to use loop counter task update");
+                break;
+            }
+            status = currentTask();
         if (status == complete)
         {
             if (TaskList.Count > 0)
+            {
+
+                Debug.Log(asyncname + " popping next task");
                 currentTask = TaskList.Pop();
+            }
             else
             {
-                //print(gameObject.name + " end of task list " + TaskList.Count);
+                print(gameObject.name + " end of task list " + TaskList.Count);
                 priority = 0;
-                //break;
+                break;
             }
 
         }
-        //}
+        }
 
         if (status == impossible)
         {
@@ -343,7 +354,7 @@ public partial class AI : MonoBehaviour
 
 
 
-        //print(roomGridString());
+        print(asyncname+" roomGrid\n"+roomGridString());
         return complete;
     }
 

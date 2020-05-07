@@ -3,15 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
 
+#if UNITY_EDITOR
+using UnityEditor;
+
+// ensure class initializer is called whenever scripts recompile
+[InitializeOnLoadAttribute]
+public static class PauseStateChangedExample
+{
+    public static bool paused = false;
+    // register an event handler when the class is initialized
+    static PauseStateChangedExample()
+    {
+        EditorApplication.pauseStateChanged += LogPauseState;
+    }
+
+    private static void LogPauseState(PauseState state)
+    {
+        Debug.Log(state);
+        paused = state==PauseState.Paused;
+    }
+}
+#endif
+
+
+
 public partial class AI : MonoBehaviour
 {
-
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            if(doer!=null)
+                doer.StopAndWait();
+        }
+        else
+        {
+            if(doer!=null)
+                doer.Start();
+        }
+    }
 
     public class Doer
     {
         public delegate bool Runner(float deltaTime);
         public List<Runner> Runners;
-        private bool KeepRunning = true;
+        private bool KeepRunning = false;
         private Thread t;
 
         public Doer()
@@ -26,6 +62,8 @@ public partial class AI : MonoBehaviour
 
         public void Start()
         {
+            if (KeepRunning)
+                return;
             KeepRunning = true;
             t = new Thread(AsyncRun);
             t.Start();
@@ -36,6 +74,8 @@ public partial class AI : MonoBehaviour
         }
         public void StopAndWait()
         {
+            if (!KeepRunning)
+                return;
             KeepRunning = false;
             t.Join();
         }
@@ -45,6 +85,9 @@ public partial class AI : MonoBehaviour
             float deltaTime = 0.1f;
             while (KeepRunning && Runners.Count > 0)
             {
+#if UNITY_EDITOR
+                if(!PauseStateChangedExample.paused)
+#endif
                 for (int i = Runners.Count - 1; i >= 0; --i)
                 {
                     if (Runners[i](deltaTime))

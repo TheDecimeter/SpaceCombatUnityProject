@@ -328,7 +328,7 @@ public partial class AI : MonoBehaviour
 
     private bool canAttackTarget(PlayerHealth p)
     {
-        return Vector2.Distance(p.transform.position,transform.position)<2;
+        return Vector2.Distance(p.transform.position,transform.position)<3;
     }
 
 
@@ -351,10 +351,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskTraverseRoom()
     {
-        TaskList.Push(TaskGoToWestDoor);
-        TaskList.Push(TaskMapRoom);
-        TaskList.Push(TaskGoToEastDoor);
-        TaskList.Push(TaskMapRoom);
+        TaskList.Push(TaskTraverseRoom); //this is used to hit the escape pod, so make it infinite
         TaskList.Push(TaskGoToWestDoor);
         TaskList.Push(TaskMapRoom);
         TaskList.Push(TaskGoToEastDoor);

@@ -8,10 +8,14 @@ public class SplashDamage : MonoBehaviour
     public float maxDamage;
     public float range;
 
-    private float pushFactor = 50;
+    private bool fired=false;
+    private const float pushFactor = 50;
 
     public void Fire(Transform attackSpawnPoint, GameObject friendly, float range, float maxDamage, string effect = "")
     {
+        if (fired)
+            return;
+        fired = true;
 
         //from list of players, see if any are within range
         foreach (Transform child in PlayerArray.transform) {
@@ -21,8 +25,8 @@ public class SplashDamage : MonoBehaviour
                 {
                     int power = (int)(1 + maxDamage * (1 - (dist / range)));
                     child.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(power, effect, friendly));
-                    Vector2 dir = new Vector2(child.transform.position.x - transform.position.x, .5f);
-                    child.gameObject.GetComponent<Rigidbody>().AddForce(dir * pushFactor, ForceMode.Impulse);
+                    Vector2 dir = new Vector2(child.transform.position.x - transform.position.x, .5f).normalized;
+                    child.gameObject.GetComponent<Rigidbody>().AddForce(dir * pushFactor * power, ForceMode.Impulse);
                     //print("splashDamage " + (int)(1 + maxDamage * (1 - (dist / range))));
                 }
         }

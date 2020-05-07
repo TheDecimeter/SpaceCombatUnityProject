@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -166,6 +167,8 @@ public partial class AI : MonoBehaviour
                 }
 
                 outer.TaskList.Clear();
+
+                Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname);
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
             }
@@ -251,6 +254,7 @@ public partial class AI : MonoBehaviour
             if(!InRoomWithColission())
                 return AppropriatePriority(priority, this.priority, overwrittenPriority);
 
+            print("     flee room first " + outer.asyncname);
             FleeRoom();
 
             overwrittenPriority = priority;
@@ -270,6 +274,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
+                    print("     flee room east" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughEastDoor;
                 }
@@ -280,6 +285,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
+                    print("     flee room west" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughWestDoor;
                 }
@@ -290,6 +296,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
+                    print("     flee room north" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughNorthDoor;
                 }
@@ -301,6 +308,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
+                    print("     flee room south" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughSouthDoor;
                 }
@@ -308,12 +316,22 @@ public partial class AI : MonoBehaviour
 
             outer.TaskList.Clear();
             outer.TaskList.Push(outer.TaskComplete);
+            Debug.Log(outer.asyncname + " Reset Current Task in go flee in best path");
             outer.currentTask = BestPath;
 
         }
 
         private bool HeadingOutOfRoom()
         {
+            if (outer.currentTask == outer.TaskAssignGoThroughEastDoor)
+                return true;
+            if (outer.currentTask == outer.TaskAssignGoThroughWestDoor)
+                return true;
+            if (outer.currentTask == outer.TaskAssignGoThroughSouthDoor)
+                return true;
+            if (outer.currentTask == outer.TaskAssignGoThroughNorthDoor)
+                return true;
+
             if (outer.currentTask == outer.TaskGoThroughEastDoor)
                 return true;
             if (outer.currentTask == outer.TaskGoThroughWestDoor)
@@ -322,6 +340,16 @@ public partial class AI : MonoBehaviour
                 return true;
             if (outer.currentTask == outer.TaskGoThroughNorthDoor)
                 return true;
+
+            if (outer.currentTask == outer.TaskGoToEastDoor)
+                return true;
+            if (outer.currentTask == outer.TaskGoToWestDoor)
+                return true;
+            if (outer.currentTask == outer.TaskGoToSouthDoor)
+                return true;
+            if (outer.currentTask == outer.TaskGoToNorthDoor)
+                return true;
+
             return false;
         }
 
@@ -426,6 +454,7 @@ public partial class AI : MonoBehaviour
             else
             {
                 outer.TaskList.Clear();
+                Debug.Log(outer.asyncname + " Reset Current Task in go to nearest player to complete");
                 outer.currentTask = outer.TaskComplete;
             }
         }
@@ -501,7 +530,7 @@ public partial class AI : MonoBehaviour
                 q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
         }
 
-        //print("grid to player \n" + AI.GridToString(levelPath));
+        print(asyncname + " grid to player \n" + AI.GridToString(levelPath));
 
         count = 100;
         //work from target pos to your pos to convert mapped route to tasks
@@ -550,8 +579,15 @@ public partial class AI : MonoBehaviour
             }
 
         //print("\n");
+        try
+        {
+            Debug.Log(asyncname + " Reset Current Task in go to nearest player to first task in route");
+            currentTask = TaskList.Pop();
+        }
+        catch(InvalidOperationException e)
+        {
 
-        currentTask = TaskList.Pop();
+        }
     }
 
     /// <summary>
