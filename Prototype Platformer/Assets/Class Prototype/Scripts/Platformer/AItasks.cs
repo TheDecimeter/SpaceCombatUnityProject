@@ -68,7 +68,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        //print(gameObject.name + " going south " + Tx);
+        ////Debug.Log(gameObject.name + " going south " + Tx);
         return ErrorChecking(ret);
     }
     private int TaskGoToNorthDoor()
@@ -86,7 +86,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        //print(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
+        ////Debug.Log(gameObject.name + " going TO nDoor " + Tx+"\n"+roomGridString());
         return ErrorChecking(ret);
     }
 
@@ -98,7 +98,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
-        //print("going east");
+        ////Debug.Log("going east");
         return ErrorChecking(ret);
     }
 
@@ -107,7 +107,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        ////Debug.Log("  go through east door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
 
@@ -121,7 +121,7 @@ public partial class AI : MonoBehaviour
         {
             Move(1, 0);
         }
-        ////print(gameObject.name + " move (" + controls.door + ")");
+        //////Debug.Log(gameObject.name + " move (" + controls.door + ")");
         return ErrorChecking();
     }
 
@@ -134,7 +134,7 @@ public partial class AI : MonoBehaviour
         GetRoomGrid(transform.position, out x, out y);
         int ret = GoToTarget(x, y, Tx, Ty);
 
-        //print("going west");
+        ////Debug.Log("going west");
         return ErrorChecking(ret);
     }
 
@@ -143,7 +143,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through West door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        ////Debug.Log("  go through West door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
 
@@ -161,7 +161,7 @@ public partial class AI : MonoBehaviour
         }
 
         
-        ////print(gameObject.name + " move (" + controls.door + ")");
+        //////Debug.Log(gameObject.name + " move (" + controls.door + ")");
         return ErrorChecking();
     }
     private int TaskGoThroughSouthDoor()
@@ -169,7 +169,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through south door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        ////Debug.Log("  go through south door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
         float ox = XoffsetToCenter(.2f);
@@ -185,7 +185,7 @@ public partial class AI : MonoBehaviour
         {
             Move(ox, -1);
         }
-        ////print(gameObject.name + " move throgh south door (" + controls.door + ")");
+        //////Debug.Log(gameObject.name + " move throgh south door (" + controls.door + ")");
         return ErrorChecking();
     }
     private int TaskGoThroughNorthDoor()
@@ -202,7 +202,7 @@ public partial class AI : MonoBehaviour
         int x; int y;
         GetMapGridPos(transform.position, out x, out y);
 
-        //print("  go through north door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
+        ////Debug.Log("  go through north door at(" + x + "," + y + ") old(" + currentMapX + "," + currentMapY + ")");
         if (x != currentMapX || y != currentMapY)
             return complete;
 
@@ -210,7 +210,7 @@ public partial class AI : MonoBehaviour
 
         //if (x != doorX || y != doorY)
         //{
-        //    print(gameObject.name + " redirect " + new Vector2(x, y) + new Vector2(doorX, doorY));
+        //    //Debug.Log(gameObject.name + " redirect " + new Vector2(x, y) + new Vector2(doorX, doorY));
         //    return TaskGoToNorthDoor();
         //}
 
@@ -232,8 +232,8 @@ public partial class AI : MonoBehaviour
 
 
         //controls.door = ButtonPresser();
-        //print(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
-        ////print(gameObject.name + " move throgh north door (" + controls.door + ")");
+        ////Debug.Log(gameObject.name + " going Through nDoor " + doorX + "\n" + roomGridString());
+        //////Debug.Log(gameObject.name + " move throgh north door (" + controls.door + ")");
         return ErrorChecking();
     }
 
@@ -249,15 +249,15 @@ public partial class AI : MonoBehaviour
     {
         roomStagnateTimer = roomStagnateTime;
         GetMapGridPos(transform.position, out currentMapX, out currentMapY);
-        ////print("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
+        //////Debug.Log("  Set Map XY (" + currentMapX + "," + currentMapY + ")");
         return complete;
     }
 
     private int TaskAttackPlayerInRoom(PlayerHealth player)
     {
-        print("\n");
-        print(this.player.gameObject.name+" attacking player " + player.gameObject.name);
-        //print("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
+        //Debug.Log("\n");
+        //Debug.Log(this.player.gameObject.name+" attacking player " + player.gameObject.name);
+        ////Debug.Log("obsticle count " + (EastObstructions.Count + WestObstructions.Count) + "\n for " + gameObject.name);
         if (player.isDead)
             return ErrorChecking(complete);
         
@@ -275,13 +275,13 @@ public partial class AI : MonoBehaviour
 
         if (canAttackTarget(player))
         {
-            //print(this.player.gameObject.name + " Can Attack player " + player.gameObject.name);
+            ////Debug.Log(this.player.gameObject.name + " Can Attack player " + player.gameObject.name);
             roomStagnateTimer = .5f;
-            //print(gameObject.name + " attacking " + player.gameObject);
+            ////Debug.Log(gameObject.name + " attacking " + player.gameObject);
             controls.attack = true;
         }
         //else
-        //    print(gameObject.name + " not attacking " + player.gameObject);
+        //    //Debug.Log(gameObject.name + " not attacking " + player.gameObject);
         //else
         //    controls.attack = false;
 
@@ -290,7 +290,7 @@ public partial class AI : MonoBehaviour
         if (mX != pX || mY != pY)
         {
 
-            //print(this.player.gameObject.name + " Going to attack player " + player.gameObject.name);
+            ////Debug.Log(this.player.gameObject.name + " Going to attack player " + player.gameObject.name);
             if (mX == pX)
             {
                 ret = GoToTarget(mX, mY, pX, pY);
@@ -317,10 +317,10 @@ public partial class AI : MonoBehaviour
         ret= ErrorChecking();
         if (ret != impossible)
         {
-            //print(this.player.gameObject.name + " Successful Attack/Move " + player.gameObject.name);
+            ////Debug.Log(this.player.gameObject.name + " Successful Attack/Move " + player.gameObject.name);
             return ret;
         }
-        //print(this.player.gameObject.name + " Error correction attack/move " + player.gameObject.name);
+        ////Debug.Log(this.player.gameObject.name + " Error correction attack/move " + player.gameObject.name);
 
         Move(controls.moveLeft, 1);
         return impossible;
@@ -334,7 +334,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskAssignAttackPlayerInRoom(PlayerHealth p)
     {
-        //print(asyncname+" targeting " + p.asyncname);
+        ////Debug.Log(asyncname+" targeting " + p.asyncname);
         TaskList.Push(() => TaskAttackPlayerInRoom(p));
         TaskList.Push(TaskMapRoom);
         GetMapGridPos(transform.position, out int x, out int y);
@@ -345,7 +345,7 @@ public partial class AI : MonoBehaviour
 
     private int TaskComplete()
     {
-        //print("task complete " + player.gameObject.name);
+        ////Debug.Log("task complete " + player.gameObject.name);
         return complete;
     }
 
@@ -365,7 +365,7 @@ public partial class AI : MonoBehaviour
         if (x == Tx && y == Ty)
             return complete;
 
-        ////print("  GO TO TARGET at(" + x + "," + y + ") targ(" + Tx + "," + Ty + ")");
+        //////Debug.Log("  GO TO TARGET at(" + x + "," + y + ") targ(" + Tx + "," + Ty + ")");
         //if you are to the west of target
         if (x < Tx)
         {
@@ -410,7 +410,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveEast(int x, int y)
     {
-        ////print("   MOVEeast");
+        //////Debug.Log("   MOVEeast");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x + 1, y) == current + 1)
@@ -432,7 +432,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveWest(int x, int y)
     {
-        ////print("   MOVEwest");
+        //////Debug.Log("   MOVEwest");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x - 1, y) == current + 1)
@@ -454,7 +454,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveNorth(int x, int y, int Tx, int Ty)
     {
-       // print("   MOVEnorth");
+       // //Debug.Log("   MOVEnorth");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x, y + 1) == current + 1)
@@ -492,7 +492,7 @@ public partial class AI : MonoBehaviour
 
     private int MoveSouth(int x, int y, int Tx, int Ty)
     {
-        //print("   MOVEsouth");
+        ////Debug.Log("   MOVEsouth");
         float ox = XoffsetToCenter(.2f);
         int current = path(x, y);
         if (path(x, y - 1) == current + 1)
@@ -521,7 +521,7 @@ public partial class AI : MonoBehaviour
         //this should really never happen
         if (path(x, y + 1) == current + 1)
         {
-            //print("moving south, but north is done?");
+            ////Debug.Log("moving south, but north is done?");
             //move up
             return Move(ox, 1);
         }
@@ -534,7 +534,7 @@ public partial class AI : MonoBehaviour
 
     private void ErrorCorrect()
     {
-        //print("error correct");
+        ////Debug.Log("error correct");
         Move(0, 0);//perform a "nothing" move so that if the player is really stuck they will try to free themselves
         TaskMapRoom();
     }

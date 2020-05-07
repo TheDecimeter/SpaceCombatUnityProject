@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 114167159789774628}
   - component: {fileID: 54413831679874814}
   - component: {fileID: 114430630789363268}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Projectile_Fast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,8 +55,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1652511
-  m_Center: {x: 0, y: 0, z: 0.016389847}
+  m_Radius: 0.2166881
+  m_Center: {x: 0, y: 0, z: 0.17197657}
 --- !u!114 &114167159789774628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 1680273587829203217}
   - component: {fileID: 6349128637503641363}
   - component: {fileID: 6079745066465225502}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: ShortMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2191118924665079900}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Drawing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 1849994184262564763}
   - component: {fileID: 1990399152949700435}
   - component: {fileID: 1326123850521766313}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: ShortMesh (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 9036173857567982263}
   - component: {fileID: 8011400149441344348}
   - component: {fileID: 1611048372070250739}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: LongMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}

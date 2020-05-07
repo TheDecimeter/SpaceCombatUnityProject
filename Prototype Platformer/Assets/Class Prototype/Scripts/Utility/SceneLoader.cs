@@ -68,7 +68,7 @@ public class SceneLoader : MonoBehaviour {
     {
         if (!Loading)
         {
-            Debug.LogWarning("Loading scene");
+            //Debug.LogWarning("Loading scene");
             Loading = true;
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
             asyncLoad.allowSceneActivation = false;
@@ -90,14 +90,14 @@ public class SceneLoader : MonoBehaviour {
             }
 
             if (sceneFadeOverlay != null) sceneFadeOverlay.alpha = 1f;
-            Debug.LogWarning("awaiting load");
+            //Debug.LogWarning("awaiting load");
 
             asyncLoad.allowSceneActivation = true;
             //SceneManager.LoadScene(sceneName);
         }
         else
         {
-            Debug.LogError("Duplicate loading not allowed");
+            //Debug.LogError("Duplicate loading not allowed");
         }
     }
 }

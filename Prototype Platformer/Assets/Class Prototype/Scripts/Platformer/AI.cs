@@ -43,7 +43,7 @@ public partial class AI : MonoBehaviour
     private bool specialDirections = false, up, down, left, right, failed = false;
 
 
-    private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17) | (1 << 18) | (1 << 25) | (1<<26));
+    private const int ignoreLayer = ~((1 << 14) | (1 << 15) | (1 << 16) | (1 << 17) | (1 << 18) | (1 << 25) | (1 << 26) | (1 << 27));
 
     //debugging
     private string asyncname = "";
@@ -216,7 +216,7 @@ public partial class AI : MonoBehaviour
             count -= 1;
             if (count < 0)
             {
-                Debug.LogError("Had to use loop counter task update");
+                //Debug.LogError("Had to use loop counter task update");
                 break;
             }
             status = currentTask();
@@ -225,12 +225,12 @@ public partial class AI : MonoBehaviour
             if (TaskList.Count > 0)
             {
 
-                Debug.Log(asyncname + " popping next task");
+                //Debug.Log(asyncname + " popping next task");
                 currentTask = TaskList.Pop();
             }
             else
             {
-                print(gameObject.name + " end of task list " + TaskList.Count);
+                //Debug.Log(gameObject.name + " end of task list " + TaskList.Count);
                 priority = 0;
                 break;
             }
@@ -241,11 +241,11 @@ public partial class AI : MonoBehaviour
         if (status == impossible)
         {
             failed = true;
-            //print(gameObject.name + "      IMPOSSIBLE !");
+            ////Debug.Log(gameObject.name + "      IMPOSSIBLE !");
         }
 
         player.ControllerListener(controls);
-        //print(FindNearestExit());
+        ////Debug.Log(FindNearestExit());
         //int x;
         //int y;
         //GetRoomGrid(transform.position, out x, out y);
@@ -280,7 +280,7 @@ public partial class AI : MonoBehaviour
 
         if (specialDirections)
         {
-            //print("special directions ");
+            ////Debug.Log("special directions ");
             roomPath[roomy][roomx] = 1;
             if (up)
                 n.Enqueue(new MapNode(roomx, roomy + 1, 2, new Vector3(centerOfRoomGrid.x, centerOfRoomGrid.y + roomCell, centerOfRoomGrid.z)));
@@ -306,7 +306,7 @@ public partial class AI : MonoBehaviour
 
             if (c.x < 0 || c.x > 2 || c.y < 0 || c.y > 1 || roomPath[c.y][c.x] != 0)
                 continue;
-            //print("at " + c.x + "," + c.y);
+            ////Debug.Log("at " + c.x + "," + c.y);
             roomPath[c.y][c.x] = c.cost;
 
             //Debug.DrawRay(c.loc, Vector3.left * roomCell * .9f);
@@ -321,7 +321,7 @@ public partial class AI : MonoBehaviour
                 if (!Physics.Raycast(c.loc, Vector3.left, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x - 1, c.y, c.cost + 1, new Vector3(c.loc.x - roomCell, c.loc.y, c.loc.z)));
                 //else
-                //    print("hit " + h.collider.gameObject.name);
+                //    //Debug.Log("hit " + h.collider.gameObject.name);
             }
 
             //check right
@@ -330,7 +330,7 @@ public partial class AI : MonoBehaviour
                 if (!Physics.Raycast(c.loc, Vector3.right, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x + 1, c.y, c.cost + 1, new Vector3(c.loc.x + roomCell, c.loc.y, c.loc.z)));
                 //else
-                //    print("hit " + h.collider.gameObject.name);
+                //    //Debug.Log("hit " + h.collider.gameObject.name);
             }
 
 
@@ -340,7 +340,7 @@ public partial class AI : MonoBehaviour
                 if (!Physics.Raycast(c.loc, Vector3.up, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y + 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y + roomCell, c.loc.z)));
                 //else
-                //    print("hit " + h.collider.gameObject.name);
+                //    //Debug.Log("hit " + h.collider.gameObject.name);
             }
             //check down
             if (!(c.x < 0 || c.x > 2 || c.y - 1 < 0 || c.y - 1 > 1 || roomPath[c.y - 1][c.x] != 0))
@@ -348,13 +348,13 @@ public partial class AI : MonoBehaviour
                 if (!Physics.Raycast(c.loc, Vector3.down, out h, roomCell * .9f, ignoreLayer, QueryTriggerInteraction.Ignore))
                     n.Enqueue(new MapNode(c.x, c.y - 1, c.cost + 1, new Vector3(c.loc.x, c.loc.y - roomCell, c.loc.z)));
                 //else
-                //    print("hit " + h.collider.gameObject.name);
+                //    //Debug.Log("hit " + h.collider.gameObject.name);
             }
         }
 
 
 
-        print(asyncname+" roomGrid\n"+roomGridString());
+        //Debug.Log(asyncname+" roomGrid\n"+roomGridString());
         return complete;
     }
 
@@ -526,7 +526,7 @@ public partial class AI : MonoBehaviour
         DoorBehavior South = inRoom.SouthDoors[1];
         DoorBehavior West = inRoom.WestDoors[1];
 
-        print("in Room " + x + "," + y + " " + inRoom.gameObject);
+        //Debug.Log("in Room " + x + "," + y + " " + inRoom.gameObject);
 
         if (IsValid(South))
         {
@@ -588,10 +588,10 @@ public partial class AI : MonoBehaviour
     private void FindPlayer()
     {
         Transform playerT = FindClosestPlayer();
-        //print("closest player is " + playerT.gameObject.name);
+        ////Debug.Log("closest player is " + playerT.gameObject.name);
         int x, y;
         GetMapGridPos(playerT.position, out x, out y);
-        //print(" they are at " + x + "," + y);
+        ////Debug.Log(" they are at " + x + "," + y);
 
     }
 
@@ -641,10 +641,10 @@ public partial class AI : MonoBehaviour
                 return true;
             stagnateTimer += Time.deltaTime;
             freedomTimer = 0;
-            //print("not stagnate time " + stagnateTimer);
+            ////Debug.Log("not stagnate time " + stagnateTimer);
             return false;
         }
-        //print("not stagnate " + lastPosition + " " + transform.position);
+        ////Debug.Log("not stagnate " + lastPosition + " " + transform.position);
         lastPosition = transform.position;
         stagnateTimer = 0;
         return false;
@@ -681,14 +681,14 @@ public partial class AI : MonoBehaviour
     {
         if (stagnate())
         {
-            //print("    FREEDOM");
+            ////Debug.Log("    FREEDOM");
             return freeYourself(x, y);
         }
-        //print("Move (" + x + "," + y + ")\n"+roomGridString());
+        ////Debug.Log("Move (" + x + "," + y + ")\n"+roomGridString());
         if (y > 0)
         {
             controls.jump = ButtonPresser();
-            //print("Move jump " + controls.jump + " " + x);
+            ////Debug.Log("Move jump " + controls.jump + " " + x);
         }
         else
             controls.jump = false;
@@ -702,19 +702,19 @@ public partial class AI : MonoBehaviour
             {
                 if (!controls.jump)
                 {
-                    //print("\n");
+                    ////Debug.Log("\n");
                     //if (x > 0)
                     //    foreach (GameObject c in EastObstructions)
-                    //        print("obsticle east " + c.name);
+                    //        //Debug.Log("obsticle east " + c.name);
                     //if (x < 0)
                     //    foreach (GameObject c in WestObstructions)
-                    //        print("obsticle west " + c.name);
+                    //        //Debug.Log("obsticle west " + c.name);
                     controls.jump = ButtonPresser();
-                    //print("Move obsticle jump " + controls.jump + " " + x);
+                    ////Debug.Log("Move obsticle jump " + controls.jump + " " + x);
                 }
             }
             //else
-            //    print("Move " + x + " E:" + EastObstructions.Count + " W:" + WestObstructions.Count + "\n for " + gameObject.name);
+            //    //Debug.Log("Move " + x + " E:" + EastObstructions.Count + " W:" + WestObstructions.Count + "\n for " + gameObject.name);
             controls.moveLeft = x;
         }
         return inProgress;
@@ -747,7 +747,7 @@ public partial class AI : MonoBehaviour
         {
             if (isEastObstruction(cp))
             {
-                //print("   adding east " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
+                ////Debug.Log("   adding east " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
                 EastObstructions.Add(col.gameObject);
                 WestObstructions.Remove(col.gameObject);
                 return;
@@ -757,7 +757,7 @@ public partial class AI : MonoBehaviour
         {
             if (isWestObstruction(cp))
             {
-                //print("   adding west " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
+                ////Debug.Log("   adding west " + cp.otherCollider.gameObject + " " + cp.normal.x + "\n for " + gameObject.name);
                 WestObstructions.Add(col.gameObject);
                 EastObstructions.Remove(col.gameObject);
                 return;
@@ -793,8 +793,8 @@ public partial class AI : MonoBehaviour
             return false;
         float otherHeight = cp.otherCollider.bounds.center.y + cp.otherCollider.bounds.extents.y / 2;
         float thisHeight = cp.thisCollider.bounds.center.y + cp.thisCollider.bounds.extents.y / 2;
-        //print("heights this: "+thisHeight + " other " + otherHeight + "\n for " + gameObject.name);
-        //print("this collider " + cp.thisCollider.gameObject.name + " other: " + cp.otherCollider.gameObject.name);
+        ////Debug.Log("heights this: "+thisHeight + " other " + otherHeight + "\n for " + gameObject.name);
+        ////Debug.Log("this collider " + cp.thisCollider.gameObject.name + " other: " + cp.otherCollider.gameObject.name);
         if (thisHeight < otherHeight)
             return false;
         return true;
@@ -809,7 +809,7 @@ public partial class AI : MonoBehaviour
 
         public MapNode(int x, int y, int cost, Vector3 loc)
         {
-            //print("created Node (" + x + "," + y + ") " + cost + " " + loc);
+            ////Debug.Log("created Node (" + x + "," + y + ") " + cost + " " + loc);
             this.x = x;
             this.y = y;
             this.cost = (byte)cost;

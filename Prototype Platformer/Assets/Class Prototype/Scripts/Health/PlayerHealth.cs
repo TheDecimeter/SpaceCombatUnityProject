@@ -139,7 +139,11 @@ public class PlayerHealth : MonoBehaviour {
         //if (message.friend==gameObject||message.friend == colliders)
         //return;
 
-        if (!_canTakeDamage) { print(name[character.PlayerNumber] + "can't take damage"); return; }
+        if (!_canTakeDamage)
+        {
+            //Debug.Log(name[character.PlayerNumber] + "can't take damage");
+            return;
+        }
 
         int healthCheck = _currentHealth;
 
@@ -191,7 +195,7 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
 
-        //print("deal damage " + message.damage);
+        ////Debug.Log("deal damage " + message.damage);
 
         if (message.effect == "blur")
         {
@@ -218,7 +222,7 @@ public class PlayerHealth : MonoBehaviour {
 
         _currentHealth -= damage;
 
-        //print("PLAYER HEALTH: " + _currentHealth);
+        ////Debug.Log("PLAYER HEALTH: " + _currentHealth);
         info.say("HP: " + _currentHealth, 15);
         HealthParticle.Create(transform, -damage);
         hud.Link.Health[PlayerNumber].text =" "+ _currentHealth;
@@ -237,8 +241,8 @@ public class PlayerHealth : MonoBehaviour {
             _currentHealth = 0;
         }
 
-        if (healthCheck == _currentHealth)
-            print("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
+        //if (healthCheck == _currentHealth)
+            //Debug.Log("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
     }
 
     public void AsyncDamage(int ammount)
@@ -472,12 +476,12 @@ public class PlayerHealth : MonoBehaviour {
 
         framesDamage = 0;
 
-        transform.Find("Collision/Body Collider").gameObject.AddComponent<DontCollideWithPlayer>();
+        transform.Find("Collision/Body Collider").gameObject.layer = 27;//AddComponent<DontCollideWithPlayer>();
 
         isDead = true;
         //death sounds can go here
         audio.Play("Death" + name[PlayerNumber]);
-        //print("Death" + name[PlayerNumber]);
+        ////Debug.Log("Death" + name[PlayerNumber]);
 
         
         deathEvent.Invoke();

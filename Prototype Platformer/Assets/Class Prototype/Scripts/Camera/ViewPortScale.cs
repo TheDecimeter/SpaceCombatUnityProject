@@ -53,7 +53,7 @@ public class ViewPortScale : MonoBehaviour
     void Start()
     {
         players = GetPlayers();
-        print("player count " + players);
+        //Debug.Log("player count " + players);
         setDim(GetVerticalSplit());
     }
 
@@ -114,7 +114,7 @@ public class ViewPortScale : MonoBehaviour
             if(horizontalParent!=null)
                 transform.SetParent(verticalParent);
 
-            print("setting vert viewPortFuzzy for " + transform.parent.gameObject.name);
+            //Debug.Log("setting vert viewPortFuzzy for " + transform.parent.gameObject.name);
             float hUnit = h / -2;
             float wUnit = w / 4;
 
@@ -123,10 +123,10 @@ public class ViewPortScale : MonoBehaviour
         }
         else
         {
-            print("setting horiz viewPortFuzzy for " + transform.parent.gameObject.name);
+            //Debug.Log("setting horiz viewPortFuzzy for " + transform.parent.gameObject.name);
             if (horizontalParent!=null)
             {
-                print("setting parent for " + transform.parent.gameObject.name);
+                //Debug.Log("setting parent for " + transform.parent.gameObject.name);
                 transform.SetParent(horizontalParent);
             }
 

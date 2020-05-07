@@ -118,7 +118,7 @@ public class LevelRandomizer : MonoBehaviour
             //playerSpawnerCount+=child.GetComponent<TileInformation>().PlayerSpawners.Length;
         }
 
-        //print("count=" + playerSpawnerCount);
+        ////Debug.Log("count=" + playerSpawnerCount);
         TilePallette = new GameObject[tileCount];
         //PlayerSpawners = new PlayerSpawner[playerSpawnerCount];
         tileCount = 0;
@@ -166,7 +166,7 @@ public class LevelRandomizer : MonoBehaviour
             float hx = startX + x * xTileSize + xOffset + xTileSize / 2;
             float ly = startY + y * yTileSize + yOffset - yTileSize / 2;
             float hy = startY + y * yTileSize + yOffset + yTileSize / 2;
-            //print("CLOSE ROOM " + x + " " + y + " " + hx + " " + lx + " " + hy + " " + ly);
+            ////Debug.Log("CLOSE ROOM " + x + " " + y + " " + hx + " " + lx + " " + hy + " " + ly);
 
             //if the player is within the bounds of the room, DIE
             foreach (Transform child in PlayerArray.transform)
@@ -194,7 +194,7 @@ public class LevelRandomizer : MonoBehaviour
                     count++;
             }
         int stop = Random.Range(0, count);
-        print("stop " + stop+ " count "+count);
+        //Debug.Log("stop " + stop+ " count "+count);
         count = 0;
         for (int i = 0; i < MapDemensionsY; ++i)
             for (int j = 0; j < MapDemensionsX; ++j)
@@ -209,7 +209,7 @@ public class LevelRandomizer : MonoBehaviour
             }
         LeaveLoop:
 
-        //print("x" + x +" y "+y);
+        ////Debug.Log("x" + x +" y "+y);
 
         GetComponent<EscapePodLauncher>().Launch(startX + x * xTileSize + xOffset, startY + y * yTileSize + yOffset, startZ);
 
@@ -315,7 +315,7 @@ public class LevelRandomizer : MonoBehaviour
             tmp.transform.position = ItemSpawners[(Spawners % ItemSpawners.Length)].gameObject.transform.position;
             PlacedItems[Spawners] = tmp;
             Spawners++;
-            //print("placed item at " + tmp.transform.position);
+            ////Debug.Log("placed item at " + tmp.transform.position);
         }
 
         //setup the level shrinking object
@@ -334,7 +334,7 @@ public class LevelRandomizer : MonoBehaviour
         int tileIndex = findValidTileIndex(x, y);
         if (tileIndex == -1)
         {
-            print("error: no valid tile found");
+            //Debug.Log("error: no valid tile found");
             return;
         }
         //add the tile
@@ -367,7 +367,7 @@ public class LevelRandomizer : MonoBehaviour
             tileIndex++;
         }
 
-        print("no compatible tile found");
+        //Debug.Log("no compatible tile found");
         return -1;
     }
     private void deactivateLevel()
@@ -388,7 +388,7 @@ public class LevelRandomizer : MonoBehaviour
         GameObject tmp = Instantiate(tile);
         tmp.transform.position = new Vector3(startX + x * xTileSize, startY + y * yTileSize, startZ);
         tmp.GetComponent<TileInformation>().Init();
-        //print(tmp.transform.position);
+        ////Debug.Log(tmp.transform.position);
         PlacedTileList.Add(tmp);
         Map[y][x] = tmp.GetComponent<TileInformation>();
         tmp.SetActive(true);
@@ -508,7 +508,7 @@ public class LevelRandomizer : MonoBehaviour
 
     private GameObject getTilePallette(int index)
     {
-        //print(index);
+        ////Debug.Log(index);
         return TilePallette[index % TilePallette.Length];
     }
 

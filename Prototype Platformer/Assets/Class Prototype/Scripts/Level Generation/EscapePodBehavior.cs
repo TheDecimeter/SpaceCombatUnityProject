@@ -89,9 +89,28 @@ public class EscapePodBehavior : MonoBehaviour
     {
         PlayerHealth.StopDamage = true;
         dontMove = false;
-        transform.LookAt(player.GetComponent<CameraLocator>().CameraLocation);
-        GetComponent<Rigidbody>().velocity = transform.forward * LaunchSpeed;
+        Vector3 head=PointAt(player.GetComponent<CameraLocator>().CameraLocation.position);
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.velocity = head * LaunchSpeed;
+        if(rb.angularVelocity==Vector3.zero)
+        {
+            float x = Random.Range(0, 1);
+            float y = 1 - x;
+            float z = Random.Range(0, 1);
+            if (Random.Range(0, 2) > 0)
+                x *= -1;
+            if (Random.Range(0, 2) > 0)
+                y *= -1;
+            if (Random.Range(0, 2) > 0)
+                z *= -1;
+            rb.AddTorque(new Vector3(x, y, z) * 100);
+        }
         EscapeEvent.Invoke();
+    }
+
+    Vector3 PointAt(Vector3 loc)
+    {
+        return (loc - transform.position).normalized;
     }
 
     void checkPlayerDistance()

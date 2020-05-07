@@ -36,7 +36,7 @@ public class Asteroid : MonoBehaviour
                     y *= -1;
                 Vector2 v = new Vector2(x, y);
                 //Rigidbody rb = GetComponent<Rigidbody>();
-                v = v.normalized * 1000;//rb.velocity.normalized;
+                v = v.normalized * 4000;//rb.velocity.normalized;
                 divert = false;
                 Rigidbody rb = GetComponent<Rigidbody>();
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);

@@ -15,17 +15,17 @@ public class DeathCounter : MonoBehaviour
     void Start()
     {
         deaths = 0;
-        Debug.LogWarning(" starting new match");
+        //Debug.LogWarning(" starting new match");
     }
     
 
     public void playerDied(int playerID)
     {
-        Debug.LogWarning("Player died " + playerID);
+        //Debug.LogWarning("Player died " + playerID);
         deaths++;
         if (deaths == DeathsToEvent)
         {
-            Debug.LogWarning("Invoking launch pod");
+            //Debug.LogWarning("Invoking launch pod");
             DeathEvent.Invoke();
         }
         if (deaths == 3)
@@ -36,7 +36,7 @@ public class DeathCounter : MonoBehaviour
                         IncreaseScore(child.gameObject.GetComponent<CharacterMovement_Physics>().
                         PlayerNumber, 1);
 
-            Debug.LogWarning("Invoking one player remaining event");
+            //Debug.LogWarning("Invoking one player remaining event");
             OnePlayerLeftEvent.Invoke();
         }
     }

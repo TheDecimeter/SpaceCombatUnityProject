@@ -38,7 +38,7 @@ public class UndestroyableData : MonoBehaviour
     //Game Rounds   Getter Setter
     public void SetRounds(int rounds)
     {
-        Debug.LogWarning("   Data - Set rounds " + rounds);
+        //Debug.LogWarning("   Data - Set rounds " + rounds);
         sSave.RoundCounter = -1;
         sSave.Rounds = rounds;
 
@@ -51,7 +51,7 @@ public class UndestroyableData : MonoBehaviour
     }
     public void GetRoundsE(IntUpdater.Get get)
     {
-        Debug.Log("   Data - Get rounds " + sSave.Rounds);
+        //Debug.Log("   Data - Get rounds " + sSave.Rounds);
         get(sSave.Rounds);
     }
 
@@ -199,7 +199,7 @@ public class UndestroyableData : MonoBehaviour
             LoadFile(fileName);
             if (sSave.CamRot.player == null)
             {
-                Debug.LogWarning("camrot was truned to null");
+                //Debug.LogWarning("camrot was truned to null");
                 sSave.CamRot.player = new int[5];
             }
 
@@ -286,7 +286,7 @@ public class UndestroyableData : MonoBehaviour
         sSave.RoundCounter++;
         if (sSave.Rounds == sSave.RoundCounter)
             sSave.StartMenu.StartMenuOpened = true;
-        Debug.LogWarning("   Data - end round " + sSave.Rounds+" "+sSave.RoundCounter);
+        //Debug.LogWarning("   Data - end round " + sSave.Rounds+" "+sSave.RoundCounter);
     }
 
     public bool isMenuOpened()
@@ -485,7 +485,7 @@ public class UndestroyableData : MonoBehaviour
             if (File.Exists(destination)) file = File.OpenRead(destination);
             else
             {
-                Debug.LogError("File not found");
+                //Debug.LogError("File not found");
                 return;
             }
 
@@ -514,7 +514,7 @@ public class UndestroyableData : MonoBehaviour
         }
         catch(System.Exception e)
         {
-            Debug.LogError("Crashed while trying to load file");
+            //Debug.LogError("Crashed while trying to load file");
             SetDefaults();
         }
     }

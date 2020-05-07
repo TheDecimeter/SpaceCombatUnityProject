@@ -654,6 +654,7 @@ public class CharacterMovement_Physics : MonoBehaviour
             {
                 _currentItem = Instantiate(defaultWeapon);
                 print("current item is null " + name[PlayerNumber]);
+                AnimState.updateAnimationState(_currentItem.getAnimationFlag(), true);
             }
 
             //Transform atkPt = new GameObject("tmp transform CharacterMovement_Physics.SetAttacking").transform;

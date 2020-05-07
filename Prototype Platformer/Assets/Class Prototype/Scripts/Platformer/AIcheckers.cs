@@ -124,19 +124,19 @@ public partial class AI : MonoBehaviour
 
         private int Reset(int inCommingPriority)
         {
-            print("resetting attack for  " +outer.asyncname+" remaining players: "+players.Count);
+            //Debug.Log("resetting attack for  " +outer.asyncname+" remaining players: "+players.Count);
             for (int i=players.Count-1;i>=0; --i)
             {
 
                 if (players[i].isDead)
                 {
-                    print(outer.asyncname + " removed player " + players[i].asyncname);
+                    //Debug.Log(outer.asyncname + " removed player " + players[i].asyncname);
                     players.RemoveAt(i);
                     continue;
                 }
                 if (players[i].framesDamage > 0 && i != 0)
                 {
-                    print(outer.asyncname + " skipping poisoned player " + players[i].asyncname);
+                    //Debug.Log(outer.asyncname + " skipping poisoned player " + players[i].asyncname);
                     continue;
                 }
 
@@ -148,7 +148,7 @@ public partial class AI : MonoBehaviour
 
                 if (mx != px || my != py)
                 {
-                    print(outer.asyncname+" skipping out of room player" + players[i].asyncname);
+                    //Debug.Log(outer.asyncname+" skipping out of room player" + players[i].asyncname);
                     continue;
                 }
 
@@ -168,11 +168,11 @@ public partial class AI : MonoBehaviour
 
                 outer.TaskList.Clear();
 
-                Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname);
+                //Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname);
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
             }
-            print("     DID NOT TARGET PLAYER "+outer.asyncname);
+            //Debug.Log("     DID NOT TARGET PLAYER "+outer.asyncname);
             if(inCommingPriority==priority)
                 return 0;
             return inCommingPriority;
@@ -254,7 +254,7 @@ public partial class AI : MonoBehaviour
             if(!InRoomWithColission())
                 return AppropriatePriority(priority, this.priority, overwrittenPriority);
 
-            print("     flee room first " + outer.asyncname);
+            //Debug.Log("     flee room first " + outer.asyncname);
             FleeRoom();
 
             overwrittenPriority = priority;
@@ -263,7 +263,7 @@ public partial class AI : MonoBehaviour
 
         private void FleeRoom()
         {
-            print("     flee room "+outer.asyncname);
+            //Debug.Log("     flee room "+outer.asyncname);
             
             DoorBehavior door;
             float MinDist = float.MaxValue;
@@ -274,7 +274,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
-                    print("     flee room east" + outer.asyncname);
+                    //Debug.Log("     flee room east" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughEastDoor;
                 }
@@ -285,7 +285,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
-                    print("     flee room west" + outer.asyncname);
+                    //Debug.Log("     flee room west" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughWestDoor;
                 }
@@ -296,7 +296,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
-                    print("     flee room north" + outer.asyncname);
+                    //Debug.Log("     flee room north" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughNorthDoor;
                 }
@@ -308,7 +308,7 @@ public partial class AI : MonoBehaviour
                 float dist = (door.AsyncPosition - outer.AsyncPosition).magnitude;
                 if (dist < MinDist)
                 {
-                    print("     flee room south" + outer.asyncname);
+                    //Debug.Log("     flee room south" + outer.asyncname);
                     MinDist = dist;
                     BestPath = outer.TaskAssignGoThroughSouthDoor;
                 }
@@ -316,7 +316,7 @@ public partial class AI : MonoBehaviour
 
             outer.TaskList.Clear();
             outer.TaskList.Push(outer.TaskComplete);
-            Debug.Log(outer.asyncname + " Reset Current Task in go flee in best path");
+            //Debug.Log(outer.asyncname + " Reset Current Task in go flee in best path");
             outer.currentTask = BestPath;
 
         }
@@ -406,7 +406,7 @@ public partial class AI : MonoBehaviour
 
         private void Reset()
         {
-            //print("" + outer.gameObject.name + "RESETING route");
+            ////Debug.Log("" + outer.gameObject.name + "RESETING route");
             float minDist = float.MaxValue;
             PlayerHealth closestPlayer=null;
 
@@ -454,7 +454,7 @@ public partial class AI : MonoBehaviour
             else
             {
                 outer.TaskList.Clear();
-                Debug.Log(outer.asyncname + " Reset Current Task in go to nearest player to complete");
+                //Debug.Log(outer.asyncname + " Reset Current Task in go to nearest player to complete");
                 outer.currentTask = outer.TaskComplete;
             }
         }
@@ -489,10 +489,10 @@ public partial class AI : MonoBehaviour
                 GetMapGridPos(warningLight.AsyncPosition, out Ax, out Ay);
         }
 
-        //print("\n");
-        //print("\n");
-        //print(""+gameObject.name);
-        //print("at " + transform.position+" "+AsyncPosition);
+        ////Debug.Log("\n");
+        ////Debug.Log("\n");
+        ////Debug.Log(""+gameObject.name);
+        ////Debug.Log("at " + transform.position+" "+AsyncPosition);
 
         int count = 1000;
         //bfs around to target
@@ -501,11 +501,11 @@ public partial class AI : MonoBehaviour
             count -= 1;
             if (count < 0)
             {
-                Debug.LogError("Had to use loop counter bfs player loc");
+                //Debug.LogError("Had to use loop counter bfs player loc");
                 break;
             }
             Node c = q.Dequeue();
-            //print("checking " + c.x + " " + c.y);
+            ////Debug.Log("checking " + c.x + " " + c.y);
 
             if (!validTile(c.x, c.y))
                 continue;
@@ -516,7 +516,7 @@ public partial class AI : MonoBehaviour
 
             if (c.x == Tx && c.y == Ty)
             {
-                //print("found target");
+                ////Debug.Log("found target");
                 break; //stop when you've reached the target
             }
 
@@ -530,58 +530,58 @@ public partial class AI : MonoBehaviour
                 q.Enqueue(new Node(c.x - 1, c.y, c.cost + 1));
         }
 
-        print(asyncname + " grid to player \n" + AI.GridToString(levelPath));
+        //Debug.Log(asyncname + " grid to player \n" + AI.GridToString(levelPath));
 
         count = 100;
         //work from target pos to your pos to convert mapped route to tasks
         TaskList.Clear();
         TaskList.Push(EndTask);
         int cx = Tx,  cy = Ty,  cc = levelPath[Ty][Tx];
-        //print("startingCost " + cc);
+        ////Debug.Log("startingCost " + cc);
         if(cc!=0)// if an asteroid is going for the player their "target location" will be undreachable
             while (cx != x || cy != y)
             {
                 count -= 1;
                 if (count < 0)
                 {
-                    Debug.LogError("Had to use loop counter task loading");
+                    //Debug.LogError("Had to use loop counter task loading");
                     break;
                 }
                 //check left
                 if (nextStep(cx - 1, cy, cc, levelPath))
                 {
-                    //print("go East " + cx + "," + cy);
+                    ////Debug.Log("go East " + cx + "," + cy);
                     TaskList.Push(TaskAssignGoThroughEastDoor);
                     cx -= 1;
                 }
                 //check right
                 if (nextStep(cx + 1, cy, cc, levelPath))
                 {
-                    //print("go West " + cx + "," + cy);
+                    ////Debug.Log("go West " + cx + "," + cy);
                     TaskList.Push(TaskAssignGoThroughWestDoor);
                     cx += 1;
                 }
                 //check down
                 if (nextStep(cx, cy - 1, cc, levelPath))
                 {
-                    //print("go North " + cx + "," + cy);
+                    ////Debug.Log("go North " + cx + "," + cy);
                     TaskList.Push(TaskAssignGoThroughNorthDoor);
                     cy -= 1;
                 }
                 //check up
                 if (nextStep(cx, cy + 1, cc, levelPath))
                 {
-                    //print("go South "+cx+","+cy);
+                    ////Debug.Log("go South "+cx+","+cy);
                     TaskList.Push(TaskAssignGoThroughSouthDoor);
                     cy += 1;
                 }
                 cc--;
             }
 
-        //print("\n");
+        ////Debug.Log("\n");
         try
         {
-            Debug.Log(asyncname + " Reset Current Task in go to nearest player to first task in route");
+            //Debug.Log(asyncname + " Reset Current Task in go to nearest player to first task in route");
             currentTask = TaskList.Pop();
         }
         catch(InvalidOperationException e)
@@ -624,9 +624,9 @@ public partial class AI : MonoBehaviour
         if (levelStats.Map[y][x] != null && !levelStats.Map[y][x].isClosed)
         {
             //if (levelStats.Map[y][x] == null)
-            //    print("tile at " + x + " " + y + " is null");
+            //    //Debug.Log("tile at " + x + " " + y + " is null");
             //else if (levelStats.Map[y][x].isClosed)
-            //    print("tile at " + x + " " + y + " is closed");
+            //    //Debug.Log("tile at " + x + " " + y + " is closed");
             return true;
         }
         return false;
