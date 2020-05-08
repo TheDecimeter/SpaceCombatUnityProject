@@ -135,7 +135,7 @@ public class UndestroyableData : MonoBehaviour
     {
         get(sSave.TouchScreenControls);
     }
-    
+
     public void SetLayerBlur(bool active)
     {
         sSave.LayerBlur = active;
@@ -148,6 +148,50 @@ public class UndestroyableData : MonoBehaviour
     {
         return sSave.LayerBlur;
     }
+
+    //Audio
+    public void SetMusicVolume(int volume0through10)
+    {
+        volume0through10 = Mathf.Clamp(volume0through10, 0, 10);
+        sSave.Audio.musicVolume = volume0through10;
+    }
+    public void GetMusicVolume(IntUpdater.Get get)
+    {
+        get(sSave.Audio.musicVolume);
+    }
+    public static float GetTrueMusicVolume()
+    {
+        return sSave.Audio.musicVolume/10f;
+    }
+
+    public void SetSFXMasterVolume(int volume0through10)
+    {
+        volume0through10 = Mathf.Clamp(volume0through10, 0, 10);
+        sSave.Audio.sfxMasterVolume = volume0through10;
+    }
+    public void GetSFXMasterVolume(IntUpdater.Get get)
+    {
+        get(sSave.Audio.sfxMasterVolume);
+    }
+    public static float GetTrueSFXMasterVolume()
+    {
+        return sSave.Audio.sfxMasterVolume/10f;
+    }
+
+    public void SetSFXGruntVolume(int volume0through10)
+    {
+        volume0through10 = Mathf.Clamp(volume0through10, 0, 10);
+        sSave.Audio.sfxGruntVolume = volume0through10;
+    }
+    public void GetSFXGruntVolume(IntUpdater.Get get)
+    {
+        get(sSave.Audio.sfxGruntVolume);
+    }
+    public static float GetTrueSFXGruntVolume()
+    {
+        return sSave.Audio.sfxGruntVolume/10f;
+    }
+    
 
 
     //player order, basically this will reverse player order of game pads so that
@@ -422,6 +466,11 @@ public class UndestroyableData : MonoBehaviour
         public static int RoundCounter, Rounds, PlayerCount;
         public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true, ReversePlayerOrder = false;
 
+        public static class Audio
+        {
+            public static int musicVolume,sfxMasterVolume,sfxGruntVolume,sfxExplosionVolume,sfxOtherVolume;
+        }
+
         public static class CamRot
         {
             public static bool verticalSplit;
@@ -436,11 +485,12 @@ public class UndestroyableData : MonoBehaviour
         public int PlayerCount;
         public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur,ReversePlayerOrder;
         public int rounds,mapx,mapy,tileQuant;
+        public int musicVolume,sfxMasterVolume,sfxOtherVolume,sfxGruntVolume;
 
         public override string ToString()
         {
             return " players: " + PlayerCount + ", TouchControls: " + TouchScreenControls + ", " + LayerBlur + ", " +
-                "rounds: " + rounds + ", mapx: " + mapx + ", mapy: " + mapy + ", tiles: " + tileQuant; 
+                "rounds: " + rounds + ", mapx: " + mapx + ", mapy: " + mapy + ", tiles: " + tileQuant+", volume: "+musicVolume; 
         }
     }
 
@@ -468,6 +518,9 @@ public class UndestroyableData : MonoBehaviour
         data.TouchScreenControls = sSave.TouchScreenControls;
         data.LayerBlur = sSave.LayerBlur;
 
+        data.musicVolume = sSave.Audio.musicVolume;
+        data.sfxGruntVolume = sSave.Audio.sfxGruntVolume;
+        data.sfxMasterVolume = sSave.Audio.sfxMasterVolume;
 
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, data);
@@ -510,6 +563,10 @@ public class UndestroyableData : MonoBehaviour
             sSave.TouchScreenControls = data.TouchScreenControls;
             sSave.LayerBlur = data.LayerBlur;
 
+            sSave.Audio.musicVolume = data.musicVolume;
+            sSave.Audio.sfxGruntVolume = data.sfxGruntVolume;
+            sSave.Audio.sfxMasterVolume = data.sfxMasterVolume;
+
             print("read saved data "+data);
         }
         catch(System.Exception e)
@@ -535,6 +592,10 @@ public class UndestroyableData : MonoBehaviour
         sSave.Play.MaxTiles = 12;
 
         sSave.ReversePlayerOrder = false;
+
+        sSave.Audio.musicVolume = 4;
+        sSave.Audio.sfxGruntVolume = 10;
+        sSave.Audio.musicVolume = 10;
 
 #if UNITY_ANDROID
         sSave.TouchScreenControls = true;

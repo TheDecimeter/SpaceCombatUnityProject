@@ -100,6 +100,8 @@ public class ScrollManager : ControlFirer
         {
             r++;
             at = Next(at);
+            if (r > Controls.Length)
+                throw new KeyNotFoundException(gameObject.name+" doesn't contain " + target.name);
         }
         return r;
     }
