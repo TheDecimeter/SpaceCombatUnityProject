@@ -604,7 +604,7 @@ public class UndestroyableData : MonoBehaviour
 #endif
 #if UNITY_STANDALONE_LINUX
         sSave.LayerBlur = false;
-#else
+#elif UNITY_ANDROID
         sSave.LayerBlur = true;
 #endif
     }
