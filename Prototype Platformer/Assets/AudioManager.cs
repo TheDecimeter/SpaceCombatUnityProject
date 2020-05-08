@@ -15,10 +15,7 @@ public class AudioManager : MonoBehaviour
     {
         if (master != null)
         {
-            if (!UndestroyableData.IsMainMenuOpened())
-                Destroy(gameObject);
-            else
-                Destroy(music);//since music plays constantly, destroy new instances which try to play it
+            Destroy(music);//since music plays constantly, destroy new instances which try to play it
         }
         else
         {
@@ -62,10 +59,18 @@ public class AudioManager : MonoBehaviour
 
     public void Play (string name)
     {
-       Sound s = Array.Find(sounds, sound => sound.name == name);
-        //if(name.Contains("Death")) s.source.Play();
-        s.source.PlayOneShot(s.clip,s.volume);
-        //else player.PlayOneShot(s.clip);
+        if (master != null)
+        {
+            if (master == this)
+            {
+                print("play " + name);
+                Sound s = Array.Find(sounds, sound => sound.name == name);
+                //if(name.Contains("Death")) s.source.Play();
+                s.source.PlayOneShot(s.clip, s.volume);
+            }
+            else
+                master.Play(name);
+        }
     }
 
     private float Vol(string name,Sound s)
