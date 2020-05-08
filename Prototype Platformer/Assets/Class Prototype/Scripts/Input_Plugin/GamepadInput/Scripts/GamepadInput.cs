@@ -35,6 +35,8 @@ public class GamepadInput : MonoBehaviour
 
 	void OnDestroy()
 	{
+        if (manager == null)
+            return;
 		manager.OnGamepadAdded -= GamepadAdded;
 		manager.OnGamepadRemoved -= GamepadRemoved;
 	}
