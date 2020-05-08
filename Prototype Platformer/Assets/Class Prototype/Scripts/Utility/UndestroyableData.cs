@@ -599,13 +599,10 @@ public class UndestroyableData : MonoBehaviour
 
 #if UNITY_ANDROID
         sSave.TouchScreenControls = true;
+        sSave.LayerBlur = true;
 #else
         sSave.TouchScreenControls = false;
-#endif
-#if UNITY_STANDALONE_LINUX
         sSave.LayerBlur = false;
-#elif UNITY_ANDROID
-        sSave.LayerBlur = true;
 #endif
     }
 }
