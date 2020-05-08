@@ -1,6 +1,7 @@
 ﻿using UnityEngine.Audio;
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -71,6 +72,39 @@ public class AudioManager : MonoBehaviour
             else
                 master.Play(name);
         }
+    }
+
+    public static void PlayFast()
+    {
+        if (master == null)
+            return;
+
+        master.StopAllCoroutines();
+        master.StartCoroutine(master.ChangeSpeed(1.02f));
+    }
+
+    IEnumerator ChangeSpeed(float goal)
+    {
+        float initialPitch = master.music.pitch;
+        if (initialPitch != goal)
+        {
+            float count = 0;
+            while (count < 1)
+            {
+                count += Time.deltaTime;
+                master.music.pitch = Mathf.Lerp(initialPitch, goal, count);
+                yield return null;
+            }
+        }
+    }
+
+    public static void PlayNormal()
+    {
+        if (master == null)
+            return;
+
+        master.StopAllCoroutines();
+        master.StartCoroutine(master.ChangeSpeed(1f));
     }
 
     private float Vol(string name,Sound s)

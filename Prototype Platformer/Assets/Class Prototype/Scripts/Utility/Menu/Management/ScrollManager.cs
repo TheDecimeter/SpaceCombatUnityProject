@@ -67,12 +67,19 @@ public class ScrollManager : ControlFirer
 
         int r = distToElement(GetNext, controls);
         int l = distToElement(GetPrev, controls);
+
+        print("scrollTO l:" + l + " r:" + r);
+
         if (l < r)
+        {
             for (int i = 0; i < l; ++i)
                 ScrollLeft();
+        }
         else
+        {
             for (int i = 0; i < r; ++i)
                 ScrollRight();
+        }
 
     }
     
