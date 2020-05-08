@@ -116,18 +116,18 @@ public class PlayerHealth : MonoBehaviour {
                 if (frameCounter == blurFrames)
                     endBlur();
             }
-            if (framesDamage > 0)
+        }
+        if (framesDamage > 0)
+        {
+            if (StopDamage)
+                return;
+            secondsCounter++;
+            if (secondsCounter == 50)
             {
-                if (StopDamage)
-                    return;
-                secondsCounter++;
-                if (secondsCounter == 50)
-                {
-                    secondsCounter = 0;
-                    framesDamage--;
-                    HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
-                    DealDamage(new DamageMessage(damageRate, poisonedBy, true));
-                }
+                secondsCounter = 0;
+                framesDamage--;
+                HealthParticle.Create(transform, "poison", new Color(0, .8f, 0), false);
+                DealDamage(new DamageMessage(damageRate, poisonedBy, true));
             }
         }
     }
@@ -203,6 +203,7 @@ public class PlayerHealth : MonoBehaviour {
         }
         if (message.effect.Contains("poison"))
         {
+            print("adding poison to " + gameObject.name);
             poisonedBy = message.friend;
             string[] tokens = message.effect.Split(',');
             int.TryParse(tokens[1], out damageRate);
