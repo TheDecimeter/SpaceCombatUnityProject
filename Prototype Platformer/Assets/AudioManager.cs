@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
         if (master != null)
         {
             Destroy(music);//since music plays constantly, destroy new instances which try to play it
+            Destroy(GetComponent<AudioListener>());
         }
         else
         {
@@ -63,7 +64,6 @@ public class AudioManager : MonoBehaviour
         {
             if (master == this)
             {
-                print("play " + name);
                 Sound s = Array.Find(sounds, sound => sound.name == name);
                 //if(name.Contains("Death")) s.source.Play();
                 s.source.PlayOneShot(s.clip, s.volume);
