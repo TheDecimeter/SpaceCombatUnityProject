@@ -7,7 +7,7 @@ public class EscapePodBehavior : MonoBehaviour
 {
     public string targetTag = "Player";
     public int LaunchSpeed = 10;
-    public int AnimationFrames = 10;
+    public int AnimationFrames = 5;
     public int ImpactDamage = 10;
     public UnityEvent EscapeEvent;
     private bool dontMove = false;
@@ -47,8 +47,7 @@ public class EscapePodBehavior : MonoBehaviour
             }
             else
             {
-                player.transform.localScale = new Vector3(1,
-                    (AnimationFrames - frameCounter) / AnimationFrames, 1);
+                player.transform.localScale = new Vector3(1,Mathf.Lerp(1,0,frameCounter / (float)AnimationFrames), 1);
             }
         }
         else
@@ -61,6 +60,9 @@ public class EscapePodBehavior : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (player != null)
+            return;
+
         if (!dontMove && collision.gameObject.tag == targetTag)
         {
             collision.gameObject.GetComponent<PlayerHealth>().DealDamage(new DamageMessage(ImpactDamage, gameObject));
@@ -78,9 +80,7 @@ public class EscapePodBehavior : MonoBehaviour
             }
             if (player == null)
             {
-                player = collision.gameObject;
-                FreezePlayer(player);
-                frameCounter = 0;
+                SetPlayer(collision.gameObject);
             }
         }
     }
@@ -127,10 +127,17 @@ public class EscapePodBehavior : MonoBehaviour
                 players.Add(child.gameObject);
             }
         if (players!=null){
-            player = players[Random.Range(0, players.Count)];
-            FreezePlayer(player);
-            frameCounter = 0;
+            SetPlayer(players[Random.Range(0, players.Count)]);
         }
+    }
+
+    private void SetPlayer(GameObject player)
+    {
+        if (this.player != null)
+            return;
+        this.player = player;
+        FreezePlayer(player);
+        frameCounter = 0;
     }
 
     private static float distance(Vector3 from, Vector3 to)

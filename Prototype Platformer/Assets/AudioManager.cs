@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class AudioManager : MonoBehaviour
     //private UndestroyableData savedData;
     public AudioSource music;
     private static AudioManager master = null;
+    private Dictionary<string, Sound> soundTable;
 
     void Awake() 
     {
@@ -21,12 +23,15 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
+            soundTable = new Dictionary<string, Sound>();
             foreach (Sound s in sounds)
             {
                 s.source = gameObject.AddComponent<AudioSource>();
                 s.source.clip = s.clip;
                 s.source.pitch = s.pitch;
                 s.source.loop = s.loop;
+
+                soundTable.Add(s.name, s);
             }
         }
     }
@@ -65,7 +70,7 @@ public class AudioManager : MonoBehaviour
         {
             if (master == this)
             {
-                Sound s = Array.Find(sounds, sound => sound.name == name);
+                Sound s = soundTable[name];// Array.Find(sounds, sound => sound.name == name);
                 //if(name.Contains("Death")) s.source.Play();
                 s.source.PlayOneShot(s.clip, s.volume);
             }

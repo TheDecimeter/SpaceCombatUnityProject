@@ -47,9 +47,29 @@ public class PlayerHealth : MonoBehaviour {
 
     private CharacterMovement_Physics character;
     private bool deathQuip = true;
-    public bool isDead{get; protected set;}
+    private bool _isDead=false;
+    public bool isDead
+    {
+        get
+        {
+            if (_isDead) return true;
+            else if (_currentHealth <= 0)
+            {
+                //Debug.LogError(asyncname + " should be dead, but isn't");
+                return true;
+            }
+            return false;
+        }
+
+        protected set
+        {
+            _isDead = value;
+        }
+    }
 
     private bool isHuman = false;
+
+    public bool HasQuipped { get; protected set; }
 
     private int asyncDamage=0;
     public Vector3 AsyncPosition { get; protected set; }
@@ -61,6 +81,7 @@ public class PlayerHealth : MonoBehaviour {
 
     void Awake()
     {
+        HasQuipped = false;
         Init();
     }
 
@@ -141,7 +162,7 @@ public class PlayerHealth : MonoBehaviour {
 
         if (!_canTakeDamage)
         {
-            //Debug.Log(name[character.PlayerNumber] + "can't take damage");
+            ////Debug.Log(name[character.PlayerNumber] + "can't take damage");
             return;
         }
 
@@ -195,7 +216,7 @@ public class PlayerHealth : MonoBehaviour {
             AnimState = GetComponent<CharacterMovement_Physics>().AnimState;
         AnimState.updateAnimationState(AnimationStates.Tag.damage, true);
 
-        ////Debug.Log("deal damage " + message.damage);
+        //////Debug.Log("deal damage " + message.damage);
 
         if (message.effect == "blur")
         {
@@ -223,12 +244,10 @@ public class PlayerHealth : MonoBehaviour {
 
         _currentHealth -= damage;
 
-        ////Debug.Log("PLAYER HEALTH: " + _currentHealth);
-        info.say("HP: " + _currentHealth, 15);
-        HealthParticle.Create(transform, -damage);
-        hud.Link.Health[PlayerNumber].text =" "+ _currentHealth;
+        //////Debug.Log("PLAYER HEALTH: " + _currentHealth);
 
         damageEvent.Invoke();
+        HealthParticle.Create(transform, -damage);
 
         if (_currentHealth <= 0)
         {
@@ -241,16 +260,21 @@ public class PlayerHealth : MonoBehaviour {
             PlayerDeath();
             _currentHealth = 0;
         }
+        else
+        {
+            info.say("HP: " + _currentHealth, 15);
+            hud.Link.Health[PlayerNumber].text = " " + _currentHealth;
+        }
 
         //if (healthCheck == _currentHealth)
-            //Debug.Log("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
+            ////Debug.Log("health unchanged " + name[character.PlayerNumber]+" damage:"+message.damage);
     }
 
     public void AsyncDamage(int ammount)
     {
         if (StopDamage)
             return;
-        //Debug.LogWarning("damage " + asyncname + " " + ammount);
+        ////Debug.LogWarning("damage " + asyncname + " " + ammount);
         asyncDamage += ammount;
     }
 
@@ -330,20 +354,25 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        if (NearQuip())
+            return;
         deathQuip = true;
         switch (Random.Range(0, 3))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("YEAH!\nTook it like a\nBOSS!", -1);
+                HasQuipped = true;
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("YEAH!\nHow tough am I!", -1);
+                HasQuipped = true;
                 break;
             case 2:
                 hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("What doesn't kill you\nmakes you stronger.\nNormally\nit <b>kills</b> you though.", -1);
+                HasQuipped = true;
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -355,16 +384,20 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        if (NearQuip())
+            return;
         deathQuip = true;
         switch (Random.Range(0, 10))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("Smoked too many\ncigarettes.", -1);
+                HasQuipped = true;
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("I was bored\nanyway", -1);
+                HasQuipped = true;
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -376,21 +409,26 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        if (NearQuip())
+            return;
         deathQuip = true;
         switch (Random.Range(0, 6))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("Coward!", -1);
+                HasQuipped = true;
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Where was the body armor?", -1);
+                HasQuipped = true;
                 break;
             case 2:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("In a fair fight\nI'd kill you!\n \n ", -1);
                 killer.GetComponent<PlayerHealth>().info.say("That’s no incentive for me \nto fight fair, then is it?", 500);
+                HasQuipped = true;
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -404,45 +442,56 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        if (NearQuip())
+            return;
         deathQuip = true;
         switch (Random.Range(0, 12))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("Why didn't\nI choose peace", -1);
+                HasQuipped = true;
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("<b><size=110%>KAA<size=100%>HN<size=90%>NN<size=80%>N<size=70%>N<size=60%>N</b>!", -1);
+                HasQuipped = true;
                 break;
             case 3:
                 hud.Link.Health[PlayerNumber].text = " : P";
                 info.say("REKT??", -1);
+                HasQuipped = true;
                 break;
             case 4:
                 hud.Link.Health[PlayerNumber].text = " :{";
                 info.say("Hello\nMy name is "+name[character.PlayerNumber]+"\nYou killed my father\n<b>Prepare to</b>...", -1);
+                HasQuipped = true;
                 break;
             case 5:
                 hud.Link.Health[PlayerNumber].text = " : {";
                 info.say("Et tu, Brute?", -1);
+                HasQuipped = true;
                 break;
             case 6:
                 hud.Link.Health[PlayerNumber].text = " =[";
                 info.say("denial\nanger\nbargaining\ndepression\n<size=120%><b>REVENGE</b></size>", -1);
+                HasQuipped = true;
                 break;
             case 7:
                 hud.Link.Health[PlayerNumber].text = " =(";
                 info.say("Avenge ME!\n ", -1);
                 killer.GetComponent<PlayerHealth>().info.say("No Thanks", 120);
+                HasQuipped = true;
                 break;
             case 8:
                 hud.Link.Health[PlayerNumber].text = " :'(";
                 info.say("You have died\nof dysentery", -1);
+                HasQuipped = true;
                 break;
             case 9:
                 hud.Link.Health[PlayerNumber].text = " ={";
                 info.say("Where is the love?", -1);
+                HasQuipped = true;
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -455,7 +504,7 @@ public class PlayerHealth : MonoBehaviour {
 
     public void PlayerDeath ()
     {
-        if (isDead)
+        if (_isDead)
             return;
 
         endBlur();
@@ -482,7 +531,7 @@ public class PlayerHealth : MonoBehaviour {
         isDead = true;
         //death sounds can go here
         audio.Play("Death" + name[PlayerNumber]);
-        ////Debug.Log("Death" + name[PlayerNumber]);
+        //Debug.LogWarning("Death" + name[PlayerNumber]);
 
         
         deathEvent.Invoke();
@@ -511,31 +560,39 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
+        if (NearQuip())
+            return;
         switch (Random.Range(0, 11))
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
                 info.say("But paper was\nsupposed to beat rock.", -1);
+                HasQuipped = true;
                 break;
             case 1:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("How was I\nsupposed to know\nasteroids were bad?", -1);
+                HasQuipped = true;
                 break;
             case 3:
                 hud.Link.Health[PlayerNumber].text = " : P";
-                info.say("Long Live Rock!", -1);
+                info.say("Fourth wall break?", -1);
+                HasQuipped = true;
                 break;
             case 4:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("So...\nthat\nhappened...", -1);
+                HasQuipped = true;
                 break;
             case 5:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("Well, of all the\nways to go...\nCould be worse", -1);
+                HasQuipped = true;
                 break;
             case 6:
                 hud.Link.Health[PlayerNumber].text = " :'{";
                 info.say("You promised me\nI wouldn't die\nlike this!", -1);
+                HasQuipped = true;
                 break;
             default:
                 hud.Link.Health[PlayerNumber].text = "0";
@@ -595,6 +652,15 @@ public class PlayerHealth : MonoBehaviour {
         HealthParticle.Create(transform, (Vector3.up + Vector3.right).normalized * scale, 5, msg, Color.yellow, true);
         HealthParticle.Create(transform, (Vector3.down + Vector3.left).normalized * scale, 5, msg, Color.yellow, true);
         HealthParticle.Create(transform, (Vector3.down + Vector3.right).normalized * scale, 5, msg, Color.yellow, true);
+    }
+
+    private bool NearQuip()
+    {
+        foreach (Transform t in transform.parent)
+            if (t.GetComponent<PlayerHealth>().HasQuipped
+                && Vector2.Distance(transform.position, t.position)<6)
+                return true;
+        return false;
     }
 
 

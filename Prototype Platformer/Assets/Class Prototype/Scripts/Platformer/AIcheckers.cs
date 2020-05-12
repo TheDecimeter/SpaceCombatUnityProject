@@ -132,6 +132,7 @@ public partial class AI : MonoBehaviour
                 {
                     //Debug.Log(outer.asyncname + " removed player " + players[i].asyncname);
                     players.RemoveAt(i);
+                    i = players.Count;
                     continue;
                 }
                 if (players[i].framesDamage > 0 && i != 0)
@@ -168,7 +169,7 @@ public partial class AI : MonoBehaviour
 
                 outer.TaskList.Clear();
 
-                //Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname);
+                //Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname+" health:"+p.getHealth());
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
                 return priority;
             }

@@ -133,8 +133,12 @@ public class AnimationStates
 
     private void startAttack(string AttackType, bool value)
     {
-        if (attack == value)
+        if (attack == value && AttackType==lastAttack)
             return;
+
+        if (lastAttack != null && AttackType != lastAttack)
+            startAttack(lastAttack, false);
+
         lastAttack = AttackType;
 
         attack = value;
