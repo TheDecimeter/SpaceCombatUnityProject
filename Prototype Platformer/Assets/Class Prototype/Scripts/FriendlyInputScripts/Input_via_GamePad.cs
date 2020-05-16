@@ -120,18 +120,20 @@ public class Input_via_GamePad : MonoBehaviour
                 }
                 break;
             case 1:
-                //playerControls.addDevice(index);
+                //if (playerControls.attack)
+                //    print("controller input attack PRE convert" + index);
+                playerControls.ConvertToSource(ControlStruct.GetDevice(index+1));
+                //if (playerControls.attack)
+                //    print("controller input attack POST convert" + index);
                 if (index == 0) controller1.Invoke(playerControls);
                 if (index == 1) controller1.Invoke(playerControls);
                 if (index == 2) controller1.Invoke(playerControls);
                 if (index == 3) controller1.Invoke(playerControls);
                 break;
             case 2:
-                //playerControls.addDevice(index);
-                if (index == 0) controller1.Invoke(playerControls);
-                if (index == 1) controller2.Invoke(playerControls);
-                if (index == 2) controller1.Invoke(playerControls);
-                if (index == 3) controller2.Invoke(playerControls);
+                playerControls.ConvertToSource(ControlStruct.GetDevice(index + 1));
+                if (index == 0||index==2) controller1.Invoke(playerControls);
+                if (index == 1||index==3) controller2.Invoke(playerControls);
                 break;
         }
 
@@ -175,9 +177,12 @@ public class Input_via_GamePad : MonoBehaviour
 
             foreach (GamepadDevice gamepad in input.gamepads)
             {
+                //if (gamepad.systemName == null || gamepad.systemName.Length == 0)
+                //    continue;
                 playerNum++;
                 //create a structure for holding controls
-                ControlStruct playerControls = new ControlStruct(ControlStruct.GetDevice(playerNum));
+                ControlStruct playerControls = new ControlStruct(ControlStruct.Controller);
+                //ControlStruct playerControls = new ControlStruct(ControlStruct.GetDevice(playerNum));
 
 
                 int[] buttonValues = (int[])System.Enum.GetValues(typeof(GamepadButton));
@@ -241,6 +246,7 @@ public class Input_via_GamePad : MonoBehaviour
                 if (index == NotFound)
                     continue;
                 changed[index] = true;
+                //print(" known fire sys:"+Ds[i].systemName+" dis:"+Ds[i].displayName);
                 FireDevice(index, Cs[i]);
             }
 
@@ -253,6 +259,7 @@ public class Input_via_GamePad : MonoBehaviour
 
                 int freeSpot=GetFirstUnchanged(changed);
                 devices[freeSpot] = Ds[i];
+                //print(" UN known fire");
                 FireDevice(freeSpot, Cs[i]);
             }
 

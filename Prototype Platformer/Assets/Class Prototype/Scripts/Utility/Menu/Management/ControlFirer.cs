@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class ControlFirer : MonoBehaviour
 {
     private bool _home;
-    public bool Active { get; set; }
+    public bool Active = false;
 
     public bool Home
     {

@@ -86,7 +86,7 @@ public class ControlStruct
 
     public bool IsDevice()
     {
-        return source >= Device1;
+        return IsDevice(source);
     }
     public static bool IsDevice(int source)
     {
@@ -105,7 +105,7 @@ public class ControlStruct
         if ((source & Mobile) != 0)
             r += "mobile ";
 
-        for(int i=0; i<10; ++i)
+        for(int i=1; i<10; ++i)
         {
             if ((source & GetDevice(i)) != 0)
                 r += "Device"+i+" ";
@@ -135,6 +135,18 @@ public class ControlStruct
         if (r.Length == 0)
             return "No Input";
         return r;
+    }
+
+    public void ConvertToSource(int source)
+    {
+        this.source = source;
+        A = A;
+        B = B;
+        door = door;
+        attack = attack;
+        jump = jump;
+        inGameMenu = inGameMenu;
+        moveLeft = moveLeft;
     }
 
     public override string ToString()

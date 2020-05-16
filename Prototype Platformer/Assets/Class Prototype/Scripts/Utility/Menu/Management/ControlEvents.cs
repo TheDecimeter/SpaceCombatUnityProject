@@ -22,7 +22,7 @@ public class ControlEvents : ControlFirer, IPointerClickHandler
 
     void Awake()
     {
-        Active = false;
+        //Active = false;
         Home = false;
     }
 

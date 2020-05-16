@@ -278,17 +278,19 @@ public class CharacterMovement_Physics : MonoBehaviour
         {
             if (_controllerStatus.B) return;
             if (_controllerStatus.A) return;
+            if (_controllerStatus.jump) return;
+            if (_controllerStatus.door) return;
             if (_controllerStatus.inGameMenu) return;
             ignoreInput = false;
         }
         if (gameMenuActive)
         {
             gameMenuActive=hud.Link.Menu[PlayerNumber].IsMenuActive();
-            if (_controllerStatus.A)
+            if (_controllerStatus.A|| _controllerStatus.jump)
             {
                 hud.Link.Menu[PlayerNumber].SetGlobalMenuActive(true);
             }
-            else if (_controllerStatus.B || _controllerStatus.inGameMenu ) //If the menu is closed elsewhere, return control to player movement
+            else if (_controllerStatus.B || _controllerStatus.inGameMenu || _controllerStatus.door) //If the menu is closed elsewhere, return control to player movement
             {
                 hud.Link.Menu[PlayerNumber].SetMenuActive(0,false);
                 gameMenuActive = false;
@@ -577,7 +579,8 @@ public class CharacterMovement_Physics : MonoBehaviour
         //else if (!_controllerStatus.fromSource(ControlStruct.AI) && _controllerStatus.fromSource(controls.source))
         //    _controllerStatus = controls;
         //else
-        
+        //if (controls.attack)
+        //    print(gameObject.name+" player attack " + controls);
         _controllerStatus.combine(controls);
         //if (controls.jump)
         //    print("player " + PlayerNumber + " received the jump instruction");
