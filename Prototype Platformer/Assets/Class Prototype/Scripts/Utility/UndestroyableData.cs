@@ -136,6 +136,23 @@ public class UndestroyableData : MonoBehaviour
         get(sSave.TouchScreenControls);
     }
 
+    public void SetXinput(bool active)
+    {
+        sSave.Xinput = active;
+    }
+    public void GetXinput(BoolUpdater.Get get)
+    {
+        get(sSave.Xinput);
+    }
+    public static bool GetXinput()
+    {
+#if UNITY_STANDALONE_WIN
+        return sSave.Xinput;
+#else
+        return false;
+#endif
+    }
+
     public void SetLayerBlur(bool active)
     {
         sSave.LayerBlur = active;
@@ -460,7 +477,7 @@ public class UndestroyableData : MonoBehaviour
             public static bool FillLevel;
         }
         public static int RoundCounter, Rounds, PlayerCount;
-        public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true, ReversePlayerOrder = false;
+        public static bool NotYetHappened = true, TouchScreenControls, LayerBlur = true, ReversePlayerOrder = false, Xinput;
 
         public static class Audio
         {
@@ -479,7 +496,7 @@ public class UndestroyableData : MonoBehaviour
     {
         public int[] PlayerRot;
         public int PlayerCount;
-        public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur,ReversePlayerOrder;
+        public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur,ReversePlayerOrder, Xinput;
         public int rounds,mapx,mapy,tileQuant;
         public int musicVolume,sfxMasterVolume,sfxOtherVolume,sfxGruntVolume;
 
@@ -512,6 +529,7 @@ public class UndestroyableData : MonoBehaviour
         data.ReversePlayerOrder = sSave.ReversePlayerOrder;
 
         data.TouchScreenControls = sSave.TouchScreenControls;
+        data.Xinput = sSave.Xinput;
         data.LayerBlur = sSave.LayerBlur;
 
         data.musicVolume = sSave.Audio.musicVolume;
@@ -557,6 +575,7 @@ public class UndestroyableData : MonoBehaviour
             sSave.ReversePlayerOrder = data.ReversePlayerOrder;
 
             sSave.TouchScreenControls = data.TouchScreenControls;
+            sSave.Xinput = data.Xinput;
             sSave.LayerBlur = data.LayerBlur;
 
             sSave.Audio.musicVolume = data.musicVolume;
@@ -599,6 +618,13 @@ public class UndestroyableData : MonoBehaviour
 #else
         sSave.TouchScreenControls = false;
         sSave.LayerBlur = false;
+#endif
+
+
+#if UNITY_STANDALONE_WIN
+        sSave.Xinput = true;
+#else
+        sSave.Xinput=false;
 #endif
     }
 }

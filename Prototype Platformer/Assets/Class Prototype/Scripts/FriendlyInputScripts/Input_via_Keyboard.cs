@@ -45,10 +45,12 @@ public class Input_via_Keyboard : MonoBehaviour
                     return;
                 }
             }
-            if(hud.Link.Menu[0].IsGlobalMenuActive())
+            if (hud.Link.Menu[0].IsGlobalMenuActive())
                 hud.Link.Menu[0].SetGlobalMenuActive(false);
             else
+            {
                 hud.Link.Menu[0].SetGlobalMenuActive(true);
+            }
         }
     }
 

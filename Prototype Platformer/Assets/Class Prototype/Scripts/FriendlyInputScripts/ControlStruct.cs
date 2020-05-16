@@ -84,6 +84,15 @@ public class ControlStruct
         }
     }
 
+    public bool IsDevice()
+    {
+        return source >= Device1;
+    }
+    public static bool IsDevice(int source)
+    {
+        return source >= Device1;
+    }
+
     public string Sources()
     {
         string r = "";

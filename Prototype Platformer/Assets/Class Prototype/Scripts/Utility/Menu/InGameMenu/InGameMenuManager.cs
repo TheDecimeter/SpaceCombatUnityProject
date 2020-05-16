@@ -26,7 +26,7 @@ public class InGameMenuManager : MonoBehaviour
     {
         if (active)
         {
-            if (source == ControlStruct.Controller)
+            if (source == ControlStruct.Controller || ControlStruct.IsDevice(source))
                 SetControllerMenuActive();
             else if (source == ControlStruct.Keyboard)
                 SetKeyboardMenuActive();
@@ -68,7 +68,6 @@ public class InGameMenuManager : MonoBehaviour
 
     public void DeactivateMenus()
     {
-        print("deactiveate menu");
         ControllerMenu.SetActive(false);
         KeyboardMenu.SetActive(false);
         GlobalMenuActive(false);

@@ -22,12 +22,15 @@ public class GamepadInput : MonoBehaviour
     void Start()
 	{
 #if UNITY_STANDALONE_WIN
-		manager = new XGamepadManager (xGamepadLayout);
+        if(UndestroyableData.GetXinput())
+		    manager = new XGamepadManager (xGamepadLayout);
+        else
+            manager = new UnGamepadManager(unGamepadConfigs);
 #else
 		manager = new UnGamepadManager (unGamepadConfigs);
 #endif
-	
-		manager.OnGamepadAdded += GamepadAdded;
+
+        manager.OnGamepadAdded += GamepadAdded;
 		manager.OnGamepadRemoved += GamepadRemoved;
 		
 		manager.Init ();
