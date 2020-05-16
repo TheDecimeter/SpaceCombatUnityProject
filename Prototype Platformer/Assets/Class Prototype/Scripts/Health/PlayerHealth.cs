@@ -29,8 +29,6 @@ public class PlayerHealth : MonoBehaviour {
     public TextManager info;
     private AnimationStates AnimState;
     public Camera blurComponent;
-    public RenderTexture blurScreen;
-    public GameObject blurLayer;
 
     private PostProcessVolume defaultCamEffects;
     //public Text health;
@@ -314,40 +312,22 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (!isHuman)
             return;
-        if (blurLayer.activeInHierarchy)
-            return;
         
         frameCounter = 0;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = true;
 
-        if (!UndestroyableData.GetLayerBlur())
-        {
-            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = true;
-            return;
-        }
-
-        //blurComponent.cullingMask = CullingMask;
-        blurComponent.GetComponent<CameraRectSetter>().SetFull();
-        blurComponent.targetTexture = blurScreen;
-        //blurComponent.depthTextureMode = DepthTextureMode.None;
-        blurLayer.gameObject.SetActive(true);
+        blurComponent.GetComponent<MenuBlurPostProcess>().enabled = true;
+            
+        
         
     }
     private void endBlur()
     {
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
-
-        if (!UndestroyableData.GetLayerBlur())
-        {
-            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = false;
-            return;
-        }
-        //blurComponent.cullingMask = ~0;
-        blurComponent.GetComponent<CameraRectSetter>().SetShared();
-        //blurComponent.depthTextureMode = DepthTextureMode.Depth;
-        blurComponent.targetTexture = null;
-        blurLayer.gameObject.SetActive(false);
+        
+        blurComponent.GetComponent<MenuBlurPostProcess>().enabled = false;
+            
     }
 
     private void KilledByEnvironmentQuip(GameObject killer)

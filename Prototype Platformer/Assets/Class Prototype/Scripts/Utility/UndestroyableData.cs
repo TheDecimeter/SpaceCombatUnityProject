@@ -144,10 +144,6 @@ public class UndestroyableData : MonoBehaviour
     {
         get(sSave.LayerBlur);
     }
-    public static bool GetLayerBlur()
-    {
-        return sSave.LayerBlur;
-    }
 
     //Audio
     public void SetMusicVolume(int volume0through10)

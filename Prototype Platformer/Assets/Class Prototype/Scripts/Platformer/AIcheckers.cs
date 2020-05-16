@@ -171,6 +171,8 @@ public partial class AI : MonoBehaviour
 
                 //Debug.Log(outer.asyncname + " Reset Current Task to attack player "+p.asyncname+" health:"+p.getHealth());
                 outer.currentTask = () => outer.TaskAssignAttackPlayerInRoom(p);
+                if (p.getHealth() <= 0)
+                    return 0;
                 return priority;
             }
             //Debug.Log("     DID NOT TARGET PLAYER "+outer.asyncname);

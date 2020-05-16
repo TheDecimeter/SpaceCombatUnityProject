@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class ScrollManager : ControlFirer
 {
-    public ControlEvents [] Controls;
+    public ControlEvents[] Controls;
+    public ControlEvents[] WindowsControls;
     public ControlManager controlManager;
-    public int atControl = 2;
+    public int atControl = 2, WindowsAtControl=2;
 
     private delegate int next(int x);
     private int Ledge,Redge;
@@ -14,11 +15,32 @@ public class ScrollManager : ControlFirer
 
     private void Start()
     {
+        SetSystemControls();
         Ledge = 0;
         Redge = Controls.Length-1;
         Controls[atControl].Home = true;
         SetEndLocs();
 
+    }
+
+    private void SetSystemControls()
+    {
+        #if UNITY_STANDALONE_WIN
+            MakeControlsActive(WindowsControls, WindowsAtControl);
+        #endif
+    }
+
+    private void MakeControlsActive(ControlEvents[] controls, int atControl)
+    {
+        if (controls == null || controls.Length == 0)
+            return;
+
+        foreach (ControlEvents c in Controls)
+            c.gameObject.SetActive(false);
+        foreach (ControlEvents c in controls)
+            c.gameObject.SetActive(true);
+        Controls = controls;
+        this.atControl = atControl;
     }
 
     /// <summary>
