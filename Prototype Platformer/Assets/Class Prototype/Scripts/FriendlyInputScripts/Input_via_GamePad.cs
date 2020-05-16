@@ -20,6 +20,7 @@ public class Input_via_GamePad : MonoBehaviour
     
 
     public int maxPlayers = 4;
+    private int playerCount = 4;
 
     private static GamepadDevice [] devices;
     private int[] lastInput;
@@ -32,7 +33,7 @@ public class Input_via_GamePad : MonoBehaviour
 
     private const int start=5, jump = 0, attackButton = 2, attackAxis1=4, attackAxis2 = 5, action = 3, door1=1, door2=12, door3 = 11, left = 0, right = 0, menu=1;
     private const int AXIS = 1, BUTTON = 0;
-    private float axisThreshold = 0.2f;
+    private const float axisThreshold = 0.2f, triggerThrishold = 0.5f;
 
     private bool printOnce = true;
 
@@ -50,6 +51,8 @@ public class Input_via_GamePad : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        playerCount = UndestroyableData.GetPlayers();
+
         lastInput = new int[2];
         lastInput[0] = -1;
         lastInput[1] = -1;
@@ -101,7 +104,7 @@ public class Input_via_GamePad : MonoBehaviour
         // in the game, otherwise in games with less players controllers won't go
         // to those players.
 
-        switch (UndestroyableData.GetPlayers())
+        switch (playerCount)
         {
             default:
                 if (UndestroyableData.GetReversePlayerOrder())
@@ -125,6 +128,9 @@ public class Input_via_GamePad : MonoBehaviour
                 playerControls.ConvertToSource(ControlStruct.GetDevice(index+1));
                 //if (playerControls.attack)
                 //    print("controller input attack POST convert" + index);
+                //if (playerControls.source == ControlStruct.Device1)
+                //    Debug.LogWarning("input gamepad: " +" index: "+index+" "+ playerControls);
+                
                 if (index == 0) controller1.Invoke(playerControls);
                 if (index == 1) controller1.Invoke(playerControls);
                 if (index == 2) controller1.Invoke(playerControls);
@@ -246,7 +252,10 @@ public class Input_via_GamePad : MonoBehaviour
                 if (index == NotFound)
                     continue;
                 changed[index] = true;
-                //print(" known fire sys:"+Ds[i].systemName+" dis:"+Ds[i].displayName);
+                //if(Cs[i].attack)
+                //    Debug.LogError(" known fire sys:"+Ds[i].systemName+" dis:"+Ds[i].displayName+" "+Cs[i]);
+                //else
+                //    Debug.Log(" known fire sys:" + Ds[i].systemName + " dis:" + Ds[i].displayName + " " + Cs[i]);
                 FireDevice(index, Cs[i]);
             }
 
@@ -259,7 +268,7 @@ public class Input_via_GamePad : MonoBehaviour
 
                 int freeSpot=GetFirstUnchanged(changed);
                 devices[freeSpot] = Ds[i];
-                //print(" UN known fire");
+                //Debug.LogWarning(" UN known fire" + " " + Cs[i]);
                 FireDevice(freeSpot, Cs[i]);
             }
 
@@ -370,8 +379,11 @@ public class Input_via_GamePad : MonoBehaviour
                 break;
             case attackAxis1:
             case attackAxis2:
-                if (state > axisThreshold)
+                if (state > triggerThrishold)
+                {
+                    //Debug.LogWarning("setAttack "+state+" axis thresh "+axisThreshold);
                     current.attack = true;
+                }
                 break;
         }
         return;

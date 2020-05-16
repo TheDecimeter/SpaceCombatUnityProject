@@ -288,7 +288,7 @@ public class CharacterMovement_Physics : MonoBehaviour
             gameMenuActive=hud.Link.Menu[PlayerNumber].IsMenuActive();
             if (_controllerStatus.A|| _controllerStatus.jump)
             {
-                hud.Link.Menu[PlayerNumber].SetGlobalMenuActive(true);
+                hud.Link.Menu[PlayerNumber].SetGlobalMenuActive(true, _controllerStatus);
             }
             else if (_controllerStatus.B || _controllerStatus.inGameMenu || _controllerStatus.door) //If the menu is closed elsewhere, return control to player movement
             {

@@ -13,6 +13,7 @@ public class ControlListener
         this.manager = manager;
         _controllerStatus = new ControlStruct(ControlStruct.None);
     }
+    
 
     public void ControllerListener(ControlStruct newControls)
     {

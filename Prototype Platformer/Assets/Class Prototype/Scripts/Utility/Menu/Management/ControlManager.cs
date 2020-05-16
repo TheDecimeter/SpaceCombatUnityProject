@@ -10,8 +10,11 @@ public class ControlManager : MonoBehaviour
     public bool IsTitleMenu = true;
 
     private ControlListener c1, c2, c3, c4;
-    private float ignoreInput1, ignoreInput2, ignoreInput3, ignoreInput4;
-    private const float ignoreInputMargin=.3f;
+    //private float ignoreInput1, ignoreInput2, ignoreInput3, ignoreInput4;
+    //private const float ignoreInputMargin=.9f;
+
+    private ControlStruct ignore;
+    private int ignoreAsource;
 
     public ControlFirer controls
     {
@@ -46,8 +49,10 @@ public class ControlManager : MonoBehaviour
 
         //_controls = initialMenuItem;
         //controls = initialMenuItem;
-        if(IsTitleMenu)
+        if (IsTitleMenu)
+        {
             enabled = (FindObjectOfType<UndestroyableData>().isMenuOpened());
+        }
     }
 
     public void Init()
@@ -64,27 +69,67 @@ public class ControlManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        //print("on emable");
-        //Init();
+    //private void OnEnable()
+    //{
+    //    print("on emable");
+    //    //Init();
 
-        ignoreInput1 = 0;
-        ignoreInput2 = 0;
-        ignoreInput3 = 0;
-        ignoreInput4 = 0;
+    //    ignoreInput1 = 0;
+    //    ignoreInput2 = 0;
+    //    ignoreInput3 = 0;
+    //    ignoreInput4 = 0;
+    //}
+    bool wait = true;
+    public void SetIgnoreController(ControlStruct c)
+    {
+        if (c == null)
+            ignoreAsource = 0;
+        else
+        {
+            wait = true;
+            ignoreAsource = c.ASource;
+            //print("setting ignore "+c);
+        }
+        ignore = c;
     }
 
-    private bool Skip(ControlStruct c, ref float ignoreInput)
+    private bool Skip(ControlStruct c)
     {
-        if (ignoreInput==ignoreInputMargin)
+        if (ignoreAsource == 0)
+            return false;
+        if (ControlStruct.FromSource(ignoreAsource,c.source))
         {
-            ignoreInput +=Time.deltaTime;
-            if (ignoreInput > ignoreInputMargin)
-                ignoreInput = ignoreInputMargin;
-            return true;
+            if (c.A)
+            {
+                //print("t I " + ControlStruct.Sources(ignoreAsource));
+                //print("t C " + ControlStruct.Sources(c.ASource) + " C:" + c);
+                return true;
+            }
+            else
+            {
+                //if (wait)
+                //{
+                //    print("         wait");
+                //    wait = false;
+                //    return true;
+                //}
+                //print("f I " + ControlStruct.Sources(ignoreAsource));
+                //print("f C " + ControlStruct.Sources(c.ASource)+" C:"+c);
+                ignoreAsource = ControlStruct.RemoveSource(c.source, ignoreAsource);
+                //if (ignoreAsource == 0) { }
+                //ignore = null;
+                //return false;
+            }
         }
-        return false;
+
+        //print("l I " + ControlStruct.Sources(ignoreAsource));
+        //print("l C " + ControlStruct.Sources(c.ASource) + " C:" + c);
+        //if (c.A)
+        //{
+        //    print("but A is pressed");
+        //}
+            return false;
+        
     }
 
     public void PassControl(ControlFirer to)
@@ -102,7 +147,8 @@ public class ControlManager : MonoBehaviour
     {
         if (gameObject.activeInHierarchy && enabled)
         {
-            if (Skip(newControls, ref ignoreInput1))
+            //print("\n1");
+            if (Skip(newControls))
                 return;
             //print("control listener, performing action " + gameObject.name);
             c1.ControllerListener(newControls);
@@ -113,7 +159,8 @@ public class ControlManager : MonoBehaviour
 
         if (gameObject.activeInHierarchy && enabled)
         {
-            if (Skip(newControls, ref ignoreInput2))
+            //print("\n2");
+            if (Skip(newControls))
                 return;
             c2.ControllerListener(newControls);
         }
@@ -123,7 +170,8 @@ public class ControlManager : MonoBehaviour
 
         if (gameObject.activeInHierarchy && enabled)
         {
-            if (Skip(newControls, ref ignoreInput3))
+            //print("\n3");
+            if (Skip(newControls))
                 return;
             c3.ControllerListener(newControls);
         }
@@ -133,7 +181,8 @@ public class ControlManager : MonoBehaviour
 
         if (gameObject.activeInHierarchy && enabled)
         {
-            if (Skip(newControls, ref ignoreInput4))
+            //print("\n4");
+            if (Skip(newControls))
                 return;
             c4.ControllerListener(newControls);
         }

@@ -46,10 +46,10 @@ public class Input_via_Keyboard : MonoBehaviour
                 }
             }
             if (hud.Link.Menu[0].IsGlobalMenuActive())
-                hud.Link.Menu[0].SetGlobalMenuActive(false);
+                hud.Link.Menu[0].SetGlobalMenuActive(false, null);
             else
             {
-                hud.Link.Menu[0].SetGlobalMenuActive(true);
+                hud.Link.Menu[0].SetGlobalMenuActive(true, null);
             }
         }
     }

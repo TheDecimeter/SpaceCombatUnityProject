@@ -5,8 +5,8 @@ using UnityEngine;
 public class ControlStruct
 {
     private const float deadZone = .1f;
-    public const int Keyboard = 1<<0, Mobile = 1<<1, Controller = 1<<2, None = 0, AI = 1<<3;
-    public const int Device1 = 1 << 4, Device2 = 1 << 5, Device3 = 1 << 6, Device4 = 1 << 7, 
+    public const int Keyboard = 1 << 0, Mobile = 1 << 1, Controller = 1 << 2, None = 0, AI = 1 << 3;
+    public const int Device1 = 1 << 4, Device2 = 1 << 5, Device3 = 1 << 6, Device4 = 1 << 7,
         Device5 = 1 << 8, Device6 = 1 << 9, Device7 = 1 << 10, Device8 = 1 << 11, Device9 = 1 << 12, Device10 = 1 << 13;
     public bool jump { get { return bJump != None; } set { if (value) bJump = source; else bJump = None; } }
     public bool attack { get { return bAttack != None; } set { if (value) bAttack = source; else bAttack = None; } }
@@ -18,20 +18,53 @@ public class ControlStruct
 
     private int bJump, bAttack, bAction, bDoor, bMenu, bLeft, bA, bB;
 
-    public float moveLeft { get { return left; } set { if (Mathf.Abs(value) > deadZone) { bLeft = source; left = value; } else{ bLeft = None; left = 0; } } }
+    public float moveLeft { get { return left; } set { if (Mathf.Abs(value) > deadZone) { bLeft = source; left = value; } else { bLeft = None; left = 0; } } }
     private float left = 0;
 
     public int source { get; protected set; }
     public int menuSource { get { return bMenu; } protected set { } }
+    public int ASource { get { return bA; } protected set { } }
 
     public ControlStruct(int source)
     {
         this.source = source;
     }
+    public ControlStruct(ControlStruct c)
+    {
+        if (c == null)
+        {
+            source = None;
+            return;
+        }
+        source = c.source;
+
+        bJump = c.bJump;
+        bAttack = c.bAttack;
+        bAction = c.bAction;
+        bDoor = c.bDoor;
+
+        bA = c.bA;
+        bB = c.bB;
+
+        bMenu = c.bMenu;
+        moveLeft = c.moveLeft;
+    }
 
     public bool fromSource(int source)
     {
         return (this.source & source) != 0;
+    }
+    public void removeSource(int source)
+    {
+        ConvertToSource(RemoveSource(source,this.source));
+    }
+    public static int RemoveSource(int source, int fromHere)
+    {
+        return fromHere & ~source;
+    }
+    public static bool FromSource(int one, int other)
+    {
+        return (one & other) != 0;
     }
 
     public void addSource(int source)
@@ -93,7 +126,7 @@ public class ControlStruct
         return source >= Device1;
     }
 
-    public string Sources()
+    public static string Sources(int source)
     {
         string r = "";
         if ((source & Controller) != 0)
@@ -105,14 +138,19 @@ public class ControlStruct
         if ((source & Mobile) != 0)
             r += "mobile ";
 
-        for(int i=1; i<10; ++i)
+        for (int i = 1; i < 10; ++i)
         {
             if ((source & GetDevice(i)) != 0)
-                r += "Device"+i+" ";
+                r += "Device" + i + " ";
         }
         if (r.Length == 0)
             return "No Sources";
         return r;
+    }
+
+    public string Sources()
+    {
+        return Sources(source);
     }
     public string Input()
     {
