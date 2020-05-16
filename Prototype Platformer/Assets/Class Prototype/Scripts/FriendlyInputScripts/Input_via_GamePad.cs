@@ -22,6 +22,7 @@ public class Input_via_GamePad : MonoBehaviour
     public int maxPlayers = 4;
 
     private static GamepadDevice [] devices;
+    private int[] lastInput;
     
     private List<ControlStruct> previousControls;
     //Axis 4=lefttrig, 5=righttrig, 0=leftAnalogH
@@ -49,7 +50,9 @@ public class Input_via_GamePad : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        lastInput = new int[2];
+        lastInput[0] = -1;
+        lastInput[1] = -1;
         if (devices == null)
         {
             print("Creating/initializing device map");
@@ -97,20 +100,55 @@ public class Input_via_GamePad : MonoBehaviour
         // players receive game pads, however only do this if there are 4 players
         // in the game, otherwise in games with less players controllers won't go
         // to those players.
-        if (UndestroyableData.GetReversePlayerOrder()&&UndestroyableData.GetPlayers()==4)
+
+        switch (UndestroyableData.GetPlayers())
         {
-            if (index == 3) controller1.Invoke(playerControls);
-            if (index == 2) controller2.Invoke(playerControls);
-            if (index == 1) controller3.Invoke(playerControls);
-            if (index == 0) controller4.Invoke(playerControls);
+            default:
+                if (UndestroyableData.GetReversePlayerOrder())
+                {
+                    if (index == 3) controller1.Invoke(playerControls);
+                    if (index == 2) controller2.Invoke(playerControls);
+                    if (index == 1) controller3.Invoke(playerControls);
+                    if (index == 0) controller4.Invoke(playerControls);
+                }
+                else
+                {
+                    if (index == 0) controller1.Invoke(playerControls);
+                    if (index == 1) controller2.Invoke(playerControls);
+                    if (index == 2) controller3.Invoke(playerControls);
+                    if (index == 3) controller4.Invoke(playerControls);
+                }
+                break;
+            case 1:
+                //playerControls.addDevice(index);
+                if (index == 0) controller1.Invoke(playerControls);
+                if (index == 1) controller1.Invoke(playerControls);
+                if (index == 2) controller1.Invoke(playerControls);
+                if (index == 3) controller1.Invoke(playerControls);
+                break;
+            case 2:
+                //playerControls.addDevice(index);
+                if (index == 0) controller1.Invoke(playerControls);
+                if (index == 1) controller2.Invoke(playerControls);
+                if (index == 2) controller1.Invoke(playerControls);
+                if (index == 3) controller2.Invoke(playerControls);
+                break;
         }
-        else
-        {
-            if (index == 0) controller1.Invoke(playerControls);
-            if (index == 1) controller2.Invoke(playerControls);
-            if (index == 2) controller3.Invoke(playerControls);
-            if (index == 3) controller4.Invoke(playerControls);
-        }
+
+        //if (UndestroyableData.GetReversePlayerOrder()&&UndestroyableData.GetPlayers()==4)
+        //{
+        //    if (index == 3) controller1.Invoke(playerControls);
+        //    if (index == 2) controller2.Invoke(playerControls);
+        //    if (index == 1) controller3.Invoke(playerControls);
+        //    if (index == 0) controller4.Invoke(playerControls);
+        //}
+        //else
+        //{
+        //    if (index == 0) controller1.Invoke(playerControls);
+        //    if (index == 1) controller2.Invoke(playerControls);
+        //    if (index == 2) controller3.Invoke(playerControls);
+        //    if (index == 3) controller4.Invoke(playerControls);
+        //}
     }
     
     
@@ -137,8 +175,9 @@ public class Input_via_GamePad : MonoBehaviour
 
             foreach (GamepadDevice gamepad in input.gamepads)
             {
+                playerNum++;
                 //create a structure for holding controls
-                ControlStruct playerControls = new ControlStruct(ControlStruct.Controller);
+                ControlStruct playerControls = new ControlStruct(ControlStruct.GetDevice(playerNum));
 
 
                 int[] buttonValues = (int[])System.Enum.GetValues(typeof(GamepadButton));
@@ -181,7 +220,6 @@ public class Input_via_GamePad : MonoBehaviour
                 //if (gamepad.deviceId == 1) controller2.Invoke(playerControls);
                 //if (gamepad.deviceId == 2) controller3.Invoke(playerControls);
                 //if (gamepad.deviceId == 3) controller4.Invoke(playerControls);
-                playerNum++;
 
                 //if (printOnce)
                     //print("gamePad " + gamepad.deviceId + " " + gamepad.displayName + " -sys: " + gamepad.systemName);
