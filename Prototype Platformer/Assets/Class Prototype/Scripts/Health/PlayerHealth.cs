@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.PostProcessing;
@@ -42,6 +43,8 @@ public class PlayerHealth : MonoBehaviour {
     public int framesDamage { get; protected set; }
     private int damageRate = 0;
     private int secondsCounter = 0;
+
+    private TextMeshProUGUI wintext;
 
     private CharacterMovement_Physics character;
     private bool deathQuip = true;
@@ -513,7 +516,7 @@ public class PlayerHealth : MonoBehaviour {
         audio.Play("Death" + name[PlayerNumber]);
         //Debug.LogWarning("Death" + name[PlayerNumber]);
 
-        
+        CheckWinMessage();
         deathEvent.Invoke();
     }
 
@@ -546,7 +549,7 @@ public class PlayerHealth : MonoBehaviour {
         {
             case 0:
                 hud.Link.Health[PlayerNumber].text = " : (";
-                info.say("But paper was\nsupposed to beat rock.", -1);
+                info.say("But paper\ncould beat rock.", -1);
                 HasQuipped = true;
                 break;
             case 1:
@@ -616,7 +619,7 @@ public class PlayerHealth : MonoBehaviour {
                 if(w.Rank()>5)
                     msg = "I've got \n"+ w.Aweapon() + "\nwith your name on it";
                 else
-                    msg= "They're over here\nThey've only got a\n" + w.Aweapon() + "";
+                    msg= "They're over here\nThey've only got\n" + w.Aweapon() + "";
                 break;
             default:
                 msg = "Come At Me Bro";
@@ -649,5 +652,20 @@ public class PlayerHealth : MonoBehaviour {
         int r = 0;
         FindObjectOfType<UndestroyableData>().GetPlayers((x) => { r = x; });
         return r;
+    }
+
+
+    public void PassWin(TextMeshProUGUI wintext)
+    {
+        this.wintext = wintext;
+        CheckWinMessage();
+    }
+
+    private void CheckWinMessage()
+    {
+        if (wintext == null)
+            return;
+        if(isDead)
+            wintext.text = "Player " + (PlayerNumber + 1) + " Wins,\nSorta";
     }
 }

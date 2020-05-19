@@ -5,13 +5,13 @@ using UnityEngine;
 public class ConditionalPlayerCountShowing : MonoBehaviour
 {
     public int playerNum = 1;
-    public bool showIfAllAI = true;
+    public bool ShowIfAllAI = true;
     // Start is called before the first frame update
     void Start()
     {
         int players = GetPlayers();
         //print("players shower" + players);
-        if (players == 0 && showIfAllAI)
+        if (players == 0 && ShowIfAllAI)
             return;
         if (playerNum > players)
             gameObject.SetActive(false);

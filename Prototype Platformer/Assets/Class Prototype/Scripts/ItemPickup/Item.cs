@@ -20,9 +20,10 @@ public abstract class Item : MonoBehaviour
     public string Aweapon()
     {
         string r = getName();
+        r = r.Replace('\n', ' ');
         if (r.Contains("fisticufs"))
             return r;
-        if (r.Contains("Oxygen\nTank"))
+        if (r.Contains("Oxygen Tank"))
             return "an " + r;
         return "a " + r;
     }
@@ -45,7 +46,10 @@ public abstract class Item : MonoBehaviour
             case "Lethal\nInjection":
                 return 9;
             default:
-                return int.MaxValue;
+                {
+                    Debug.LogError("unknown item " + w);
+                    return int.MaxValue;
+                }
         }
     }
 }

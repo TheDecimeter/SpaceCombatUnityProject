@@ -10,12 +10,7 @@ public class EnableIfTouchControl : MonoBehaviour
         if (!GetTouch())
             gameObject.SetActive(false);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 
     private bool GetTouch()
     {

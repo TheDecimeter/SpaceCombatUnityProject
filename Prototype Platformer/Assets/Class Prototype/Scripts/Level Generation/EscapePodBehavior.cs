@@ -153,5 +153,7 @@ public class EscapePodBehavior : MonoBehaviour
         Rigidbody rb = player.GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
+
+        PlayerHealth.StopDamage = true;
     }
 }

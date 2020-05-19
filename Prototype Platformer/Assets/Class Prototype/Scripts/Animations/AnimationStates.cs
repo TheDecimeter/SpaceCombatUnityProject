@@ -10,6 +10,8 @@ public class AnimationStates
 
     private string lastAttack;
 
+    private HashSet<string> allAttacks=new HashSet<string>();
+
 
     private Animator anim;
 
@@ -136,6 +138,8 @@ public class AnimationStates
         if (attack == value && AttackType==lastAttack)
             return;
 
+        allAttacks.Add(AttackType);
+
         if (lastAttack != null && AttackType != lastAttack)
             startAttack(lastAttack, false);
 
@@ -156,8 +160,11 @@ public class AnimationStates
     {
         anim.SetBool(Tag.die, true);
 
-        if(lastAttack!=null)
-            startAttack(lastAttack, false);
+        //if(lastAttack!=null)
+        //    startAttack(lastAttack, false);
+
+        foreach(string a in allAttacks)
+            anim.SetBool(a, false);
 
         startDamage(false);
         startJump(false);

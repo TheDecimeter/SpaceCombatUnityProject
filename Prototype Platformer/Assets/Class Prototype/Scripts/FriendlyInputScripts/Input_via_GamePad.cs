@@ -252,8 +252,8 @@ public class Input_via_GamePad : MonoBehaviour
                 if (index == NotFound)
                     continue;
                 changed[index] = true;
-                //if(Cs[i].attack)
-                //    Debug.LogError(" known fire sys:"+Ds[i].systemName+" dis:"+Ds[i].displayName+" "+Cs[i]);
+                //if (Cs[i].attack)
+                //    Debug.LogError(" known fire sys:" + Ds[i].systemName + " dis:" + Ds[i].displayName + " " + Cs[i]);
                 //else
                 //    Debug.Log(" known fire sys:" + Ds[i].systemName + " dis:" + Ds[i].displayName + " " + Cs[i]);
                 FireDevice(index, Cs[i]);

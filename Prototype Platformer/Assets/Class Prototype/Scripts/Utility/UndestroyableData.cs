@@ -32,7 +32,11 @@ public class UndestroyableData : MonoBehaviour
     public TextMeshProUGUI WinText;
     public bool VerticalSplit = true;
 
+    public PlayerHealth[] players;
+
     static public UnityEvent DataReadyToBeRead=new UnityEvent();
+
+    private bool sceneRestarted = false;
 
 
     //Game Rounds   Getter Setter
@@ -246,7 +250,7 @@ public class UndestroyableData : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
+        sceneRestarted = false;
         WinText.text = "";
         if (sSave.ScoreKeeper.player == null)
         {
@@ -316,6 +320,7 @@ public class UndestroyableData : MonoBehaviour
         if (WinText.text == "")
         {
             WinText.text = "Player " + (PlayerNumber + 1) + " Wins";
+            players[PlayerNumber].PassWin(WinText);
             sSave.ScoreKeeper.player[PlayerNumber] += HowMuch;
         }
         else if (WinText.text.Contains("" + (PlayerNumber + 1)))
@@ -340,6 +345,9 @@ public class UndestroyableData : MonoBehaviour
 
     public void EndRound()
     {
+        if (sceneRestarted)//only happen once per load
+            return;
+        sceneRestarted = true;
         sSave.RoundCounter++;
         if (sSave.Rounds == sSave.RoundCounter)
             sSave.StartMenu.StartMenuOpened = true;
