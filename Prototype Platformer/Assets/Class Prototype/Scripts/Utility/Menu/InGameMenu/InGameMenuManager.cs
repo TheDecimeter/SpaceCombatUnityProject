@@ -43,8 +43,8 @@ public class InGameMenuManager : MonoBehaviour
     {
         if (active)
         {
-            GlobalMenu.SetIgnoreController(c);
             SetGlobalMenuActive();
+            GlobalMenu.SetIgnoreController(c);
         }
         else
             GlobalMenuActive(false);

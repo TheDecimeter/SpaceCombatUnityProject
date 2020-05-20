@@ -79,14 +79,13 @@ public class ControlManager : MonoBehaviour
     //    ignoreInput3 = 0;
     //    ignoreInput4 = 0;
     //}
-    bool wait = true;
+
     public void SetIgnoreController(ControlStruct c)
     {
         if (c == null)
             ignoreAsource = 0;
         else
         {
-            wait = true;
             ignoreAsource = c.ASource;
             //print("setting ignore "+c);
         }
@@ -107,12 +106,6 @@ public class ControlManager : MonoBehaviour
             }
             else
             {
-                //if (wait)
-                //{
-                //    print("         wait");
-                //    wait = false;
-                //    return true;
-                //}
                 //print("f I " + ControlStruct.Sources(ignoreAsource));
                 //print("f C " + ControlStruct.Sources(c.ASource)+" C:"+c);
                 ignoreAsource = ControlStruct.RemoveSource(c.source, ignoreAsource);
