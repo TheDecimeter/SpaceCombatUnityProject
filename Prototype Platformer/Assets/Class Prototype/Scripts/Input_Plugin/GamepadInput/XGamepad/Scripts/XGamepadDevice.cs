@@ -7,7 +7,7 @@ using XInputDotNetPure;
 
 public class XGamepadDevice : GamepadDevice
 {
-	
+    private string key;
 	public override string systemName {
 		get {
 			return string.Format ("{0} {1}", "XInput Controller", deviceId);
@@ -19,7 +19,19 @@ public class XGamepadDevice : GamepadDevice
 			return string.Format ("{0} {1}", "XInput Controller", deviceId);
 		}
 	}
-	GamepadLayout _layout;
+
+
+    public override string Key
+    {
+        get
+        {
+            if (key == null)
+                key = deviceId + systemName + displayName;
+            return key;
+        }
+    }
+
+    GamepadLayout _layout;
 	public override GamepadLayout layout {
 		get {
 			return _layout;

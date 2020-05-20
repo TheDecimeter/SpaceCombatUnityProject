@@ -8,11 +8,16 @@ public abstract class GamepadDevice
 
 	public abstract string systemName {
 		get;
-	}
-	public abstract string displayName {
-		get;
-	}
-	public abstract GamepadLayout layout {
+    }
+    public abstract string displayName
+    {
+        get;
+    }
+    public abstract string Key
+    {
+        get;
+    }
+    public abstract GamepadLayout layout {
 		get;
 	}
 
@@ -23,5 +28,6 @@ public abstract class GamepadDevice
 	public abstract bool GetButtonUp (GamepadButton buttonType);	
 	public abstract float GetAxis (GamepadAxis axis);
 	public abstract float GetTrigger(GamepadTrigger trigger);
+    
 }
 

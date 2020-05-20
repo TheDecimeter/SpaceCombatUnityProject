@@ -23,6 +23,7 @@ public class Input_via_GamePad : MonoBehaviour
     private int playerCount = 4;
 
     private static GamepadDevice [] devices;
+    private static Dictionary<string,GamepadMonitor> previous;
     private int[] lastInput;
     
     private List<ControlStruct> previousControls;
@@ -60,6 +61,7 @@ public class Input_via_GamePad : MonoBehaviour
         {
             print("Creating/initializing device map");
             devices = new GamepadDevice[4];
+            previous = new Dictionary<string, GamepadMonitor>();
         }
 
         previousControls = new List<ControlStruct>(maxPlayers);
@@ -223,7 +225,8 @@ public class Input_via_GamePad : MonoBehaviour
                 //keep track of gamepads by ID, rather than player number
                 //so that if a controller becomes unplugged, it doesn't shift
                 //all controllers down an index.
-
+                if (!Used(gamepad, playerControls, playerNum))
+                    continue;
                 Ds.Add(gamepad);
                 Cs.Add(playerControls);
 
@@ -235,13 +238,13 @@ public class Input_via_GamePad : MonoBehaviour
                 //if (printOnce)
                     //print("gamePad " + gamepad.deviceId + " " + gamepad.displayName + " -sys: " + gamepad.systemName);
             }
-            if (printOnce)
-            {
-                print("controllers found: " + (playerNum));
-                foreach (GamepadDevice d in Ds)
-                    print("  " + d.deviceId + ", " + d.systemName + ", " + d.displayName);
-                printOnce = false;
-            }
+            //if (printOnce)
+            //{
+            //    //print("controllers found: " + (playerNum));
+            //    //foreach (GamepadDevice d in Ds)
+            //    //    print("  " + d.deviceId + ", " + d.systemName + ", " + d.displayName);
+            //    printOnce = false;
+            //}
 
             bool[] changed = new bool[4];
 
@@ -279,6 +282,30 @@ public class Input_via_GamePad : MonoBehaviour
 
     }
 
+    private bool Used(GamepadDevice device, ControlStruct controls, int id)
+    {
+        if (!previous.ContainsKey(device.Key))
+        {
+            //Debug.LogError("Saving new gamepad " + device);
+            previous.Add(device.Key, new GamepadMonitor(controls));
+            return false;
+        }
+        GamepadMonitor m = previous[device.Key];
+        if (m.used)
+            return id==m.id;
+        if (m.AnyChange(controls))
+        {
+            //Debug.LogWarning("controller changed " + device);
+            m.Change(controls, id);
+            return true;
+        }
+        //Debug.Log("controller unchanged changed " + device);
+        return false;
+    }
+
+    
+
+
     private int GetFirstUnchanged(bool [] changed)
     {
         for(int i=0; i<changed.Length; ++i)
@@ -302,27 +329,7 @@ public class Input_via_GamePad : MonoBehaviour
         }
     }
 
-    private bool isControlUpdated(int currentControl, ControlStruct previous, bool state)
-    {
-        switch (currentControl)
-        {
-            case jump:
-                if (previous.jump == state)
-                    return false;
-                break;
-            case attackButton:
-                if (previous.attack == state)
-                    return false;
-                break;
-            case action:
-                if (previous.action == state)
-                    return false;
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
+    
     private void updateControl(int currentControl, ControlStruct current, bool state)
     {
         if(state)
@@ -351,17 +358,7 @@ public class Input_via_GamePad : MonoBehaviour
                     break;
             }
     }
-    private bool isControlUpdated(int currentControl, ControlStruct previous, float state)
-    {
-        switch (currentControl)
-        {
-            case left:
-                if (previous.moveLeft >= state - axisThreshold && previous.moveLeft <= state + axisThreshold)
-                    return false;
-                break;
-        }
-        return true;
-    }
+
     private void updateControl(int currentControl, ControlStruct current, float state)
     {
         //print("current control " + currentControl + " state " + state);
@@ -390,6 +387,28 @@ public class Input_via_GamePad : MonoBehaviour
     }
 
     
+    class GamepadMonitor
+    {
+        ControlStruct controls;
+        public bool used { get; protected set; }
+        public int id { get; protected set; }
 
+        public GamepadMonitor(ControlStruct controls)
+        {
+            this.controls = controls;
+            used = false;
+            id = 0;
+        }
+        public bool AnyChange(ControlStruct controls)
+        {
+            return this.controls.AnyChange(controls);
+        }
+        public void Change(ControlStruct controls, int id)
+        {
+            this.controls = controls;
+            used = true;
+            this.id = id;
+        }
+    }
 
 }

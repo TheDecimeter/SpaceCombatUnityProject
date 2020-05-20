@@ -267,4 +267,9 @@ public class ControlStruct
         return left != 0
             || B || A || inGameMenu || action || jump || door || attack;
     }
+    public bool AnyChange(ControlStruct from)
+    {
+        return left != from.left
+            || B != from.B || A != from.B || inGameMenu != from.inGameMenu || action != from.action || jump != from.jump || door != from.door || attack != from.attack;
+    }
 }

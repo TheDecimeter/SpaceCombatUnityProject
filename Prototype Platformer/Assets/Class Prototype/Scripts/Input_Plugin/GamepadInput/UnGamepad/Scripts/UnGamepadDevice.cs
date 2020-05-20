@@ -13,6 +13,7 @@ public class UnGamepadDevice : GamepadDevice
 	public UnGamepadConfig config;
 	UnGamepadState lastState = new UnGamepadState ();
 	UnGamepadState currentState = new UnGamepadState ();
+    private string key;
 
 	public override GamepadLayout layout {
 		get {
@@ -38,8 +39,18 @@ public class UnGamepadDevice : GamepadDevice
 		}
 	}
 
-	#region cache
-	static int cacheMaxDevices = 8;
+    public override string Key
+    {
+        get
+        {
+            if (key == null)
+                key = deviceId + systemName + displayName;
+            return key;
+        }
+    }
+
+    #region cache
+    static int cacheMaxDevices = 8;
 	static Dictionary<int,KeyCode> keyCodeCached = new Dictionary<int, KeyCode>();
 	public static KeyCode GetKeyCode(int deviceId, int buttonId)
 	{
