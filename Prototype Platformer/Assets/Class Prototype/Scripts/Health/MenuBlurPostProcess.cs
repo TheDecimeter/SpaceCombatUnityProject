@@ -14,8 +14,7 @@ public class MenuBlurPostProcess : MonoBehaviour
     {
         HardBlendMat = Instantiate(HardBlendMat);
         
-        HardBlendMat.SetFloat("_Intensity", .1f);
-        
+        HardBlendMat.SetFloat("_Intensity", .05f);
         cache = null;
     }
 
@@ -26,21 +25,26 @@ public class MenuBlurPostProcess : MonoBehaviour
 
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-
-        RenderTexture temporaryTexture = RenderTexture.GetTemporary(source.width, source.height);
+        
         if (cache == null)
         {
+            RenderTexture temporaryTexture = RenderTexture.GetTemporary(source.width, source.height);
             cache = new RenderTexture(source.width, source.height, 16, RenderTextureFormat.RGB111110Float);
             cache.Create();
             Graphics.Blit(source, temporaryTexture, BlurMat, 0);
             Graphics.Blit(temporaryTexture, cache, BlurMat, 1);
             HardBlendMat.SetTexture("_BTex", cache);
+            cache.MarkRestoreExpected();
+            RenderTexture.ReleaseTemporary(temporaryTexture);
         }
 
-        Graphics.Blit(source, temporaryTexture, HardBlendMat);
-        Graphics.Blit(temporaryTexture, cache);
-        Graphics.Blit(temporaryTexture, destination);
-        RenderTexture.ReleaseTemporary(temporaryTexture);
+        RenderTexture temporaryTexture2 = RenderTexture.GetTemporary(source.width, source.height);
+
+        Graphics.Blit(source, temporaryTexture2, HardBlendMat);
+        Graphics.Blit(temporaryTexture2, cache);
+        Graphics.Blit(temporaryTexture2, destination);
+
+        RenderTexture.ReleaseTemporary(temporaryTexture2);
     }
 
     private void OnDisable()

@@ -15,7 +15,7 @@ public partial class AI : MonoBehaviour
     private class CheckerHarm : IChecker
     {
         AI outer;
-        float timer=0;
+        float timer = 0;
         float updateTime;
         PlayerHealth health;
 
@@ -40,24 +40,46 @@ public partial class AI : MonoBehaviour
     private class CheckerIdle : IChecker
     {
         AI outer;
+        Vector3 position;
+        float updateTime, timer, idleTime, maxIdleTime=3f;
         int priority;
+        System.Random Randy;
 
-        public CheckerIdle(AI outer, int priority)
+        public CheckerIdle(AI outer, int updateTime, int priority)
         {
             this.outer = outer;
+            this.updateTime = updateTime;
+            position = outer.transform.position;
             this.priority = priority;
+            Randy = new System.Random();
         }
         public int Do(int priority, float deltaTime, bool failed = false)
         {
-            if (priority > this.priority)
-                return priority;
+            timer += deltaTime;
+            UpdatePos(deltaTime);
+            return priority;
+        }
 
-            if (outer.currentTask == null)
-                outer.currentTask = outer.TaskComplete;
-
-            return this.priority;
+        private void UpdatePos(float deltaTime)
+        {
+            if (outer.AsyncPosition != position)
+            {
+                position = outer.AsyncPosition;
+                idleTime = 0;
+                return;
+            }
+            
+            idleTime += deltaTime;
+            if(idleTime>maxIdleTime)
+            {
+                outer.TaskList.Clear();
+                
+                outer.currentTask = ()=>outer.TaskQuip("Zzzzz", Randy.Next(25,75));
+                idleTime = (float)(.5f*Randy.NextDouble());
+            }
         }
     }
+    
 
     private class CheckerGrabItem : IChecker
     {
@@ -144,8 +166,8 @@ public partial class AI : MonoBehaviour
                 PlayerHealth p = players[i];
 
                 int px, py,mx,my;
-                outer.GetMapGridPos(p.AsyncPosition, out px, out py);
-                outer.GetMapGridPos(outer.AsyncPosition, out mx, out my);
+                GetMapGridPos(p.AsyncPosition, out px, out py);
+                GetMapGridPos(outer.AsyncPosition, out mx, out my);
 
                 if (mx != px || my != py)
                 {
@@ -360,9 +382,9 @@ public partial class AI : MonoBehaviour
         private bool InRoomWithColission()
         {
             int Ax, Ay;
-            outer.GetMapGridPos(asteroidImpactPoint.AsyncPosition, out Ax, out Ay);
+            GetMapGridPos(asteroidImpactPoint.AsyncPosition, out Ax, out Ay);
             int x, y;
-            outer.GetMapGridPos(outer.AsyncPosition, out x, out y);
+            GetMapGridPos(outer.AsyncPosition, out x, out y);
             return (x == Ax && y == Ay);
         }
     }
@@ -415,7 +437,7 @@ public partial class AI : MonoBehaviour
 
             int Ax, Ay;
             if (warningLight.AsyncIncomming)
-                outer.GetMapGridPos(warningLight.AsyncPosition, out Ax, out Ay);
+                GetMapGridPos(warningLight.AsyncPosition, out Ax, out Ay);
             else
             {
                 Ax = -1;
@@ -437,7 +459,7 @@ public partial class AI : MonoBehaviour
                 {
                     //Don't target a player who is being asteroided
                     int Px, Py;
-                    outer.GetMapGridPos(players[i].AsyncPosition, out Px, out Py);
+                    GetMapGridPos(players[i].AsyncPosition, out Px, out Py);
                     if (Px != Ax || Py != Ay)
                     {
                         minDist = distToPlayer;

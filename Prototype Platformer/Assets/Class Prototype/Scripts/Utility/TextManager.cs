@@ -17,7 +17,7 @@ public class TextManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (delay == 0)
             info.text = "";

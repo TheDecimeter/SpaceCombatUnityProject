@@ -531,6 +531,12 @@ public partial class AI : MonoBehaviour
         return inProgress;
     }
 
+    private int TaskQuip(string quip, int fixedSecs)
+    {
+        player.info.say(quip, fixedSecs);
+        return complete;
+    }
+
 
     private void ErrorCorrect()
     {

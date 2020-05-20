@@ -269,7 +269,7 @@ public class Input_via_GamePad : MonoBehaviour
                 if (index != NotFound)
                     continue;
 
-                int freeSpot=GetFirstUnchanged(changed);
+                int freeSpot=GetFirstUnchanged(changed, Ds[i]);
                 devices[freeSpot] = Ds[i];
                 //Debug.LogWarning(" UN known fire" + " " + Cs[i]);
                 FireDevice(freeSpot, Cs[i]);
@@ -306,11 +306,17 @@ public class Input_via_GamePad : MonoBehaviour
     
 
 
-    private int GetFirstUnchanged(bool [] changed)
+    private int GetFirstUnchanged(bool [] changed, GamepadDevice device)
     {
-        for(int i=0; i<changed.Length; ++i)
+        int perferredIndex = device.deviceId;
+        if(perferredIndex<UndestroyableData.GetPlayers() && !changed[perferredIndex])
         {
-            if(!changed[i])
+            changed[perferredIndex] = true;
+            return perferredIndex;
+        }
+        for (int i=0; i<changed.Length; ++i)
+        {
+            if (!changed[i])
             {
                 changed[i] = true;
                 return i;

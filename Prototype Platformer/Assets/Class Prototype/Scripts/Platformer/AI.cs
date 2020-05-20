@@ -10,12 +10,13 @@ using UnityEngine;
 public partial class AI : MonoBehaviour
 {
     public LevelRandomizer levelStats;
+    public static LevelRandomizer StaticLevelStats { get; protected set; }
 
     private CharacterMovement_Physics player;
     private ControlStruct controls = new ControlStruct(ControlStruct.AI);
 
     //metrics
-    private float StartX, StartY, roomCell;
+    private static float StartX, StartY, roomCell;
 
     private float buttonPressTimer = 0;
     private const float buttonPressTime = .3f;
@@ -68,6 +69,7 @@ public partial class AI : MonoBehaviour
 
     void Start()
     {
+        StaticLevelStats = levelStats;
         asyncname = name;
 
         lastPosition = transform.position;
@@ -92,6 +94,8 @@ public partial class AI : MonoBehaviour
 
         priority = 0;
         PeriodicGoalCheckers.Add(new CheckerHarm(this, 1, 3));
+
+        PeriodicGoalCheckers.Add(new CheckerIdle(this, 1, 30));
 
         PeriodicGoalCheckers.Add(new CheckerGoToNearestPlayer(this, 5));
 
@@ -398,12 +402,12 @@ public partial class AI : MonoBehaviour
 
 
 
-    private void GetRoomGrid(Vector3 loc, out int x, out int y)
+    public static void GetRoomGrid(Vector3 loc, out int x, out int y)
     {
         int gridX;
         int gridY;
         GetMapGridPos(loc, out gridX, out gridY);
-        TileInformation room = levelStats.Map[gridY][gridX];
+        TileInformation room = StaticLevelStats.Map[gridY][gridX];
         Vector3 roomLoc = room.transform.position;
         x = (int)((loc.x - roomLoc.x) / 4);
         y = (int)((loc.y - (roomLoc.y + StartY)) / 3);
@@ -596,12 +600,12 @@ public partial class AI : MonoBehaviour
     }
 
 
-    private void GetMapGridPos(Vector3 loc, out int x, out int y)
+    public static void GetMapGridPos(Vector3 loc, out int x, out int y)
     {
-        x = (int)((loc.x - StartX) / levelStats.xTileSize);
-        y = (int)((loc.y - StartY) / levelStats.yTileSize);
-        x = Mathf.Clamp(x, 0, levelStats.MapDemensionsX - 1);
-        y = Mathf.Clamp(y, 0, levelStats.MapDemensionsY - 1);
+        x = (int)((loc.x - StartX) / StaticLevelStats.xTileSize);
+        y = (int)((loc.y - StartY) / StaticLevelStats.yTileSize);
+        x = Mathf.Clamp(x, 0, StaticLevelStats.MapDemensionsX - 1);
+        y = Mathf.Clamp(y, 0, StaticLevelStats.MapDemensionsY - 1);
     }
 
 

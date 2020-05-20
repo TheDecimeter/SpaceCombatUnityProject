@@ -25,7 +25,7 @@ public class GoToLink : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        print("open url " + Link);
+        //print("open url " + Link);
         Application.OpenURL(Link);
     }
 
@@ -38,6 +38,12 @@ public class GoToLink : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     public void OnPointerExit(PointerEventData eventData)
     {
         if(text)
+            text.color = normal;
+    }
+
+    private void OnDisable()
+    {
+        if (text)
             text.color = normal;
     }
 }
