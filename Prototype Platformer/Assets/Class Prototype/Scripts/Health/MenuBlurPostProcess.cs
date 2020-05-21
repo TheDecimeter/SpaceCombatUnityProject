@@ -14,7 +14,7 @@ public class MenuBlurPostProcess : MonoBehaviour
     {
         HardBlendMat = Instantiate(HardBlendMat);
         
-        HardBlendMat.SetFloat("_Intensity", .05f);
+        HardBlendMat.SetFloat("_Intensity", .08f);
         cache = null;
     }
 
