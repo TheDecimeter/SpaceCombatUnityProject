@@ -32,7 +32,7 @@ public class YellowTextLauncher : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         this.transform.localPosition = this.transform.localPosition+Heading * Time.deltaTime;
 
