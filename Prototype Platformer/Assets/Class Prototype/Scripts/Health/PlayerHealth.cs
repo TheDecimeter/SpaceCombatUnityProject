@@ -319,7 +319,8 @@ public class PlayerHealth : MonoBehaviour {
         frameCounter = 0;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = true;
 
-        blurComponent.GetComponent<MenuBlurPostProcess>().enabled = true;
+        if (UndestroyableData.GetTrueBlurIntensity() < 1)
+            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = true;
             
         
         
@@ -328,8 +329,9 @@ public class PlayerHealth : MonoBehaviour {
     {
         frameCounter = blurFrames;
         blurComponent.gameObject.GetComponent<CameraBob>().Bob = false;
-        
-        blurComponent.GetComponent<MenuBlurPostProcess>().enabled = false;
+
+        if (UndestroyableData.GetTrueBlurIntensity() < 1)
+            blurComponent.GetComponent<MenuBlurPostProcess>().enabled = false;
             
     }
 

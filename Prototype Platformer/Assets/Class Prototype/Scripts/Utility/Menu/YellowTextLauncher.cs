@@ -34,12 +34,18 @@ public class YellowTextLauncher : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        this.transform.localPosition = this.transform.localPosition+Heading * Time.deltaTime;
+        //float delta = Mathf.Min(Time.deltaTime, .26f);
+        float speed = Time.deltaTime * YellowTextLauncher.speed;
+
+        Vector3 newHeading=  Heading * speed;
+
+        this.transform.localPosition += newHeading;
 
         if (OutOfBounds())
             //Launch();
             Destroy(gameObject);
     }
+    
 
     private void Launch()
     {
@@ -47,11 +53,11 @@ public class YellowTextLauncher : MonoBehaviour
         Message message = messages[Random.Range(0, messages.Length)];
         text.text = message.message.Replace("\\n", "\n");
         text.faceColor = message.color;
+        
 
         Vector2 pos;
         StarPos(out pos, out Heading);
         this.transform.localPosition = pos;
-        Heading *= speed;
 
         if (OutOfBounds())
         {

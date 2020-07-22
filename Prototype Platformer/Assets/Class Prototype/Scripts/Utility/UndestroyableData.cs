@@ -208,7 +208,30 @@ public class UndestroyableData : MonoBehaviour
     {
         return sSave.Audio.sfxGruntVolume/10f;
     }
-    
+
+
+    //graphics
+    public void SetBlurIntensity(int blur0through10)
+    {
+        blur0through10 = Mathf.Clamp(blur0through10, 0, 10);
+        sSave.Graphics.blurIntensity = blur0through10;
+    }
+    public void GetBlurIntensity(IntUpdater.Get get)
+    {
+        get(sSave.Graphics.blurIntensity);
+    }
+    public static float GetTrueBlurIntensity()
+    {
+        int val = sSave.Graphics.blurIntensity;
+        if (val <= 0)
+            return 1;
+        val = (int)(3 + (val / 10f) * 6);
+        float r= Mathf.Pow(1-(val/10f), 2);
+        if (r < 0.01) return 0.005f;
+        if (r >= 1) return 1;
+        return r;
+    }
+
 
 
     //player order, basically this will reverse player order of game pads so that
@@ -491,6 +514,10 @@ public class UndestroyableData : MonoBehaviour
         {
             public static int musicVolume,sfxMasterVolume,sfxGruntVolume,sfxExplosionVolume,sfxOtherVolume;
         }
+        public static class Graphics
+        {
+            public static int blurIntensity;
+        }
 
         public static class CamRot
         {
@@ -507,6 +534,7 @@ public class UndestroyableData : MonoBehaviour
         public bool ScreenSplitVertical = true,TouchScreenControls,LayerBlur,ReversePlayerOrder, Xinput;
         public int rounds,mapx,mapy,tileQuant;
         public int musicVolume,sfxMasterVolume,sfxOtherVolume,sfxGruntVolume;
+        public int blurIntensity;
 
         public override string ToString()
         {
@@ -543,6 +571,8 @@ public class UndestroyableData : MonoBehaviour
         data.musicVolume = sSave.Audio.musicVolume;
         data.sfxGruntVolume = sSave.Audio.sfxGruntVolume;
         data.sfxMasterVolume = sSave.Audio.sfxMasterVolume;
+
+        data.blurIntensity = sSave.Graphics.blurIntensity;
 
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, data);
@@ -590,6 +620,8 @@ public class UndestroyableData : MonoBehaviour
             sSave.Audio.sfxGruntVolume = data.sfxGruntVolume;
             sSave.Audio.sfxMasterVolume = data.sfxMasterVolume;
 
+            sSave.Graphics.blurIntensity = data.blurIntensity;
+
             print("read saved data "+data);
         }
         catch(System.Exception e)
@@ -619,6 +651,8 @@ public class UndestroyableData : MonoBehaviour
         sSave.Audio.musicVolume = 4;
         sSave.Audio.sfxGruntVolume = 10;
         sSave.Audio.musicVolume = 10;
+
+        sSave.Graphics.blurIntensity = 7;
 
 #if UNITY_ANDROID
         sSave.TouchScreenControls = true;

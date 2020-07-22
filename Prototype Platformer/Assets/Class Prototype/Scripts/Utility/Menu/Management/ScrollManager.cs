@@ -80,7 +80,8 @@ public class ScrollManager : ControlFirer
 
     public void ScrollTo(ControlEvents controls)
     {
-
+        if (Controls.Length == 1)
+            return;
         if(Controls[atControl] == controls)
         {
             SwitchControl(atControl);
@@ -107,6 +108,8 @@ public class ScrollManager : ControlFirer
     
     public void ScrollDirectlyTo(ControlEvents controls)
     {
+        if (Controls.Length == 1)
+            return;
         int r = distToElement(GetNext, controls);
         for (int j = 0; j < r; ++j)
         {
@@ -137,6 +140,8 @@ public class ScrollManager : ControlFirer
 
     public void ScrollLeft()
     {
+        if (Controls.Length == 1)
+            return;
         //Vector2 EdgeLoc= Controls[GetNext(Redge)].Loc();
         Vector2 loc = Controls[0].Loc();
         for (int i = 0; i < Controls.Length-1; ++i)
@@ -151,6 +156,8 @@ public class ScrollManager : ControlFirer
     }
     public void ScrollRight()
     {
+        if (Controls.Length == 1)
+            return;
         //Vector2 EdgeLoc = Controls[GetPrev(Ledge)].Loc();
         Vector2 loc = Controls[Controls.Length - 1].Loc();
         for (int i = Controls.Length - 1; i > 0; --i)
