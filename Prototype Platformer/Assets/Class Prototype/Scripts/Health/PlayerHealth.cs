@@ -667,7 +667,12 @@ public class PlayerHealth : MonoBehaviour {
     {
         if (wintext == null)
             return;
-        if(isDead)
-            wintext.text = "Player " + (PlayerNumber + 1) + " Wins,\nSorta";
+        if (isDead)
+        {
+            if(Random.Range(0,20) > 0)
+                wintext.text = "Player " + (PlayerNumber + 1) + " Wins,\nSorta";
+            else
+                wintext.text = "Quad Kill?\nDoh!";
+        }
     }
 }

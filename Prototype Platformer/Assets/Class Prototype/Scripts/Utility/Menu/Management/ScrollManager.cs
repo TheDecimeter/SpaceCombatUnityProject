@@ -80,14 +80,15 @@ public class ScrollManager : ControlFirer
 
     public void ScrollTo(ControlEvents controls)
     {
-        if (Controls.Length == 1)
-            return;
+        
         if(Controls[atControl] == controls)
         {
             SwitchControl(atControl);
             return;
         }
 
+        if (Controls.Length == 1)
+            return;
         int r = distToElement(GetNext, controls);
         int l = distToElement(GetPrev, controls);
 
