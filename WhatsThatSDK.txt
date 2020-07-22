@@ -1,0 +1,5 @@
+This is a cobbled together sdk/build tools to work with our older version of Unity. 
+
+Google no longer provides the build tools in the format needed, so unzip this and use it if making an android build.
+
+Obviously you need 7zip to extract the SDK
