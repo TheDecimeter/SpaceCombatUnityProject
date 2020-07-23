@@ -39,6 +39,10 @@ public class InGameMenuManager : MonoBehaviour
         }
 
     }
+    public void SetGlobalMenuActive(bool active)
+    {
+        SetGlobalMenuActive(active, null);
+    }
     public void SetGlobalMenuActive(bool active, ControlStruct c)
     {
         if (active)
