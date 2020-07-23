@@ -116,7 +116,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 2.0
+  bundleVersion: 3.0
   preloadedAssets:
   - {fileID: 100000, guid: 90f095e695425a64988116e569b8e189, type: 3}
   - {fileID: 100002, guid: 4df2069680630d5428cde27a1a72d983, type: 3}
@@ -165,7 +165,7 @@ PlayerSettings:
     Android: com.TGD.StarCoolerCarnage
     Standalone: com.TGD.StarCoolerCarnage
   buildNumber: {}
-  AndroidBundleVersionCode: 2
+  AndroidBundleVersionCode: 3
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 28
   AndroidPreferredInstallLocation: 1
@@ -250,11 +250,11 @@ PlayerSettings:
   clonedFromGUID: 00000000000000000000000000000000
   templatePackageId: 
   templateDefaultScene: 
-  AndroidTargetArchitectures: 3
+  AndroidTargetArchitectures: 7
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/User/Documents/SCCkey/SCCandroid.keystore
-  AndroidKeyaliasName: sccandroid
+  AndroidKeystoreName: C:/Users/User/Documents/SCCkey/SCCitch.keystore
+  AndroidKeyaliasName: star cooler carnage
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
